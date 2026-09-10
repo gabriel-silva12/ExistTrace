@@ -4,7 +4,8 @@ import {
     Button,
     Keyboard, //teclado
     KeyboardAvoidingView, //pro teclado nao cobri os inputs do login
-    Platform, //android ou ios
+    Platform,
+    Pressable, //android ou ios
     StyleSheet,
     Text,
     TextInput,
@@ -20,8 +21,6 @@ const screens: Href[] = [
         "/screenD", 
 ]
 
-
-    
 const LoginScreen = () => {
   const router = useRouter(); // para transitar entre paginas, roteamento
 
@@ -59,7 +58,7 @@ const LoginScreen = () => {
 
                     <TextInput
                         style={styles.input}
-                        placeholder="Email"
+                        placeholder="E-mail"
                         placeholderTextColor="#888888"
                         value={email}
                         onChangeText={setEmail}
@@ -69,16 +68,25 @@ const LoginScreen = () => {
 
                     <TextInput
                         style={styles.input}
-                        placeholder="Password"
+                        placeholder="Senha"
                         placeholderTextColor="#888888"
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry={true} 
                         autoCapitalize="none"
                     />
-                    <View style={styles.buttonContainer}>
-                        <Button title="Login" onPress={handleLogin} />
-                    </View>
+                        <Pressable
+                            style={({ pressed }) => [
+                                styles.pillButton,
+                                pressed && { opacity: 0.8 }
+                            ]}
+                            onPress={handleLogin}
+                        >
+                            <Text style={styles.pillButtonText}>Entrar</Text>
+                        </Pressable>
+                            <View style={styles.buttonContainer}>
+                                <Button title="Cadastrar"></Button>
+                            </View>
                 </View>
             </View>
         </TouchableWithoutFeedback>
@@ -114,6 +122,20 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontSize: 16,
     color: "#111111",
+  },
+   pillButton: {
+    width: "100%",
+    height: 54,                  // Total height constraint
+    backgroundColor: "#6c74de",  // Sleek black accent color
+    borderRadius: 20,            // Exact height divided by 2 creates the capsule shape
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  pillButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   buttonContainer: {
     width: "100%",
