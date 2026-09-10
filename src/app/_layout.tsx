@@ -1,7 +1,7 @@
-import { Slot } from "expo-router";
+import { Stack } from "expo-router"
 
 const RootLayout = () => {
-  return <Slot></Slot>
+  return <Stack></Stack>
 }
 
 export default RootLayout
