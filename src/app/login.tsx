@@ -1,17 +1,24 @@
 import { Href, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    Button,
-    Keyboard, //teclado
-    KeyboardAvoidingView, //pro teclado nao cobri os inputs do login
-    Platform,
-    Pressable, //android ou ios
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableWithoutFeedback, //fecha o teclado se clicar fora
-    View
+  ActivityIndicator,
+  Alert,
+  Button,
+  Keyboard, //teclado
+  KeyboardAvoidingView, //pro teclado nao cobri os inputs do login
+  Platform,
+  Pressable, //android ou ios
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback, //fecha o teclado se clicar fora
+  View
 } from "react-native";
+
+
+//middleware de autenticacao
+import { useAuth } from "@/hooks/useAuth";
+
 //array de telas, convertidos string para href, que é o tipo que o router aceita como argumento
 const screens: Href[] = [
         "/login",
@@ -21,27 +28,37 @@ const screens: Href[] = [
         "/screenD", 
 ]
 
-const LoginScreen = () => {
-  const router = useRouter(); // para transitar entre paginas, roteamento
+const LoginScreen = () =>{
+  const router = useRouter() //transicao entra paginas
+  const [email, setEmail] = useState("") // email em branco
+  const [password, setPassword] = useState("") //senha em branco
 
-  //hook para limpar os campos
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  
-  //acessa lista de tela e dependendo do argumento seleciona tela
-  const getRoutebyIndex = (index : number): Href => {
-    return screens[index] ?? "/login" // se index nao existe fallback é pagina de login
+  const { loginComSupabase, loading} = useAuth() // funcs do middelware
+
+  const getRoutebyIndex = (index: number): Href => {
+    return screens[index] ?? "login"
   }
 
-  //handler prototipo de login
-  const handleLogin = () => {
-    console.log("Entrando com:", {email, password})
-    
-    //atribui a variavel o retorno do tipo correto da função que seleciona a tela    
-    const nextRoute = getRoutebyIndex(1)
-    //finalmente passa o argumento pro router mudar de tela..
-    router.push(nextRoute)
+  const handleLogin = async () => {
+      if (!email || !password) {
+        Alert.alert("Aviso, por favor preencha o e-mail e a senha")
+        return
+      }
+    //validacao de email/senha e troca de tela  
+      try {
+        const session = await loginComSupabase(email, password)
+        if (session) {
+          console.log("Conectao com sucesso")
+          const nextRoute = getRoutebyIndex(1)
+          router.push(nextRoute)
+        }
+      } catch (error: any) {
+        Alert.alert("Erro no login", error.message)
+      }
+
+
   }
+
 
   return (
     <KeyboardAvoidingView
@@ -64,6 +81,7 @@ const LoginScreen = () => {
                         onChangeText={setEmail}
                         keyboardType="email-address"
                         autoCapitalize="none"
+                        editable={!loading} // Bloqueia o campo enquanto carrega
                     />
 
                     <TextInput
@@ -74,6 +92,7 @@ const LoginScreen = () => {
                         onChangeText={setPassword}
                         secureTextEntry={true} 
                         autoCapitalize="none"
+                        editable={!loading}
                     />
                         <Pressable
                             style={({ pressed }) => [
@@ -81,8 +100,15 @@ const LoginScreen = () => {
                                 pressed && { opacity: 0.8 }
                             ]}
                             onPress={handleLogin}
+                            disabled={loading}
                         >
-                            <Text style={styles.pillButtonText}>Entrar</Text>
+                            {loading ? (
+                              <ActivityIndicator color="#ffffff"></ActivityIndicator>
+                              ) : (
+                              <Text style={styles.pillButtonText}>Entrar</Text>
+                              )
+                            }
+                            
                         </Pressable>
                             <View style={styles.buttonContainer}>
                                 <Button title="Cadastrar"></Button>
@@ -93,6 +119,7 @@ const LoginScreen = () => {
     </KeyboardAvoidingView>
   )
 }
+
 
 const styles = StyleSheet.create({
   container: { 

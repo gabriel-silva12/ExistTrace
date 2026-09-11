@@ -1,24 +1,29 @@
+import { supabase } from "@/services/supabase"
+import { useState } from "react"
+
 export const useAuth = () => {
-    // true estatico para desenvolvimento
-    const isAuthenticated = true
+    const [loading, setLoading] = useState(false)
 
-    const login = async() => {
-        // logica login api futuramente
+    const loginComSupabase = async (email: string, password: string) => {
+        
+        setLoading(true)
+        //chamanda no backend
+        const {data, error} = await supabase.auth.signInWithPassword(
+            {
+            email,
+            password
+            }
+        )
+        //se login sucesso ou erro carregando é falso
+        setLoading(false)
+
+        if (error){
+            throw error
+        }
+
+        return data //retorna os dados para o usuario logado
     }
 
-    const logout = async() => {
-        //logout
-    }
+    return {loginComSupabase, loading }
 
-    return {
-        isAuthenticated,
-        user: {
-            name: "Desenvolvedor",
-            email: "dev@existrace.com"
-        },
-        login,
-        logout
-
-    }
 }
-
