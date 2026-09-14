@@ -1,56 +1,55 @@
-# Welcome to your Expo app 👋
+# ExistTrace
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo mobile de acompanhamento emocional, desenvolvido como Trabalho de Conclusão de Curso (Redes de Computadores). O projeto propõe uma ferramenta auxiliar para psicólogos aplicarem, ao longo de sessões terapêuticas, um breve fluxo de registro do estado emocional do paciente.
 
-## Get started
+> !Projeto em desenvolvimento, com caráter experimental e acadêmico. Não substitui instrumentos de avaliação psicológica validados nem constitui ferramenta de diagnóstico.
 
-1. Install dependencies
+## Sobre o projeto
 
-   ```bash
-   npm install
-   ```
+O aplicativo estrutura a coleta de estados emocionais momentâneos em três etapas sucessivas, apresentadas ao paciente como telas distintas:
 
-2. Start the app
+1. Seleção de um emoji entre opções aleatórias
+2. Seleção de uma palavra entre opções aleatórias
+3. Escrita livre de uma palavra pelo próprio paciente
 
-   ```bash
-   npx expo start
-   ```
+Ao final, o psicólogo — responsável por conduzir a aplicação no próprio dispositivo — visualiza os resultados da sessão.
 
-In the output, you'll find options to open the app in a
+A fundamentação teórica do projeto está ancorada na Terapia Cognitivo-Comportamental (TCC), especificamente na técnica de automonitoramento (*self-monitoring*), com apoio metodológico complementar no conceito de *Ecological Momentary Assessment* (EMA).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Stack técnica
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+**Frontend**
+- React Native (Expo)
+- TypeScript
 
-## Get a fresh project
+**Backend** *(em planejamento)*
+- Node.js + Express + TypeScript
+- Persistência e autenticação via Supabase (PostgreSQL)
+- Prisma como ORM
+- Padrão de repositório (contratos/interfaces desacoplados da implementação de persistência)
 
-When you're ready, run:
+## Estado atual
+
+- [x] Setup inicial do projeto (Expo + TypeScript)
+- [x] Fluxo de telas de login e das três etapas de coleta (protótipo, dados ainda estáticos)
+- [ ] Randomização real dos estímulos (emojis/palavras)
+- [ ] Backend e persistência de dados (Supabase + Prisma)
+- [ ] Autenticação real
+- [ ] Tela de resultados para o psicólogo
+
+## Como rodar o projeto
+
+Crie o .env
 
 ```bash
-npm run reset-project
+npm install
+npx expo start --tunnel
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Delimitações
 
-### Other setup steps
+Este projeto é desenvolvido no âmbito de um Trabalho de Conclusão de Curso, com escopo e prazo limitados. Não há garantia de cobertura ampla de dispositivos/versões de sistema operacional, testes de usabilidade com usuários reais, ou conformidade completa com a LGPD nesta fase.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Licença
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Este projeto está licenciado sob a licença MIT.
