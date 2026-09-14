@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Button,
   Keyboard, //teclado
   KeyboardAvoidingView, //pro teclado nao cobri os inputs do login
   Platform,
@@ -110,9 +109,18 @@ const LoginScreen = () =>{
                             }
                             
                         </Pressable>
-                            <View style={styles.buttonContainer}>
-                                <Button title="Cadastrar"></Button>
-                            </View>
+                        
+                        <Pressable
+                            style={({ pressed }) => [
+                              styles.pillButtonOutline,
+                              pressed && {opacity: 0.6}
+                            ]}
+                            onPress={() => router.push("/cadastro")}
+                            disabled={loading}
+                            >
+                              <Text style={styles.pillButtonOutlineText}>Cadastrar</Text>
+                        </Pressable>
+                           
                 </View>
             </View>
         </TouchableWithoutFeedback>
@@ -159,11 +167,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
+  pillButtonOutline: {
+    width: "100%",
+    height: 54,
+    backgroundColor: "transparent",
+    borderWidth: 1.5,
+    borderColor: "#6c74de",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 12,
+},
   pillButtonText: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
   },
+  pillButtonOutlineText: {
+    color: "#6c74de",
+    fontSize: 16,
+    fontWeight: "bold",
+},
   buttonContainer: {
     width: "100%",
     marginTop: 8,
