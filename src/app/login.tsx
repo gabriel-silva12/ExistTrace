@@ -21,11 +21,12 @@ import { useAuth } from "@/hooks/useAuth";
 //array de telas, convertidos string para href, que é o tipo que o router aceita como argumento
 const screens: Href[] = [
         "/login",
+        "/cadastro",
         "/screenA", 
         "/screenB", 
         "/screenC", 
         "/screenD", 
-]
+] as const //evita um erro futuro, mapeamento estatico?
 
 const LoginScreen = () =>{
   const router = useRouter() //transicao entra paginas
@@ -35,7 +36,7 @@ const LoginScreen = () =>{
   const { loginComSupabase, loading} = useAuth() // funcs do middelware
 
   const getRoutebyIndex = (index: number): Href => {
-    return screens[index] ?? "login"
+    return screens[index] ?? "/login"
   }
 
   const handleLogin = async () => {
@@ -48,7 +49,7 @@ const LoginScreen = () =>{
         const session = await loginComSupabase(email, password)
         if (session) {
           console.log("Conectao com sucesso")
-          const nextRoute = getRoutebyIndex(1)
+          const nextRoute = getRoutebyIndex(2)
           router.push(nextRoute)
         }
       } catch (error: any) {

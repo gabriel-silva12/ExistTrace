@@ -24,6 +24,23 @@ export const useAuth = () => {
         return data //retorna os dados para o usuario logado
     }
 
-    return {loginComSupabase, loading }
+    const cadastrarComSupabase = async (email: string, password: string) => {
+        setLoading(true)
+
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password
+        })
+
+        setLoading(false)
+
+        if (error) {
+            throw error
+        }
+
+        return data
+    }
+
+        return {loginComSupabase, cadastrarComSupabase, loading }
 
 }
