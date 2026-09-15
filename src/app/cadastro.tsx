@@ -1,17 +1,17 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Keyboard,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableWithoutFeedback,
-    View
+  ActivityIndicator,
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View
 } from "react-native";
 
 // Import your existing auth hook
@@ -20,7 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
 const SignupScreen = () => {
   const router = useRouter();
   
-
+  const [nome, setNome] = useState("") //estado para armazenar nome
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,7 +30,7 @@ const SignupScreen = () => {
 
   const handleSignup = async () => {
     // Validacao bascia
-    if (!email || !password || !confirmPassword) {
+    if (!nome || !email || !password || !confirmPassword) {
       Alert.alert("Aviso", "Por favor, preencha todos os campos.");
       return;
     }
@@ -48,7 +48,7 @@ const SignupScreen = () => {
     }
 
     try {
-      await cadastrarComSupabase(email, password);
+      await cadastrarComSupabase(nome, email, password);
       
       Alert.alert(
         "Sucesso!", 
@@ -71,6 +71,15 @@ const SignupScreen = () => {
           <View style={{ width: "100%", transform: [{ translateY: 25 }] }}>
             <Text style={styles.title}>Criar Conta</Text>
 
+            <TextInput
+              style={styles.input}
+              placeholder="Nome Completo"
+              placeholderTextColor="#888888"
+              value={nome}
+              onChangeText={setNome}
+              autoCapitalize="words" //capitaliza primeira letra de cada palavra
+              editable={!loading}
+            />
             <TextInput
               style={styles.input}
               placeholder="E-mail"
@@ -176,9 +185,9 @@ const styles = StyleSheet.create({
   },
   pillButtonOutline: {
     width: "100%",
-    height: 54,
+    height: 48,
     backgroundColor: "transparent",
-    borderWidth: 1.5,
+    borderWidth: 0,
     borderColor: "#6c74de",
     borderRadius: 20,
     justifyContent: "center",
@@ -192,7 +201,7 @@ const styles = StyleSheet.create({
   },
   pillButtonOutlineText: {
     color: "#6c74de",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   }
 });

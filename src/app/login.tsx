@@ -169,10 +169,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   pillButtonOutline: {
+
     width: "100%",
-    height: 54,
+    height: 48,
     backgroundColor: "transparent",
-    borderWidth: 1.5,
+    borderWidth: 0,
     borderColor: "#6c74de",
     borderRadius: 20,
     justifyContent: "center",
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   },
   pillButtonOutlineText: {
     color: "#6c74de",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
 },
   buttonContainer: {

@@ -1,44 +1,47 @@
-import React, { createContext, useContext, useState, useEffect } from "react"
-import { supabase } from "@/services/supabase"
+import { supabase } from "@/services/supabase";
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useState
+} from "react";
 
-
-//preciso para o get do psicologo
-interface PerfilPsicologo { 
-    nome: string,
+interface PerfilPsicologo {
     id: string,
-    created_at?: string
+    nome: string
 }
 
 interface AuthContextData {
     perfil: PerfilPsicologo | null,
     loading: boolean,
-    loginComSupabase: (email: string, password: string) => Promise<any>,
+    loginComSupabase: (email : string, password: string) => Promise<any>,
     cadastrarComSupabase: (nome: string, email: string, password: string) => Promise<any>
 }
 
-export const useAuth = () => {
-    const [loading, setLoading] = useState(false)
+// balão de contexto?
+
+const AuthContext = createContext<AuthContextData>({} as AuthContextData)
+
+// provedor de dados globais
+export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children }) => {
     const [perfil, setPerfil] = useState<PerfilPsicologo | null>(null)
-
-    const buscarPerfilDoBanco = async (userId: string) => {
+    const [loading, setLoading] = useState(false)
+    
+    const buscarPerfilDoBanco = async (userId : string) => {
         try {
-            const { data, error} = await supabase
-                .from("psicologo")
-                .select("nome, id")
-                .eq("id", userId)
-                .single()
+            const {data, error} = await supabase
+            .from("psicologo")
+            .select("id, nome")
+            .eq("id", userId)
+            .single()
 
-            if (data && !error) {
-                setPerfil(data)
-            }
+            if (data && !error) setPerfil(data)
         } catch (err) {
-            
-            console.error("Erro ao buscar perfil no useAuth:", err)
-
+            console.error(err)
         }
     }
 
-    const loginComSupabase = async (email: string, password: string) => {
+     const loginComSupabase = async (email: string, password: string) => {
         
         setLoading(true)
         //chamanda no backend
@@ -86,7 +89,7 @@ export const useAuth = () => {
         return data
     }
 
-    //Busca automática se o usuário já abrir o app logado
+     //Busca automática se o usuário já abrir o app logado
     useEffect(() => {
         const checarSessaoAtiva = async () => {
             const { data: {user} } = await supabase.auth.getUser(         )
@@ -96,6 +99,12 @@ export const useAuth = () => {
         }
         checarSessaoAtiva()
     }, [])
-        return {loginComSupabase, cadastrarComSupabase, loading }
+
+    return (
+        <AuthContext.Provider value={{ perfil, loading, loginComSupabase, cadastrarComSupabase }}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
+export const useAuth = () => useContext(AuthContext)
