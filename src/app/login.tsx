@@ -16,7 +16,7 @@ import {
 
 
 //middleware de autenticacao
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/context/AuthContext";
 
 //array de telas, convertidos string para href, que é o tipo que o router aceita como argumento
 const screens: Href[] = [

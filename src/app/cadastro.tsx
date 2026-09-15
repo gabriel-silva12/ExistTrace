@@ -15,7 +15,7 @@ import {
 } from "react-native";
 
 // Import your existing auth hook
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/context/AuthContext";
 
 const SignupScreen = () => {
   const router = useRouter();

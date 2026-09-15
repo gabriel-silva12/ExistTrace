@@ -1,9 +1,8 @@
 import { Href, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import GridSelector, { GridItem } from "../components/GridSelector";
+import { GridItem } from "../components/GridSelector";
 //hook
-import { useAuth } from "@/hooks/useAuth";
-
+import { useAuth } from "@/hooks/context/AuthContext";
 
 const screens: Href[] = ["/login", "/screenA", "/screenB", "/screenC", "/screenD"];
 
@@ -18,18 +17,14 @@ const dashboardTraces: GridItem[] = [
 const ScreenA = () => {
   const router = useRouter();
   const { perfil } = useAuth() // captura perfil do hook
-  const nomePsicologo = perfil?.nome || "Psicólogo"
+  const nomePsicologo = perfil?.nome.split( " " )[0] || "Psicólogo"
   
 
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Bem-vindo, {nomePsicologo}</Text>
-        <Text style={styles.title}>Emoji</Text>
-        <Text style={styles.subtitle}>Selecione um emoji:</Text>
-
-        {/* 2. Feed the explicit grid layout config down via props attribute */}
-        <GridSelector items={dashboardTraces} />
+  
 
         <Pressable 
           style={({ pressed }) => [styles.pillButton, pressed && { opacity: 0.8 }]} 
