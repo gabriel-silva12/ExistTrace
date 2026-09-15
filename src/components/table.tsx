@@ -1,92 +1,158 @@
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-    useWindowDimensions
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
 } from 'react-native';
 
 export type Column<T> = {
   key: keyof T;
   title: string;
   width?: number;
+  render?: (item: T) => React.ReactNode;
+  align?: 'left' | 'center' | 'right';
 };
 
 type TableProps<T> = {
   columns: Column<T>[];
   data: T[];
+  maxHeight?: number;
 };
 
 export function Table<T extends Record<string, any>>({
   columns,
   data,
+  maxHeight,
 }: TableProps<T>) {
+  const { width: screenWidth } = useWindowDimensions();
 
-  const { width: screenWidth } = useWindowDimensions()
+  const availableWidth = screenWidth - 14;
 
-  const avaibleWidth = screenWidth - 14
+  const totalWidth = columns.reduce(
+    (sum, column) => sum + (column.width ?? 1),
+    0
+  );
 
-  const columnWidth = avaibleWidth / columns.length
+  const getColumnWidth = (column: Column<T>) => {
+    const proportion = column.width ?? 1;
+
+    return (availableWidth * proportion) / totalWidth;
+  };
+
+  const getAlignment = (column: Column<T>) => {
+    switch (column.align) {
+      case 'center':
+        return 'center';
+
+      case 'right':
+        return 'flex-end';
+
+      default:
+        return 'flex-start';
+    }
+  };
 
   return (
-    <ScrollView 
-    horizontal
-    showsHorizontalScrollIndicator={false}
+    <View
+      style={[
+        styles.container,
+        maxHeight !== undefined && {
+          maxHeight,
+        },
+      ]}
     >
-      <View style={styles.table}>
-        {/* Header */}
-        <View style={styles.row}>
-          {columns.map((column) => (
-            <View
-              key={String(column.key)}
-              style={[
-                styles.cell,
-                { width: columnWidth},
-                styles.headerCell,
-              ]}
-            >
-              <Text style={styles.headerText}>
-                {column.title}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Rows */}
-        {data.map((item, rowIndex) => (
-          <View
-            key={rowIndex}
-            style={[
-              styles.row,
-              rowIndex % 2 === 1 && styles.alternateRow,
-            ]}
-          >
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      >
+        <View
+          style={[
+            styles.table,
+            {
+              width: availableWidth,
+            },
+          ]}
+        >
+          {/* Header */}
+          <View style={styles.row}>
             {columns.map((column) => (
               <View
                 key={String(column.key)}
                 style={[
                   styles.cell,
-                  { width: columnWidth}
+                  styles.headerCell,
+                  {
+                    width: getColumnWidth(column),
+                    alignItems: getAlignment(column),
+                  },
                 ]}
               >
-                <Text style={styles.cellText}>
-                  {String(item[column.key])}
+                <Text style={styles.headerText}>
+                  {column.title}
                 </Text>
               </View>
             ))}
           </View>
-        ))}
-      </View>
-    </ScrollView>
+
+          {/* Body */}
+          <ScrollView
+            nestedScrollEnabled
+            showsVerticalScrollIndicator
+            style={[
+              styles.body,
+              maxHeight !== undefined && {
+                maxHeight,
+              },
+            ]}
+          >
+            {data.map((item, rowIndex) => (
+              <View
+                key={rowIndex}
+                style={[
+                  styles.row,
+                  rowIndex % 2 === 1 && styles.alternateRow,
+                ]}
+              >
+                {columns.map((column) => (
+                  <View
+                    key={String(column.key)}
+                    style={[
+                      styles.cell,
+                      {
+                        width: getColumnWidth(column),
+                        alignItems: getAlignment(column),
+                      },
+                    ]}
+                  >
+                    {column.render ? (
+                      column.render(item)
+                    ) : (
+                      <Text style={styles.cellText}>
+                        {String(item[column.key])}
+                      </Text>
+                    )}
+                  </View>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignSelf: 'stretch',
+  },
+
   table: {
     borderWidth: 1,
     borderColor: '#bdbdbd',
     borderRadius: 5,
-    overflow: "hidden"
+    overflow: 'hidden',
   },
 
   row: {
@@ -116,5 +182,9 @@ const styles = StyleSheet.create({
 
   cellText: {
     fontSize: 14,
+  },
+
+  body: {
+    flexGrow: 0,
   },
 });
