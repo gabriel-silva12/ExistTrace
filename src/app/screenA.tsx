@@ -1,17 +1,51 @@
+
+import { Table, Column } from "@/components/table";
 import { Href, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GridItem } from "../components/GridSelector";
 //hook
-import { useAuth } from "@/hooks/context/AuthContext";
 
+import { useAuth } from "@/hooks/context/AuthContext";
 const screens: Href[] = ["/login", "/screenA", "/screenB", "/screenC", "/screenD"];
 
 // 1. Dashboard specific choices
-const dashboardTraces: GridItem[] = [
+const emojis: GridItem[] = [
   { id: "1", title: "🥳"},
   { id: "2", title: "😎"},
   { id: "3", title: "👽"},
   { id: "4", title: "💗" },
+];
+
+type Paciente = {
+  id: number;
+  name: string;
+  ficha: string;
+}
+
+const pacientes : Paciente[] = [
+  {
+    id: 1,
+    name: 'Gabriel',
+    ficha: 'Visualizar ficha',
+  },
+  {
+    id: 2,
+    name: 'Luana',
+    ficha: 'Visualizar ficha',
+  },
+];
+
+const colunas:Column<Paciente>[] = [
+  {
+    key: 'name',
+    title: 'Name',
+    width: 150,
+  },
+  {
+    key: 'ficha',
+    title: 'Ficha',
+    width: 250,
+  },
 ];
 
 const ScreenA = () => {
@@ -24,7 +58,13 @@ const ScreenA = () => {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Bem-vindo, {nomePsicologo}</Text>
-  
+        <Text style={styles.meusPacientes}>Meus Pacientes</Text>
+
+
+        <Table
+          columns={colunas}
+          data={pacientes}
+        />
 
         <Pressable 
           style={({ pressed }) => [styles.pillButton, pressed && { opacity: 0.8 }]} 
@@ -38,12 +78,49 @@ const ScreenA = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#ffffff" },
-  contentContainer: { flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 24 },
-  title: { fontSize: 32, fontWeight: "bold", color: "#111111", alignSelf: "flex-start", marginBottom: 4 },
-  subtitle: { fontSize: 16, color: "#666666", alignSelf: "flex-start", marginBottom: 32 },
-  pillButton: { width: "100%", height: 54, backgroundColor: "#0066cc", borderRadius: 27, justifyContent: "center", alignItems: "center" },
-  pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#ffffff" 
+  },
+  contentContainer: { 
+    flex: 1,
+    paddingHorizontal: 6,
+    paddingTop: 60,
+    alignItems: "stretch"
+   },
+   title: {
+    width: "100%",
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#111111",
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  meusPacientes: {
+    width: "100%",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#111111",
+    marginBottom: 5,
+  },
+
+
+  pillButton: {
+    width: "100%",
+    height: 54,
+    backgroundColor: "#0066cc",
+    borderRadius: 27,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 24,
+  },
+
+  pillButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  
 });
 
 export default ScreenA;
