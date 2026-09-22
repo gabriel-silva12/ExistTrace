@@ -1,21 +1,19 @@
-
 import { Table, Column } from "@/components/table";
 import { Href, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GridItem } from "../components/GridSelector";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState } from "react";
-//hook
 
 import { useAuth } from "@/hooks/context/AuthContext";
-const screens: Href[] = ["/login", "/screenA", "/screenB", "/screenC", "/screenD"];
+import { usePacientes } from "@/hooks/usePacientes";
 
+const screens: Href[] = ["/login", "/screenA", "/cadastroPaciente", "/screenB", "/screenC", "/screenD"];
 
-// 1. Dashboard specific choices
 const emojis: GridItem[] = [
-  { id: "1", title: "🥳"},
-  { id: "2", title: "😎"},
-  { id: "3", title: "👽"},
+  { id: "1", title: "🥳" },
+  { id: "2", title: "😎" },
+  { id: "3", title: "👽" },
   { id: "4", title: "💗" },
 ];
 
@@ -25,65 +23,7 @@ type Paciente = {
   ficha: string;
 }
 
-const pacientes : Paciente[] = [
-  {
-    id: 1,
-    name: 'Gabriel',
-    ficha: 'Visualizar ',
-  },
-  {
-    id: 2,
-    name: 'Luana',
-    ficha: 'Visualizar',
-  },
-   {
-    id: 2,
-    name: 'Gabriel',
-    ficha: 'Visualizar',
-  },
-   {
-    id: 3,
-    name: 'Gabriel',
-    ficha: 'Visualizar',
-  },
-   {
-    id: 4,
-    name: 'Luana',
-    ficha: 'Visualizar',
-  },
-   {
-    id: 5,
-    name: 'Gabriel',
-    ficha: 'Visualizar',
-  },
-  {
-    id: 6,
-    name: 'Luana',
-    ficha: 'Visualizar',
-  },
-  {
-    id: 7,
-    name: 'Gabriel',
-    ficha: 'Visualizar',
-  },
-  {
-    id: 8,
-    name: 'Luana',
-    ficha: 'Visualizar',
-  },
-  {
-    id: 9,
-    name: 'Gabriel S.',
-    ficha: 'Visualizar',
-  },
-  {
-    id: 10,
-    name: 'Luana C.',
-    ficha: 'Visualizar',
-  },
-];
-
-const colunas:Column<Paciente>[] = [
+const colunas: Column<Paciente>[] = [
   {
     key: 'name',
     title: 'Name',
@@ -98,19 +38,16 @@ const colunas:Column<Paciente>[] = [
       <Pressable onPress={() => console.log(`Abrindo ficha para paciente de ID: ${item.id}`)}>
         <MaterialCommunityIcons name="file-document" size={28} color="#0066cc" />
       </Pressable>
-
     )
-
   },
 ];
 
 const ScreenA = () => {
   const router = useRouter();
-  const { perfil } = useAuth() // captura perfil do hook
-  const nomePsicologo = perfil?.nome.split( " " )[0] || "Psicólogo"
+  const { perfil } = useAuth()
+  const { pacientes, carregando } = usePacientes()
+  const nomePsicologo = perfil?.nome.split(" ")[0] || "Psicólogo"
   const [tableMaxHeight, setTableMaxHeight] = useState<number>()
-
-  
 
   return (
     <View style={styles.container}>
@@ -118,21 +55,22 @@ const ScreenA = () => {
         <Text style={styles.title}>Bem-vindo, {nomePsicologo}</Text>
         <Text style={styles.meusPacientes}>Meus Pacientes</Text>
 
-      <View style={styles.tableContainer}
-            onLayout= { (event) => {
-              setTableMaxHeight(event.nativeEvent.layout.height)  
-            }
-          }
+        <View
+          style={styles.tableContainer}
+          onLayout={(event) => {
+            setTableMaxHeight(event.nativeEvent.layout.height)
+          }}
         >
-          <Table
-            columns={colunas}
-            data={pacientes}
-          />
-      </View>
+          {carregando ? (
+            <Text>Carregando pacientes...</Text>
+          ) : (
+            <Table columns={colunas} data={pacientes} />
+          )}
+        </View>
 
-        <Pressable 
-          style={({ pressed }) => [styles.pillButton, pressed && { opacity: 0.8 }]} 
-          onPress={() => router.push("/screenB")}
+        <Pressable
+          style={({ pressed }) => [styles.pillButton, pressed && { opacity: 0.8 }]}
+          onPress={() => router.push("/cadastroPaciente")}
         >
           <Text style={styles.pillButtonText}>Adicionar paciente</Text>
         </Pressable>
@@ -142,11 +80,11 @@ const ScreenA = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#ffffff" 
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff"
   },
-  contentContainer: { 
+  contentContainer: {
     flex: 1,
     paddingHorizontal: 6,
     paddingTop: 150,
@@ -156,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 0,
   },
-   title: {
+  title: {
     width: "100%",
     fontSize: 32,
     fontWeight: "bold",
@@ -171,8 +109,6 @@ const styles = StyleSheet.create({
     color: "#111111",
     marginBottom: 5,
   },
-
-
   pillButton: {
     width: "75%",
     height: 50,
@@ -184,13 +120,11 @@ const styles = StyleSheet.create({
     marginTop: 15,
     alignSelf: "center",
   },
-
   pillButtonText: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
   },
-  
 });
 
 export default ScreenA;

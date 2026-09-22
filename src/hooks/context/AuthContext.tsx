@@ -16,6 +16,7 @@ interface AuthContextData {
     loading: boolean,
     loginComSupabase: (email : string, password: string) => Promise<any>,
     cadastrarComSupabase: (nome: string, email: string, password: string) => Promise<any>
+    cadastrarPaciente: (nome: string, idade: number) => Promise<any>
 }
 
 // balão de contexto?
@@ -89,6 +90,61 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
         return data
     }
 
+    const cadastrarPaciente = async (nome: string, idade: number) => {
+    setLoading(true)
+
+    try {
+        const {
+            data: { session },
+            error: sessionError,
+        } = await supabase.auth.getSession()
+
+        console.log("SESSION EXISTS:", !!session)
+        console.log("USER ID:", session?.user?.id)
+        console.log("TOKEN EXISTS:", !!session?.access_token)
+
+        if (sessionError) {
+            throw sessionError
+        }
+
+        if (!session) {
+            throw new Error("Sessão não encontrada")
+        }
+
+        // Teste 1: quem o servidor enxerga?
+        const { data: uidDebug, error: uidError } =
+            await supabase.rpc("debug_auth_uid")
+
+        console.log("RPC UID:", uidDebug)
+        console.log("RPC ERROR:", uidError)
+
+        // Teste 2: inserir paciente
+        const { data, error } = await supabase
+            .from("paciente")
+            .insert({
+                nome,
+                idade,
+                psicologo_id: session.user.id,
+            })
+            .select()
+            .single()
+
+        console.log("INSERT DATA:", data)
+        console.log("INSERT ERROR:", error)
+
+        if (error) {
+            throw error
+        }
+
+        return data
+
+    } finally {
+        setLoading(false)
+    }
+}
+
+    
+
      //Busca automática se o usuário já abrir o app logado
     useEffect(() => {
         const checarSessaoAtiva = async () => {
@@ -101,7 +157,7 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
     }, [])
 
     return (
-        <AuthContext.Provider value={{ perfil, loading, loginComSupabase, cadastrarComSupabase }}>
+        <AuthContext.Provider value={{ perfil, loading, loginComSupabase, cadastrarComSupabase, cadastrarPaciente }}>
             {children}
         </AuthContext.Provider>
     )
