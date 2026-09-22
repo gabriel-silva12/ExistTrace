@@ -1,0 +1,18 @@
+name: Keep Supabase Active
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every 2 days to ensure activity within the 7-day window
+    - cron: '0 0 */2 * *'
+  # Allows you to manually trigger the workflow from the GitHub Actions tab for testing
+  workflow_dispatch: 
+
+jobs:
+  ping-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send API Request to Dummy Table
+        run: |
+          curl -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/keep_alive?select=*" \
+          -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}"
