@@ -22,11 +22,8 @@ A fundamentação teórica do projeto está ancorada na Terapia Cognitivo-Compor
 - React Native (Expo)
 - TypeScript
 
-**Backend** *(em planejamento)*
-- Node.js + Express + TypeScript
+**Backend** 
 - Persistência e autenticação via Supabase (PostgreSQL)
-- Prisma como ORM
-- Padrão de repositório (contratos/interfaces desacoplados da implementação de persistência)
 
 ## Estado atual
 
