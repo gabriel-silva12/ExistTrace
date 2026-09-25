@@ -22,7 +22,7 @@ import { useAuth } from "@/hooks/context/AuthContext";
 const screens: Href[] = [
         "/login",
         "/cadastro",
-        "/screenA", 
+        "/telaPrincipal", 
         "/screenB", 
         "/screenC", 
         "/screenD", 

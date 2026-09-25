@@ -8,8 +8,6 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/context/AuthContext";
 import { usePacientes } from "@/hooks/usePacientes";
 
-const screens: Href[] = ["/login", "/screenA", "/cadastroPaciente", "/screenB", "/screenC", "/screenD"];
-
 const emojis: GridItem[] = [
   { id: "1", title: "🥳" },
   { id: "2", title: "😎" },
@@ -23,7 +21,18 @@ type Paciente = {
   ficha: string;
 }
 
-const colunas: Column<Paciente>[] = [
+const telaPrincipal = () => {
+  const router = useRouter();
+  
+  const { perfil } = useAuth()
+  const nomePsicologo = perfil?.nome.split(" ")[0] || "Psicólogo"
+  
+  const { pacientes, carregando } = usePacientes()
+  
+  const [tableMaxHeight, setTableMaxHeight] = useState<number>()
+
+
+  const colunas: Column<Paciente>[] = [
   {
     key: 'name',
     title: 'Name',
@@ -35,19 +44,15 @@ const colunas: Column<Paciente>[] = [
     width: 38,
     align: "center",
     render: (item) => (
-      <Pressable onPress={() => console.log(`Abrindo ficha para paciente de ID: ${item.id}`)}>
+      <Pressable onPress={() => router.push({
+        pathname: "/historicoSessao",
+        params: { pacienteId: item.id.toString(), nomePaciente: item.name}
+      })}>
         <MaterialCommunityIcons name="file-document" size={28} color="#0066cc" />
       </Pressable>
     )
   },
-];
-
-const ScreenA = () => {
-  const router = useRouter();
-  const { perfil } = useAuth()
-  const { pacientes, carregando } = usePacientes()
-  const nomePsicologo = perfil?.nome.split(" ")[0] || "Psicólogo"
-  const [tableMaxHeight, setTableMaxHeight] = useState<number>()
+  ];
 
   return (
     <View style={styles.container}>
@@ -127,4 +132,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ScreenA;
+export default telaPrincipal;
