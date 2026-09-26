@@ -24,9 +24,10 @@ const CadastroPaciente = () => {
     }
 
     setSalvando(true);
+    
     try {
       await cadastrarPaciente(nome.trim(), idadeNumero);
-      router.push("/screenA");
+      router.push("/telaPrincipal");
     } catch (err) {
       console.error(err);
       Alert.alert("Erro", "Não foi possível cadastrar o paciente.");

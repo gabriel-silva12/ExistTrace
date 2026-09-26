@@ -11,142 +11,135 @@ import {
   Text,
   TextInput,
   TouchableWithoutFeedback, //fecha o teclado se clicar fora
-  View
+  View,
 } from "react-native";
-
 
 //middleware de autenticacao
 import { useAuth } from "@/hooks/context/AuthContext";
 
 //array de telas, convertidos string para href, que é o tipo que o router aceita como argumento
 const screens: Href[] = [
-        "/login",
-        "/cadastro",
-        "/telaPrincipal", 
-        "/screenB", 
-        "/screenC", 
-        "/screenD", 
-] as const //evita um erro futuro, mapeamento estatico?
+  "/login",
+  "/cadastro",
+  "/telaPrincipal",
+  "/screenB",
+  "/screenC",
+  "/screenD",
+] as const; //evita um erro futuro, mapeamento estatico?
 
-const LoginScreen = () =>{
-  const router = useRouter() //transicao entra paginas
-  const [email, setEmail] = useState("") // email em branco
-  const [password, setPassword] = useState("") //senha em branco
+const LoginScreen = () => {
+  const { perfil } = useAuth();
+  const router = useRouter(); //transicao entra paginas
+  const [email, setEmail] = useState(""); // email em branco
+  const [password, setPassword] = useState(""); //senha em branco
 
-  const { loginComSupabase, loading} = useAuth() // funcs do middelware
+  const { loginComSupabase, loading } = useAuth(); // funcs do middelware
 
   const getRoutebyIndex = (index: number): Href => {
-    return screens[index] ?? "/login"
-  }
+    return screens[index] ?? "/login";
+  };
 
   const handleLogin = async () => {
-      if (!email || !password) {
-        Alert.alert("Aviso, por favor preencha o e-mail e a senha")
-        return
+    if (!email || !password) {
+      Alert.alert("Aviso, por favor preencha o e-mail e a senha");
+      return;
+    }
+    //validacao de email/senha e troca de tela
+    try {
+      const session = await loginComSupabase(email, password);
+      if (session) {
+        console.log("Conectado com sucesso");
+        console.log(perfil);
+        const nextRoute = getRoutebyIndex(2);
+        console.log(nextRoute);
+        router.push(nextRoute);
       }
-    //validacao de email/senha e troca de tela  
-      try {
-        const session = await loginComSupabase(email, password)
-        if (session) {
-          console.log("Conectao com sucesso")
-          const nextRoute = getRoutebyIndex(2)
-          router.push(nextRoute)
-        }
-      } catch (error: any) {
-        Alert.alert("Erro no login", error.message)
-      }
-
-
-  }
-
+    } catch (error: any) {
+      Alert.alert("Erro no login", error.message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
     >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.innerContainer}>
-                <View style={{ width: "100%", transform: [{ translateY: 25 }] }}>
-                    <Text style={styles.title}>
-                        ExistTrace
-                    </Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+          <View style={{ width: "100%", transform: [{ translateY: 25 }] }}>
+            <Text style={styles.title}>ExistTrace</Text>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="E-mail"
-                        placeholderTextColor="#888888"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        editable={!loading} // Bloqueia o campo enquanto carrega
-                    />
+            <TextInput
+              style={styles.input}
+              placeholder="E-mail"
+              placeholderTextColor="#888888"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              editable={!loading} // Bloqueia o campo enquanto carrega
+            />
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Senha"
-                        placeholderTextColor="#888888"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={true} 
-                        autoCapitalize="none"
-                        editable={!loading}
-                    />
-                        <Pressable
-                            style={({ pressed }) => [
-                                styles.pillButton,
-                                pressed && { opacity: 0.8 }
-                            ]}
-                            onPress={handleLogin}
-                            disabled={loading}
-                        >
-                            {loading ? (
-                              <ActivityIndicator color="#ffffff"></ActivityIndicator>
-                              ) : (
-                              <Text style={styles.pillButtonText}>Entrar</Text>
-                              )
-                            }
-                            
-                        </Pressable>
-                        
-                        <Pressable
-                            style={({ pressed }) => [
-                              styles.pillButtonOutline,
-                              pressed && {opacity: 0.6}
-                            ]}
-                            onPress={() => router.push("/cadastro")}
-                            disabled={loading}
-                            >
-                              <Text style={styles.pillButtonOutlineText}>Cadastrar</Text>
-                        </Pressable>
-                           
-                </View>
-            </View>
-        </TouchableWithoutFeedback>
+            <TextInput
+              style={styles.input}
+              placeholder="Senha"
+              placeholderTextColor="#888888"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              editable={!loading}
+            />
+            <Pressable
+              style={({ pressed }) => [
+                styles.pillButton,
+                pressed && { opacity: 0.8 },
+              ]}
+              onPress={handleLogin}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="#ffffff"></ActivityIndicator>
+              ) : (
+                <Text style={styles.pillButtonText}>Entrar</Text>
+              )}
+            </Pressable>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.pillButtonOutline,
+                pressed && { opacity: 0.6 },
+              ]}
+              onPress={() => router.push("/cadastro")}
+              disabled={loading}
+            >
+              <Text style={styles.pillButtonOutlineText}>Cadastrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
-  )
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#ffffff" 
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
   },
   innerContainer: {
     flex: 1,
-    justifyContent: "center",    
-    alignItems: "center", 
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: 36, 
-    fontWeight: "bold", 
+    fontSize: 36,
+    fontWeight: "bold",
     marginBottom: 32,
     color: "#111111",
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
   },
   input: {
     width: "100%",
@@ -159,27 +152,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#111111",
   },
-   pillButton: {
-    width: "100%",
-    height: 54,                  // Total height constraint
-    backgroundColor: "#6c74de",  // Sleek black accent color
-    borderRadius: 20,            // Exact height divided by 2 creates the capsule shape
+  pillButton: {
+    width: "75%",
+    height: 50, // Total height constraint
+    backgroundColor: "#6c74de", // Sleek black accent color
+    borderRadius: 20, // Exact height divided by 2 creates the capsule shape
     justifyContent: "center",
     alignItems: "center",
     marginTop: 8,
+    alignSelf: "center",
   },
   pillButtonOutline: {
-
-    width: "100%",
-    height: 48,
+    width: "75%",
+    height: 50,
     backgroundColor: "transparent",
     borderWidth: 0,
-    borderColor: "#6c74de",
-    borderRadius: 20,
+    borderColor: "#1621b7",
+    borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 12,
-},
+    alignSelf: "center",
+  },
   pillButtonText: {
     color: "#ffffff",
     fontSize: 16,
@@ -189,9 +183,9 @@ const styles = StyleSheet.create({
     color: "#6c74de",
     fontSize: 14,
     fontWeight: "bold",
-},
+  },
   buttonContainer: {
-    width: "100%",
+    width: "75%",
     marginTop: 8,
   },
 });
