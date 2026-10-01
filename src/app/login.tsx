@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   pillButton: {
     width: "75%",
     height: 50, // Total height constraint
-    backgroundColor: "#6c74de", // Sleek black accent color
+    backgroundColor: "#407FA0", // Sleek black accent color
     borderRadius: 20, // Exact height divided by 2 creates the capsule shape
     justifyContent: "center",
     alignItems: "center",
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "transparent",
     borderWidth: 0,
-    borderColor: "#1621b7",
+    borderColor: "#407FA0",
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   pillButtonOutlineText: {
-    color: "#6c74de",
+    color: "#407FA0",
     fontSize: 14,
     fontWeight: "bold",
   },

@@ -4,7 +4,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { useAuth } from "@/hooks/context/AuthContext";
 import { usePacientes } from "@/hooks/usePacientes";
 import PacienteCard from "@/components/PacienteCard";
-
+import PerfilHeader from "@/components/PerfilHeader";
 const Dashboard = () => {
   const router = useRouter();
   const { perfil } = useAuth();
@@ -13,8 +13,8 @@ const Dashboard = () => {
 
   return (
     <View style={styles.container}>
+      <PerfilHeader saudacao="Bem vindo," nome={nomePsicologo} />
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>Bem-vindo, {nomePsicologo}</Text>
         <Text style={styles.meusPacientes}>Meus Pacientes</Text>
 
         {carregando ? (
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 60,
+    paddingTop: 35,
   },
   title: {
     fontSize: 32,
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   meusPacientes: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#111111",
     marginBottom: 16,
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   pillButton: {
     width: "75%",
     height: 50,
-    backgroundColor: "#0066cc",
+    backgroundColor: "#407FA0",
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",

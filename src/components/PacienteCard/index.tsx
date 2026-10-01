@@ -5,7 +5,8 @@ const PacienteCard = ({ paciente, onPress }: Propriedades) => {
   return (
     <InfoCard
       titulo={paciente.name}
-      campos={[{ label: "Ficha", value: "Visualizar" }]}
+      campos={[{ label: "Ultima sessão", value: "01/10/2026" }]}
+      avatar={{ fotoUrl: paciente.fotoUrl }}
       onPress={onPress}
     />
   );

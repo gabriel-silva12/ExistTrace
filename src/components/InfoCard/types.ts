@@ -7,4 +7,7 @@ export type Propriedades = {
   titulo: string;
   campos: CampoInfo[];
   onPress?: () => void;
+   avatar?: {
+    fotoUrl?: string;
+  };
 };
