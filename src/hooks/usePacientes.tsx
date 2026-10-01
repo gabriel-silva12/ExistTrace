@@ -1,46 +1,44 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/services/supabase";
-
-type Paciente = {
-  id: number;
-  name: string;
-  ficha: string;
-}
+import { Paciente } from "@/components/PacienteCard/types";
 
 export function usePacientes() {
-  const [pacientes, setPacientes] = useState<Paciente[]>([])
-  const [carregando, setCarregando] = useState(true)
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     const buscarPacientes = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
-        setCarregando(false)
-        return
+        setCarregando(false);
+        return;
       }
 
       const { data, error } = await supabase
         .from("paciente")
-        .select("id, nome")
-        .eq("psicologo_id", user.id)
+        .select("id, nome, idade")
+        .eq("psicologo_id", user.id);
 
       if (data && !error) {
         setPacientes(
           data.map((p) => ({
             id: p.id,
             name: p.nome,
-            ficha: "Visualizar"
-          }))
-        )
+            idade: p.idade,
+          })),
+        );
+        console.log(data);
       } else if (error) {
-        console.error(error)
+        console.error(error);
       }
 
-      setCarregando(false)
-    }
+      setCarregando(false);
+    };
 
-    buscarPacientes()
-  }, [])
+    buscarPacientes();
+  }, []);
 
-  return { pacientes, carregando }
+  return { pacientes, carregando };
 }

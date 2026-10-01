@@ -1,7 +1,8 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-
 import SessaoCard from "@/components/SessaoCard";
 import { Sessao } from "@/components/SessaoCard/types";
+import PerfilHeader from "@/components/PerfilHeader";
+import { useLocalSearchParams } from "expo-router";
 
 const sessoesMock: Sessao[] = [
   {
@@ -35,15 +36,26 @@ const sessoesMock: Sessao[] = [
 ];
 
 const HistoricoPaciente = () => {
+  const { nomePaciente, idadePaciente } = useLocalSearchParams<{
+    nomePaciente?: string;
+    idadePaciente?: string;
+  }>();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Histórico de Sessões</Text>
-
-      <FlatList
-        data={sessoesMock}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <SessaoCard sessao={item} />}
+      <PerfilHeader
+        nome={nomePaciente || "Paciente"}
+        idade={idadePaciente ? Number(idadePaciente) : undefined}
       />
+      <View style={styles.contentContainer}>
+        <Text style={styles.titulo}>Histórico de Sessões</Text>
+
+        <FlatList
+          data={sessoesMock}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <SessaoCard sessao={item} />}
+        />
+      </View>
     </View>
   );
 };
@@ -52,13 +64,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
-    padding: 16,
-    paddingTop: 60,
   },
   titulo: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 4,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 35,
   },
 });
 

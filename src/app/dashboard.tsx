@@ -32,6 +32,7 @@ const Dashboard = () => {
                     params: {
                       pacienteId: item.id.toString(),
                       nomePaciente: item.name,
+                      idadePaciente: item.idade.toString(),
                     },
                   })
                 }
