@@ -1,17 +1,30 @@
-import { Href, useRouter } from "expo-router";
+import { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { GridItem } from "../components/GridSelector";
 
-// 1. Dashboard specific choices
-const dashboardTraces: GridItem[] = [
-  { id: "1", subtitle: "Amor" },
-  { id: "2", subtitle: "Paz" },
-  { id: "3", subtitle: "Verdade" },
-  { id: "4", subtitle: "Honestidade" },
-];
-
-const ScreenC = () => {
+const QuizEscrita = () => {
   const router = useRouter();
+  const { pacienteId, emoji, palavraFixa } = useLocalSearchParams<{
+    pacienteId: string;
+    emoji: string;
+    palavraFixa: string;
+  }>();
+
+  const [palavraLivre, setPalavraLivre] = useState("");
+
+  const handleConfirmar = () => {
+    console.log("Resultado do quiz (ainda não salvo no banco):", {
+      pacienteId,
+      emoji,
+      palavraFixa,
+      palavraLivre,
+    });
+
+    router.push({
+      pathname: "/dashboard",
+      params: { pacienteId },
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -21,9 +34,10 @@ const ScreenC = () => {
 
         <TextInput
           style={styles.input}
+          value={palavraLivre}
+          onChangeText={setPalavraLivre}
           placeholder=""
           placeholderTextColor="#888888"
-          keyboardType="email-address"
           autoCapitalize="none"
         />
 
@@ -32,7 +46,7 @@ const ScreenC = () => {
             styles.pillButton,
             pressed && { opacity: 0.8 },
           ]}
-          onPress={() => router.push("/dashboard")}
+          onPress={handleConfirmar}
         >
           <Text style={styles.pillButtonText}>Confirmar</Text>
         </Pressable>
@@ -65,7 +79,7 @@ const styles = StyleSheet.create({
   pillButton: {
     width: "100%",
     height: 54,
-    backgroundColor: "#0066cc",
+    backgroundColor: "#407FA0",
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
@@ -84,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ScreenC;
+export default QuizEscrita;
