@@ -1,58 +1,15 @@
-import { Table, Column } from "@/components/table";
-import { Href, useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { GridItem } from "../components/GridSelector";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useState } from "react";
+import { useRouter } from "expo-router";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useAuth } from "@/hooks/context/AuthContext";
 import { usePacientes } from "@/hooks/usePacientes";
+import PacienteCard from "@/components/PacienteCard";
 
-const emojis: GridItem[] = [
-  { id: "1", title: "🥳" },
-  { id: "2", title: "😎" },
-  { id: "3", title: "👽" },
-  { id: "4", title: "💗" },
-];
-
-type Paciente = {
-  id: number;
-  name: string;
-  ficha: string;
-}
-
-const telaPrincipal = () => {
+const Dashboard = () => {
   const router = useRouter();
-  
-  const { perfil } = useAuth()
-  const nomePsicologo = perfil?.nome.split(" ")[0] || "Psicólogo"
-  
-  const { pacientes, carregando } = usePacientes()
-  
-  const [tableMaxHeight, setTableMaxHeight] = useState<number>()
-
-
-  const colunas: Column<Paciente>[] = [
-  {
-    key: 'name',
-    title: 'Name',
-    width: 150,
-  },
-  {
-    key: 'ficha',
-    title: 'Ficha',
-    width: 38,
-    align: "center",
-    render: (item) => (
-      <Pressable onPress={() => router.push({
-        pathname: "/historico-paciente",
-        params: { pacienteId: item.id.toString(), nomePaciente: item.name}
-      })}>
-        <MaterialCommunityIcons name="file-document" size={28} color="#0066cc" />
-      </Pressable>
-    )
-  },
-  ];
+  const { perfil } = useAuth();
+  const { pacientes, carregando } = usePacientes();
+  const nomePsicologo = perfil?.nome.split(" ")[0] || "Psicólogo";
 
   return (
     <View style={styles.container}>
@@ -60,21 +17,34 @@ const telaPrincipal = () => {
         <Text style={styles.title}>Bem-vindo, {nomePsicologo}</Text>
         <Text style={styles.meusPacientes}>Meus Pacientes</Text>
 
-        <View
-          style={styles.tableContainer}
-          onLayout={(event) => {
-            setTableMaxHeight(event.nativeEvent.layout.height)
-          }}
-        >
-          {carregando ? (
-            <Text>Carregando pacientes...</Text>
-          ) : (
-            <Table columns={colunas} data={pacientes} />
-          )}
-        </View>
+        {carregando ? (
+          <Text>Carregando pacientes...</Text>
+        ) : (
+          <FlatList
+            data={pacientes}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <PacienteCard
+                paciente={item}
+                onPress={() =>
+                  router.push({
+                    pathname: "/historico-paciente",
+                    params: {
+                      pacienteId: item.id.toString(),
+                      nomePaciente: item.name,
+                    },
+                  })
+                }
+              />
+            )}
+          />
+        )}
 
         <Pressable
-          style={({ pressed }) => [styles.pillButton, pressed && { opacity: 0.8 }]}
+          style={({ pressed }) => [
+            styles.pillButton,
+            pressed && { opacity: 0.8 },
+          ]}
           onPress={() => router.push("/cadastro-paciente")}
         >
           <Text style={styles.pillButtonText}>Adicionar paciente</Text>
@@ -87,32 +57,24 @@ const telaPrincipal = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 6,
-    paddingTop: 150,
-    alignItems: "stretch"
-  },
-  tableContainer: {
-    flex: 1,
-    minHeight: 0,
+    paddingHorizontal: 16,
+    paddingTop: 60,
   },
   title: {
-    width: "100%",
     fontSize: 32,
     fontWeight: "bold",
     color: "#111111",
     marginBottom: 40,
-    marginTop: 0,
   },
   meusPacientes: {
-    width: "100%",
     fontSize: 24,
     fontWeight: "bold",
     color: "#111111",
-    marginBottom: 5,
+    marginBottom: 16,
   },
   pillButton: {
     width: "75%",
@@ -121,8 +83,8 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 50,
     marginTop: 15,
+    marginBottom: 30,
     alignSelf: "center",
   },
   pillButtonText: {
@@ -132,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default telaPrincipal;
+export default Dashboard;
