@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/context/AuthContext";
 import { usePacientes } from "@/hooks/usePacientes";
 import PacienteCard from "@/components/PacienteCard";
 import PerfilHeader from "@/components/PerfilHeader";
+
 const Dashboard = () => {
   const router = useRouter();
   const { perfil } = useAuth();

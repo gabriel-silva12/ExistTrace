@@ -3,15 +3,19 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Propriedades } from "./types";
 import { styles } from "./styles";
 
-const PerfilHeader = ({ nome, saudacao, idade }: Propriedades) => {
+const PerfilHeader = ({
+  nome,
+  saudacao,
+  idade,
+  estiloContainer,
+  estiloNome,
+}: Propriedades) => {
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, estiloContainer]}>
       <View style={styles.textos}>
         {saudacao && <Text style={styles.saudacao}>{saudacao}</Text>}
-        <Text style={styles.nome}>{nome}</Text>
-        {idade !== undefined && (
-          <Text style={styles.idade}>{idade} anos</Text>
-        )}
+        <Text style={[styles.nome, estiloNome]}>{nome}</Text>
+        {idade !== undefined && <Text style={styles.idade}>{idade} anos</Text>}
       </View>
 
       <View style={styles.avatarCirculo}>

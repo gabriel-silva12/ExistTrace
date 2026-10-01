@@ -26,8 +26,8 @@ export const styles = StyleSheet.create({
     color: "#ffffff",
   },
   idade: {
-    fontSize: 13,
-    color: "#cfcfe8",
+    fontSize: 16,
+    color: "#ffffff",
     marginTop: 2,
   },
   avatarCirculo: {

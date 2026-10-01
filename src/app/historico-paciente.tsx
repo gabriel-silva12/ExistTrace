@@ -1,4 +1,6 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+
 import SessaoCard from "@/components/SessaoCard";
 import { Sessao } from "@/components/SessaoCard/types";
 import PerfilHeader from "@/components/PerfilHeader";
@@ -36,16 +38,19 @@ const sessoesMock: Sessao[] = [
 ];
 
 const HistoricoPaciente = () => {
-  const { nomePaciente, idadePaciente } = useLocalSearchParams<{
+  const { pacienteId, nomePaciente, idadePaciente } = useLocalSearchParams<{
+    pacienteId?: string;
     nomePaciente?: string;
     idadePaciente?: string;
   }>();
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
       <PerfilHeader
         nome={nomePaciente || "Paciente"}
         idade={idadePaciente ? Number(idadePaciente) : undefined}
+        estiloNome={{ fontSize: 32 }}
       />
       <View style={styles.contentContainer}>
         <Text style={styles.titulo}>Histórico de Sessões</Text>
@@ -55,6 +60,21 @@ const HistoricoPaciente = () => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <SessaoCard sessao={item} />}
         />
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.pillButton,
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={() =>
+            router.push({
+              pathname: "/quiz-emoji",
+              params: { pacienteId },
+            })
+          }
+        >
+          <Text style={styles.pillButtonText}>Aplicar quiz</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -74,6 +94,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 35,
+  },
+  pillButton: {
+    width: "75%",
+    height: 50,
+    backgroundColor: "#407FA0",
+    borderRadius: 27,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 15,
+    marginBottom: 30,
+    alignSelf: "center",
+  },
+  pillButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
