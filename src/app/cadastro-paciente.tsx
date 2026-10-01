@@ -27,7 +27,7 @@ const CadastroPaciente = () => {
     
     try {
       await cadastrarPaciente(nome.trim(), idadeNumero);
-      router.push("/telaPrincipal");
+      router.push("/dashboard");
     } catch (err) {
       console.error(err);
       Alert.alert("Erro", "Não foi possível cadastrar o paciente.");

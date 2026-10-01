@@ -45,7 +45,7 @@ const telaPrincipal = () => {
     align: "center",
     render: (item) => (
       <Pressable onPress={() => router.push({
-        pathname: "/historicoSessao",
+        pathname: "/historico-paciente",
         params: { pacienteId: item.id.toString(), nomePaciente: item.name}
       })}>
         <MaterialCommunityIcons name="file-document" size={28} color="#0066cc" />
@@ -75,7 +75,7 @@ const telaPrincipal = () => {
 
         <Pressable
           style={({ pressed }) => [styles.pillButton, pressed && { opacity: 0.8 }]}
-          onPress={() => router.push("/cadastroPaciente")}
+          onPress={() => router.push("/cadastro-paciente")}
         >
           <Text style={styles.pillButtonText}>Adicionar paciente</Text>
         </Pressable>

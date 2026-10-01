@@ -38,17 +38,6 @@ const sessoesMock: Sessao[] = [
   { id: 4, data: "21/08/2026", emoji: "💗", palavra_fixa: "Grato", palavra_livre: "" },
 ];
 
-
-const screens: Href[] = [
-  "/login",
-  "/telaPrincipal",
-  "/cadastroPaciente",
-  "/historicoSessao",
-  "/screenB",
-  "/screenC",
-  "/screenD",
-];
-
 const HistoricoSessao = () => {
   const router = useRouter();
   const { perfil } = useAuth();

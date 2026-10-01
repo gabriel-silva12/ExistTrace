@@ -18,14 +18,6 @@ import {
 import { useAuth } from "@/hooks/context/AuthContext";
 
 //array de telas, convertidos string para href, que é o tipo que o router aceita como argumento
-const screens: Href[] = [
-  "/login",
-  "/cadastro",
-  "/telaPrincipal",
-  "/screenB",
-  "/screenC",
-  "/screenD",
-] as const; //evita um erro futuro, mapeamento estatico?
 
 const LoginScreen = () => {
   const { perfil } = useAuth();
@@ -34,10 +26,6 @@ const LoginScreen = () => {
   const [password, setPassword] = useState(""); //senha em branco
 
   const { loginComSupabase, loading } = useAuth(); // funcs do middelware
-
-  const getRoutebyIndex = (index: number): Href => {
-    return screens[index] ?? "/login";
-  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -50,9 +38,7 @@ const LoginScreen = () => {
       if (session) {
         console.log("Conectado com sucesso");
         console.log(perfil);
-        const nextRoute = getRoutebyIndex(2);
-        console.log(nextRoute);
-        router.push(nextRoute);
+        router.push("/dashboard");
       }
     } catch (error: any) {
       Alert.alert("Erro no login", error.message);
@@ -111,7 +97,7 @@ const LoginScreen = () => {
                 styles.pillButtonOutline,
                 pressed && { opacity: 0.6 },
               ]}
-              onPress={() => router.push("/cadastro")}
+              onPress={() => router.push("/cadastro-psicologo")}
               disabled={loading}
             >
               <Text style={styles.pillButtonOutlineText}>Cadastrar</Text>
