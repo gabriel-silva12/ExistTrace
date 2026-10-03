@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -14,35 +14,53 @@ import {
 import { Image } from "expo-image";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 
+
 //middleware de autenticacao
 import { useAuth } from "@/hooks/context/AuthContext";
 
-const LoginScreen = () => {
-  const router = useRouter() //transicao entre paginas
+//array de telas, convertidos string para href, que é o tipo que o router aceita como argumento
+const screens: Href[] = [
+        "/login",
+        "/cadastro",
+        "/screenA", 
+        "/screenB", 
+        "/screenC", 
+        "/screenD", 
+] as const //evita um erro futuro, mapeamento estatico?
+
+const LoginScreen = () =>{
+  const router = useRouter() //transicao entra paginas
   const [email, setEmail] = useState("") // email em branco
   const [password, setPassword] = useState("") //senha em branco
   const [senhaVisivel, setSenhaVisivel] = useState(false)
   const [lembrarDeMim, setLembrarDeMim] = useState(false)
 
-  const { perfil, loginComSupabase, loading } = useAuth() // funcs do middleware
+  const { loginComSupabase, loading} = useAuth() // funcs do middelware
+
+  const getRoutebyIndex = (index: number): Href => {
+    return screens[index] ?? "/login"
+  }
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert("Aviso, por favor preencha o e-mail e a senha")
-      return
-    }
-    //validacao de email/senha e troca de tela
-    try {
-      const session = await loginComSupabase(email, password)
-      if (session) {
-        console.log("Conectado com sucesso")
-        console.log(perfil)
-        router.push("/dashboard")
+      if (!email || !password) {
+        Alert.alert("Aviso, por favor preencha o e-mail e a senha")
+        return
       }
-    } catch (error: any) {
-      Alert.alert("Erro no login", error.message)
-    }
+    //validacao de email/senha e troca de tela  
+      try {
+        const session = await loginComSupabase(email, password)
+        if (session) {
+          console.log("Conectao com sucesso")
+          const nextRoute = getRoutebyIndex(2)
+          router.push(nextRoute)
+        }
+      } catch (error: any) {
+        Alert.alert("Erro no login", error.message)
+      }
+
+
   }
+
 
   return (
     <KeyboardAvoidingView
@@ -52,7 +70,7 @@ const LoginScreen = () => {
     >
         <View style={styles.innerContainer}>
                 <View style={styles.logoContainer}>
-
+                    
                     <Image
                         source={require("../../assets/images/LetraClaraExistTrace.png")}
                         style={styles.wordmark}
@@ -143,7 +161,7 @@ const LoginScreen = () => {
 
                     <Pressable
                         style={({ pressed }) => [pressed && { opacity: 0.6 }]}
-                        onPress={() => router.push("/cadastro-psicologo")}
+                        onPress={() => router.push("/cadastro")}
                         disabled={loading}
                     >
                         <Text style={styles.signupText}>
@@ -155,6 +173,7 @@ const LoginScreen = () => {
     </KeyboardAvoidingView>
   )
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -177,8 +196,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   wordmark: {
-    width: 180,
-    height: 40,
+    width: 220,
+    height: 80,
   },
   title: {
     fontSize: 30,
