@@ -64,16 +64,16 @@ const Dashboard = () => {
       <View style={styles.tabBar}>
         <Pressable style={styles.tabItem}>
           <View style={styles.tabActiveIndicator} />
-          <MaterialCommunityIcons name="home" size={24} color="#ffffff" />
+          <MaterialCommunityIcons name="home" size={32} color="#ffffff" />
         </Pressable>
         <Pressable style={styles.tabItem} onPress={() => router.push("/pacientes")}>
-          <MaterialCommunityIcons name="account-outline" size={24} color="#ffffff" />
+          <MaterialCommunityIcons name="account-outline" size={32} color="#ffffff" />
         </Pressable>
         <Pressable
           style={styles.tabItem}
           onPress={() => Alert.alert("Em breve", "Tela de configurações ainda não disponível.")}
         >
-          <MaterialCommunityIcons name="cog-outline" size={24} color="#ffffff" />
+          <MaterialCommunityIcons name="cog-outline" size={32} color="#ffffff" />
         </Pressable>
       </View>
     </View>
@@ -90,22 +90,22 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#3e6e82",
-    paddingTop: 56,
-    paddingHorizontal: 24,
-    paddingBottom: 72,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 70,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
     overflow: "hidden",
   },
   headerBlob: {
     position: "absolute",
-    right: -30,
-    top: -10,
+    right: -40,
+    top: 20,
     width: 160,
     height: 160,
-    borderRadius: 80,
+    borderRadius: 75,
     backgroundColor: "#5a8fa3",
-    opacity: 0.6,
+    opacity: 0.0,
   },
   headerGreeting: {
     fontSize: 26,
@@ -119,12 +119,12 @@ const styles = StyleSheet.create({
   },
   avatarCircle: {
     position: "absolute",
-    right: 28,
-    top: 56,
+    right: 16,
+    top: 66,
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#8fc4d8",
+    backgroundColor: "#dddddd",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   tabBar: {
-    backgroundColor: "#0b0f2e",
+    backgroundColor: "#3e6e82",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",

@@ -18,14 +18,14 @@ export function usePacientes() {
 
       const { data, error } = await supabase
         .from("paciente")
-        .select("id, nome, idade")
+        .select("id, codinome, idade")
         .eq("psicologo_id", user.id);
 
       if (data && !error) {
         setPacientes(
           data.map((p) => ({
             id: p.id,
-            name: p.nome,
+            codinome: p.codinome,
             idade: p.idade,
           })),
         );

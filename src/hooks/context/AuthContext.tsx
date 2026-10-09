@@ -90,7 +90,7 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
         return data
     }
 
-    const cadastrarPaciente = async (nome: string, idade: number) => {
+    const cadastrarPaciente = async (codinome: string, idade: number) => {
     setLoading(true)
 
     try {
@@ -122,7 +122,7 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
         const { data, error } = await supabase
             .from("paciente")
             .insert({
-                nome,
+                codinome,
                 idade,
                 psicologo_id: session.user.id,
             })

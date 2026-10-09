@@ -21,7 +21,7 @@ const Pacientes = () => {
   const pacientesFiltrados = useMemo(() => {
     if (!busca.trim()) return pacientes;
     return pacientes.filter((p) =>
-      p.name.toLowerCase().includes(busca.trim().toLowerCase())
+      p.codinome.toLowerCase().includes(busca.trim().toLowerCase())
     );
   }, [pacientes, busca]);
 
@@ -30,7 +30,7 @@ const Pacientes = () => {
       pathname: "/historico-paciente",
       params: {
         pacienteId: String(paciente.id),
-        nomePaciente: paciente.name,
+        nomePaciente: paciente.codinome,
         idadePaciente: String(paciente.idade),
       },
     });
@@ -78,7 +78,7 @@ const Pacientes = () => {
                 <MaterialCommunityIcons name="account" size={28} color="#6b7684" />
               </View>
               <View style={styles.cardInfo}>
-                <Text style={styles.cardNome}>{item.name}</Text>
+                <Text style={styles.cardNome}>{item.codinome}</Text>
                 {/* TODO: "Última Sessão" e "Status" dependem de dados de sessao_terapia
                     que ainda não estão ligados ao paciente - placeholder por enquanto */}
                 <Text style={styles.cardLinha}>Última Sessão: —</Text>
