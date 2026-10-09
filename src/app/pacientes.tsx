@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import TabBar from "@/components/TabBar";
 import { usePacientes } from "@/hooks/usePacientes";
 
 const Pacientes = () => {
@@ -110,21 +110,7 @@ const Pacientes = () => {
         )}
       />
 
-      <View style={styles.tabBar}>
-        <Pressable style={styles.tabItem} onPress={() => router.push("/dashboard")}>
-          <MaterialCommunityIcons name="home-outline" size={24} color="#ffffff" />
-        </Pressable>
-        <Pressable style={styles.tabItem}>
-          <View style={styles.tabActiveIndicator} />
-          <MaterialCommunityIcons name="account" size={24} color="#2fb7c9" />
-        </Pressable>
-        <Pressable
-          style={styles.tabItem}
-          onPress={() => Alert.alert("Em breve", "Tela de configurações ainda não disponível.")}
-        >
-          <MaterialCommunityIcons name="cog-outline" size={24} color="#ffffff" />
-        </Pressable>
-      </View>
+      <TabBar activeTab="patients" />
     </View>
   );
 };

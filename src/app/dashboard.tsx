@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import TabBar from "@/components/TabBar";
 
 import { useAuth } from "@/hooks/context/AuthContext";
 
@@ -61,21 +62,7 @@ const Dashboard = () => {
 
       {/* TODO: trocar os MaterialCommunityIcons abaixo pelos ícones do Flaticon
           (ex: <Image source={require("../../assets/images/icons/home.png")} style={styles.tabIcon} />) */}
-      <View style={styles.tabBar}>
-        <Pressable style={styles.tabItem}>
-          <View style={styles.tabActiveIndicator} />
-          <MaterialCommunityIcons name="home" size={32} color="#ffffff" />
-        </Pressable>
-        <Pressable style={styles.tabItem} onPress={() => router.push("/pacientes")}>
-          <MaterialCommunityIcons name="account-outline" size={32} color="#ffffff" />
-        </Pressable>
-        <Pressable
-          style={styles.tabItem}
-          onPress={() => Alert.alert("Em breve", "Tela de configurações ainda não disponível.")}
-        >
-          <MaterialCommunityIcons name="cog-outline" size={32} color="#ffffff" />
-        </Pressable>
-      </View>
+      <TabBar activeTab="home" />
     </View>
   );
 };

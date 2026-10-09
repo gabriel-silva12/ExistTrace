@@ -20,11 +20,11 @@ const QuizEmoji = () => {
   const router = useRouter();
   const { pacienteId } = useLocalSearchParams<{ pacienteId: string }>();
 
-  const emojisSorteados = useMemo(() => sortearItens(poolEmojis, 4), []);
-  const [selecionado, setSelecionado] = useState<string | null>(null);
+  const emojisSorteados = useMemo(() => sortearItens(poolEmojis, 4), []); //tenho que estudar o que memo em react ainda
+  const [selecionado, setSelecionado] = useState< string | null >(null);
 
   const emojiEscolhido = emojisSorteados.find(
-    (e) => e.id === selecionado,
+    (emoji) => emoji.id === selecionado,
   )?.title;
 
   const handleConfirmar = () => {
