@@ -1,19 +1,20 @@
 import { useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-
-import GridSelector, { GridItem } from "@/components/GridSelector";
 import { sortearItens } from "@/utils/random";
 
-const poolPalavras: GridItem[] = [
-  { id: "1", subtitle: "Amor" },
-  { id: "2", subtitle: "Paz" },
-  { id: "3", subtitle: "Verdade" },
-  { id: "4", subtitle: "Honestidade" },
-  { id: "5", subtitle: "Medo" },
-  { id: "6", subtitle: "Cansaço" },
-  { id: "7", subtitle: "Esperança" },
-  { id: "8", subtitle: "Raiva" },
+import QuizSelector from "@/components/QuizSelector";
+import type { QuizOption } from "@/components/QuizSelector/types";
+
+const poolPalavras: QuizOption[] = [
+  { id: "1", title: "Amor" },
+  { id: "2", title: "Paz" },
+  { id: "3", title: "Verdade" },
+  { id: "4", title: "Honestidade" },
+  { id: "5", title: "Medo" },
+  { id: "6", title: "Cansaço" },
+  { id: "7", title: "Esperança" },
+  { id: "8", title: "Raiva" },
 ];
 
 const QuizPalavra = () => {
@@ -24,11 +25,12 @@ const QuizPalavra = () => {
   }>();
 
   const palavrasSorteadas = useMemo(() => sortearItens(poolPalavras, 4), []);
-  const [selecionado, setSelecionado] = useState<string | null>(null);
+  
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const palavraEscolhida = palavrasSorteadas.find(
-    (p) => p.id === selecionado,
-  )?.subtitle;
+    (p) => p.id === selectedId,
+  )?.title;
 
   const handleConfirmar = () => {
     if (!palavraEscolhida) return;
@@ -45,10 +47,12 @@ const QuizPalavra = () => {
         <Text style={styles.title}>Palavra</Text>
         <Text style={styles.subtitle}>Selecione uma palavra:</Text>
 
-        <GridSelector
-          items={palavrasSorteadas}
-          selectedId={selecionado}
-          onSelect={setSelecionado}
+        <QuizSelector
+          options={palavrasSorteadas}
+          selectionMode="single"
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          columns={2}
         />
 
         <Pressable

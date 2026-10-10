@@ -34,6 +34,9 @@ const Dashboard = () => {
           {/* TODO: placeholder - trocar pela ilustração final */}
           <View style={styles.illustrationPlaceholder} />
 
+          
+
+           {/*Não é ideal iniciar teste por essa tela senão vai chegar no banco de dados sem um id de paciente definido, undefined */}
           <Pressable
             style={({ pressed }) => [
               styles.startButton,
@@ -43,8 +46,10 @@ const Dashboard = () => {
           >
             <Text style={styles.startButtonText}>Iniciar</Text>
           </Pressable>
-        </View>
+          
 
+        </View>
+            
         <Pressable style={({ pressed }) => [styles.infoCard, pressed && { opacity: 0.8 }]}>
           <Text style={styles.infoCardText}>
             O que é a terapia{"\n"}cognitivo-comportamental?
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderRadius: 75,
-    backgroundColor: "#5a8fa3",
+    backgroundColor: "#3e6e82",
     opacity: 0.0,
   },
   headerGreeting: {
@@ -144,9 +149,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   startButton: {
+    display: "none",
     width: "100%",
     height: 52,
-    backgroundColor: "#1d8696",
+    backgroundColor: "#3e6e82",
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
@@ -177,26 +183,6 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
     flex: 1,
     marginRight: 12,
-  },
-  tabBar: {
-    backgroundColor: "#3e6e82",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    paddingVertical: 14,
-    paddingBottom: 20,
-  },
-  tabItem: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tabActiveIndicator: {
-    position: "absolute",
-    top: -14,
-    width: 28,
-    height: 3,
-    borderRadius: 2,
-    backgroundColor: "#2fb7c9",
   },
   tabIcon: {
     width: 24,

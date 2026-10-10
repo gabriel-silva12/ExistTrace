@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-
-import GridSelector, { GridItem } from "@/components/GridSelector";
 import { sortearItens } from "@/utils/random";
 
-const poolEmojis: GridItem[] = [
+import QuizSelector from "@/components/QuizSelector";
+import type { QuizOption } from "@/components/QuizSelector/types";
+
+const poolEmojis: QuizOption[] = [
   { id: "1", title: "🥳" },
   { id: "2", title: "😎" },
   { id: "3", title: "👽" },
@@ -14,17 +15,27 @@ const poolEmojis: GridItem[] = [
   { id: "6", title: "😡" },
   { id: "7", title: "😴" },
   { id: "8", title: "😨" },
+  { id: "8", title: "T" },
 ];
 
 const QuizEmoji = () => {
   const router = useRouter();
   const { pacienteId } = useLocalSearchParams<{ pacienteId: string }>();
 
-  const emojisSorteados = useMemo(() => sortearItens(poolEmojis, 4), []); //tenho que estudar o que memo em react ainda
-  const [selecionado, setSelecionado] = useState< string | null >(null);
+ /**
+   * ""EXPLICAÇÃO RÁPIDA SOBRE o useMemo:
+   * Normalmente, toda vez que um componente é atualizado (re-renderizado), todo o código é executado novamente.
+   * Se você não usasse o useMemo, 'sortearItens' sortearia NOVOS emojis toda vez que você clicasse em uma carta!
+   * O useMemo fixa o resultado na memória para que o sorteio aleatório ocorra apenas UMA VEZ, quando a tela é carregada."" Nãosãominhaspalavras
+   */
+  const emojisSorteados = useMemo(() => sortearItens(poolEmojis, 4), []);
+  
+  
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
+ 
   const emojiEscolhido = emojisSorteados.find(
-    (emoji) => emoji.id === selecionado,
+    (emoji) => emoji.id === selectedId
   )?.title;
 
   const handleConfirmar = () => {
@@ -42,10 +53,12 @@ const QuizEmoji = () => {
         <Text style={styles.title}>Como você está?</Text>
         <Text style={styles.subtitle}>Selecione um emoji:</Text>
 
-        <GridSelector
-          items={emojisSorteados}
-          selectedId={selecionado}
-          onSelect={setSelecionado}
+        <QuizSelector
+          options={emojisSorteados}
+          selectionMode="single"
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          columns={2} 
         />
 
         <Pressable
@@ -92,8 +105,9 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 32,
   },
-  pillButtonDisabled: { backgroundColor: "#407FA0" },
+  pillButtonDisabled: { backgroundColor: "#cccccc" }, // Changed to gray so it looks disabled!
   pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
 });
 

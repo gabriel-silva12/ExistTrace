@@ -17,11 +17,11 @@ const styles = StyleSheet.create({
 
   tabActiveIndicator: {
     position: "absolute",
-    top: -14,
-    width: 28,
-    height: 3,
+    top: -13,
+    width: 44,
+    height: 4,
     borderRadius: 2,
-    backgroundColor: "#2fb7c9",
+    backgroundColor: "#ffffff",
   },
 });
 

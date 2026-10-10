@@ -110,7 +110,7 @@ const Pacientes = () => {
         )}
       />
 
-      <TabBar activeTab="patients" />
+      <TabBar activeTab="pacientes" />
     </View>
   );
 };
