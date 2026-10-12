@@ -25,7 +25,7 @@ const QuizPalavra = () => {
   }>();
 
   const palavrasSorteadas = useMemo(() => sortearItens(poolPalavras, 4), []);
-  
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const palavraEscolhida = palavrasSorteadas.find(
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  pillButtonDisabled: { backgroundColor: "#ffffff" },
+  pillButtonDisabled: { backgroundColor: "#cccccc" },
   pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
 });
 

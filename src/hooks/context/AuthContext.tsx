@@ -36,7 +36,11 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
             .eq("id", userId)
             .single()
 
-            if (data && !error) setPerfil(data)
+        if (error) {
+            console.error("Erro ao buscar perfil do psicólog:", error.message)
+            return
+        }
+        if (data) setPerfil(data)
         } catch (err) {
             console.error(err)
         }
@@ -91,57 +95,22 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
     }
 
     const cadastrarPaciente = async (codinome: string, idade: number) => {
-    setLoading(true)
+        const psicologoId = perfil?.id
+        if (!psicologoId) throw new Error("Sessão não econtrada")
 
-    try {
-        const {
-            data: { session },
-            error: sessionError,
-        } = await supabase.auth.getSession()
-
-        console.log("SESSION EXISTS:", !!session)
-        console.log("USER ID:", session?.user?.id)
-        console.log("TOKEN EXISTS:", !!session?.access_token)
-
-        if (sessionError) {
-            throw sessionError
-        }
-
-        if (!session) {
-            throw new Error("Sessão não encontrada")
-        }
-
-        // Teste 1: quem o servidor enxerga?
-        const { data: uidDebug, error: uidError } =
-            await supabase.rpc("debug_auth_uid")
-
-        console.log("RPC UID:", uidDebug)
-        console.log("RPC ERROR:", uidError)
-
-        // Teste 2: inserir paciente
         const { data, error } = await supabase
             .from("paciente")
             .insert({
-                codinome,
+                codinome: codinome.trim(),
                 idade,
-                psicologo_id: session.user.id,
+                psicologo_id: psicologoId
             })
-            .select()
+            .select("id, codinome, idade")
             .single()
-
-        console.log("INSERT DATA:", data)
-        console.log("INSERT ERROR:", error)
-
-        if (error) {
-            throw error
-        }
-
+        
+        if (error) throw error
         return data
-
-    } finally {
-        setLoading(false)
     }
-}
 
     
 

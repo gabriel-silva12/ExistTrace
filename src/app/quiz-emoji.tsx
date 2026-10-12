@@ -14,28 +14,25 @@ const poolEmojis: QuizOption[] = [
   { id: "5", title: "😢" },
   { id: "6", title: "😡" },
   { id: "7", title: "😴" },
-  { id: "8", title: "😨" },
-  { id: "8", title: "T" },
+  { id: "8", title: "TESTE" },
 ];
 
 const QuizEmoji = () => {
   const router = useRouter();
   const { pacienteId } = useLocalSearchParams<{ pacienteId: string }>();
 
- /**
+  /**
    * ""EXPLICAÇÃO RÁPIDA SOBRE o useMemo:
    * Normalmente, toda vez que um componente é atualizado (re-renderizado), todo o código é executado novamente.
    * Se você não usasse o useMemo, 'sortearItens' sortearia NOVOS emojis toda vez que você clicasse em uma carta!
    * O useMemo fixa o resultado na memória para que o sorteio aleatório ocorra apenas UMA VEZ, quando a tela é carregada."" Nãosãominhaspalavras
    */
   const emojisSorteados = useMemo(() => sortearItens(poolEmojis, 4), []);
-  
-  
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
- 
   const emojiEscolhido = emojisSorteados.find(
-    (emoji) => emoji.id === selectedId
+    (emoji) => emoji.id === selectedId,
   )?.title;
 
   const handleConfirmar = () => {
@@ -58,7 +55,7 @@ const QuizEmoji = () => {
           selectionMode="single"
           selectedId={selectedId}
           onSelect={setSelectedId}
-          columns={2} 
+          columns={2}
         />
 
         <Pressable
