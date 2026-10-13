@@ -1,70 +1,55 @@
 import { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { supabase } from "@/services/supabase";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const QuizEscrita = () => {
-    const router = useRouter()
+  const router = useRouter();
+  const { pacienteId, emoji, palavraFixa } = useLocalSearchParams<{
+    pacienteId: string;
+    emoji: string;
+    palavraFixa: string;
+  }>();
 
-    const { pacienteId, emoji, palavraFixa } = useLocalSearchParams<{
-        pacienteId: string,
-        emoji: string,
-        palavraFixa: string,
-    }>()
+  const [palavraLivre, setPalavraLivre] = useState("");
 
-    const [palavraLivre, setPalavraLivre] = useState("")
-    const [salvando, setSalvando] = useState(false)
+  const podeContinuar = palavraLivre.trim().length > 0;
 
-    const podeSalvar = palavraLivre.trim().length > 0 && !salvando
+  const continuar = () => {
+    router.push({
+      pathname: "/confirmar-quiz",
+      params: {
+        pacienteId,
+        emoji,
+        palavraFixa,
+        palavraLivre: palavraLivre.trim(),
+      },
+    });
+  };
 
-    const salvarSessao = async () => {
-        setSalvando(true)
+  return (
+    <View style={styles.container}>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Agora é sua vez</Text>
+        <Text style={styles.subtitle}>Escreva uma palavra:</Text>
 
-        const { error } = await supabase.from("sessao_terapia").insert({
-            paciente_id: Number(pacienteId),
-            emoji,
-            palavra_selecionada: palavraFixa,
-            palavra_livre: palavraLivre.trim()
-        })
+        <TextInput
+          style={styles.input}
+          value={palavraLivre}
+          onChangeText={setPalavraLivre}
+          autoCapitalize="none"
+        />
 
-        setSalvando(false)
-
-        if (error) {
-            console.error(error.message)
-            Alert.alert("Ops", "Não conseguimos salvar a sessão. Tente de novo.")
-            return
-        }
-
-        router.dismiss(3) // volta ao historico do paciente?? nunca vi
-    }
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.contentContainer}>
-                <Text style={styles.title}>Agora é sua vez</Text>
-                <Text style={styles.subtitle}>Escreva uma palavra:</Text>
-
-                <TextInput
-                    style={styles.input}
-                    value={palavraLivre}
-                    onChangeText={setPalavraLivre}
-                    autoCapitalize="none"
-                />
-
-                <Pressable
-                    style={[styles.pillButton, !podeSalvar && styles.pillButtonDisabled]}
-                    onPress={salvarSessao}
-                    disabled={!podeSalvar}
-                >
-                    <Text style={styles.pillButtonText}>
-                        {salvando ? "Salvando..." : "Confirmar"}
-                    </Text>
-                </Pressable>
-            </View>
-        </View>
-
-    )
-}
+        <Pressable
+          style={[styles.pillButton, !podeContinuar && styles.pillButtonDisabled]}
+          onPress={continuar}
+          disabled={!podeContinuar}
+        >
+          <Text style={styles.pillButtonText}>Continuar</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#ffffff" },

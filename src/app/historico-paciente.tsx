@@ -28,7 +28,7 @@ const HistoricoPaciente = () => {
           estiloNome={{ fontSize: 32 }}
         />
         <View style={styles.contentContainer}>
-        <Text style={styles.titulo}>Histórico de Sessões</Text>
+    
         
         {carregando ? (
           <ActivityIndicator style={styles.estado} color="#407FA0" />
@@ -76,12 +76,12 @@ const HistoricoPaciente = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#eaf3f6",
   },
   titulo: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 4,
+    fontSize: 28,
+    fontWeight: "500",
+    marginBottom: 16,
   },
   contentContainer: {
     flex: 1,
@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   estadoTexto: {
-    fontSize: 15,
+    alignItems: "center",
+    fontSize: 18,
     color: "#666666",
     textAlign: "center",
   },
@@ -105,13 +106,13 @@ const styles = StyleSheet.create({
   },
   pillButton: {
     width: "75%",
-    height: 50,
+    height: 56,
     backgroundColor: "#407FA0",
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 15,
-    marginBottom: 30,
+    marginTop: 20,
+    marginBottom: 40,
     alignSelf: "center",
   },
   pillButtonDisabled: { backgroundColor: "#cccccc" },

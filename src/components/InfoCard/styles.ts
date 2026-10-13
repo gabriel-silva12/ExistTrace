@@ -2,23 +2,32 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#eeeeee",
+    backgroundColor: "#ffffff",
     borderRadius: 20,
     padding: 20,
     marginBottom: 12,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+
+    //ios
+    shadowColor: "#185366",       // Using your palette's deep blue makes the shadow look natural, not dirty
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,          // Keep it very soft and subtle
+    shadowRadius: 12,
+
+    //android
+    elevation: 3,    
   },
   conteudo: {
     flex: 1,
   },
   titulo: {
-    fontWeight: "bold",
-    fontSize: 18,
-    marginBottom: 4,
+    fontWeight: "600",
+    fontSize: 16,
+    marginBottom: 12,
   },
   linha: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#333333",
   },
   avatarCirculo: {

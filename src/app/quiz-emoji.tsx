@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { sortearItens } from "@/utils/random";
 
@@ -46,6 +46,7 @@ const QuizEmoji = () => {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{ gestureEnabled: false }} />
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Como você está?</Text>
         <Text style={styles.subtitle}>Selecione um emoji:</Text>

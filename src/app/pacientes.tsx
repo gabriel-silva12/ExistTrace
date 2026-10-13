@@ -39,7 +39,12 @@ const Pacientes = () => {
 
   return (
     <View style={styles.container}>
+      
+
+      
+
       <Stack.Screen options={{ gestureEnabled: false }} />
+       <Text style={styles.meusPacientes}>Meus Pacientes</Text>
       <View style={styles.searchBar}>
         
         <MaterialCommunityIcons name="magnify" size={22} color="#6b7684" />
@@ -125,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#eaf3f6",
   },
    meusPacientes: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#1a1a1a",
     marginTop: 75,
