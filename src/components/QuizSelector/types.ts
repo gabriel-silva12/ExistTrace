@@ -25,6 +25,8 @@ export type QuizSelectorProps = (QuizSelectorSingleProps | QuizSelectorMultipleP
     columns?: number
     cardHeight?: number
     gap?: number
+    fontSize?: number // novo
+
 
 }
 
@@ -35,4 +37,6 @@ export interface QuizCardProps {
     selected: boolean
     onPress: () => void
     height: number
+    fontSize?: number // novo
+
 }

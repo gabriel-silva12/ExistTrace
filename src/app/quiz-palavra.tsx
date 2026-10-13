@@ -72,12 +72,12 @@ const QuizPalavra = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#ffffff" },
+  container: { flex: 1, backgroundColor: "#eaf3f6" },
   contentContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
   },
   title: {
     fontSize: 32,
@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   pillButton: {
-    width: "100%",
+    marginTop: 32,
+    width: "50%",
     height: 54,
     backgroundColor: "#407FA0",
     borderRadius: 27,

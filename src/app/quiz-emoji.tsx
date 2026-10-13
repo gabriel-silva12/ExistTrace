@@ -57,6 +57,7 @@ const QuizEmoji = () => {
           selectedId={selectedId}
           onSelect={setSelectedId}
           columns={2}
+          fontSize={60}
         />
 
         <Pressable
@@ -76,12 +77,12 @@ const QuizEmoji = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#ffffff" },
+  container: { flex: 1, backgroundColor: "#eaf3f6" },
   contentContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
   },
   title: {
     fontSize: 32,
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   pillButton: {
-    width: "100%",
+    width: "50%",
     height: 54,
     backgroundColor: "#407FA0",
     borderRadius: 27,
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 32,
   },
-  pillButtonDisabled: { backgroundColor: "#cccccc" }, // Changed to gray so it looks disabled!
+  pillButtonDisabled: { backgroundColor: "#bbbbbb" }, // Changed to gray so it looks disabled!
   pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
 });
 

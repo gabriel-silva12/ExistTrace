@@ -165,15 +165,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 28,
+    paddingHorizontal: 16,
   },
   logoContainer: {
     alignItems: "center",
     marginBottom: 36,
   },
   logo: {
-    width: 96,
-    height: 96,
+    width: 128,
+    height: 128,
     marginBottom: 12,
   },
   wordmark: {
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#3a4157",
     paddingBottom: 10,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   inputIcon: {
     marginRight: 10,
@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
   rememberRow: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 8,
   },
   checkbox: {
     width: 18,
@@ -235,12 +236,12 @@ const styles = StyleSheet.create({
   },
   pillButton: {
     width: "100%",
-    height: 54,
+    height: 48,
     backgroundColor: "#3d4a68",
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 12,
   },
   pillButtonText: {
     color: "#ffffff",
@@ -259,9 +260,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   socialButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 16,
     backgroundColor: "#1c2140",
     justifyContent: "center",
     alignItems: "center",
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
   signupText: {
     textAlign: "center",
     color: "#9aa2b3",
-    fontSize: 13,
+    fontSize: 16,
   },
   signupLink: {
     color: "#2fb7c9",

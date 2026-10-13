@@ -8,6 +8,7 @@ const QuizCard = ({
   selected,
   onPress,
   height,
+  fontSize,
 }: QuizCardProps) => (
   <Pressable
     style={({ pressed }) => [
@@ -22,7 +23,7 @@ const QuizCard = ({
   >
     {!!option.title && (
       <Text
-        style={[styles.title, selected && styles.selectedText]}
+        style={[styles.title, fontSize? { fontSize } : null, selected && styles.selectedText]}
       >
         {option.title}
       </Text>
@@ -30,7 +31,7 @@ const QuizCard = ({
 
     {!!option.subtitle && (
       <Text
-        style={[styles.subtitle, selected && styles.selectedText]}
+        style={[styles.subtitle, fontSize ? { fontSize } : null,  selected && styles.selectedText]}
       >
         {option.subtitle}
       </Text>

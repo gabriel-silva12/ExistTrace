@@ -15,7 +15,7 @@ const chunkItems = <T,>(items: T[], size: number): T[][] => { //Não entedi quas
 
 
 const QuizSelector = (props: QuizSelectorProps) => {
-  const { options, columns = 2, cardHeight = 120, gap = 4 } = props;
+  const { options, columns = 2, cardHeight = 120, gap = 4, fontSize } = props;
 
   const columnCount = Math.max(1, Math.floor(columns));
   
@@ -55,6 +55,7 @@ const QuizSelector = (props: QuizSelectorProps) => {
                 selected={isOptionSelected(option.id)}
                 onPress={() => handleOptionPress(option.id)}
                 height={cardHeight}
+                fontSize={fontSize}
               />
             </View>
           ))}
