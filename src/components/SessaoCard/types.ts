@@ -2,7 +2,7 @@ export type Sessao = {
   id: number;
   data?: string | null;
   emoji: string;
-  palavra_fixa: string;
+  palavra_selecionada: string;
   palavra_livre: string;
 };
 

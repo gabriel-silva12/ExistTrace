@@ -1,9 +1,7 @@
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "expo-router";
-import { listarSessoes, Sessao } from "@/services/sessaoService"
-
-
-//Callback?  Ouvi falar em javascript mas nao em typescript ou react no caso, tenho que pesquisar;
+import { supabase } from "@/services/supabase";
+import type { Sessao } from "@/components/SessaoCard/types";
 
 export const useSessoes = (pacienteId: number | null) => {
     const [sessoes, setSessoes] = useState<Sessao[]>([])
@@ -11,8 +9,7 @@ export const useSessoes = (pacienteId: number | null) => {
     const [erro, setErro] = useState<string | null>(null)
 
     const buscar = useCallback(async () => {
-        
-        if (pacienteId == null || Number.isNaN(pacienteId)) {
+        if (!pacienteId) {
             setCarregando(false)
             return
         }
@@ -20,24 +17,27 @@ export const useSessoes = (pacienteId: number | null) => {
         setCarregando(true)
         setErro(null)
 
-        try {
-            setSessoes(await listarSessoes(pacienteId))
-        } catch (e) {
-            console.error("Erro ao buscar sessões:", e)
-            setErro("Não foi possivel carregar o histórico")
-        } finally {
-            setCarregando(false)
+        const { data, error } = await supabase
+        .from("sessao_terapia")
+        .select("id, data, emoji, palavra_selecionada, palavra_livre")
+        .eq("paciente_id", pacienteId)
+        .order("data", { ascending: false })
+
+        if (error) {
+            console.error("Erro ao buscar sessoes:", error.message)
+            setErro("Não foi possível carregar o histórico")
+        } else {
+            setSessoes((data ?? []) as Sessao[])
         }
 
+        setCarregando(false)
     }, [pacienteId])
 
-    //roda toda vez que a tela ganha foco
     useFocusEffect(
         useCallback(() => {
             buscar()
         }, [buscar])
     )
 
-    return { sessoes, carregando, erro, recarregar: buscar }
-
+    return { sessoes, carregando, erro, recarregar: buscar}
 }

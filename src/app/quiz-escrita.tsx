@@ -23,7 +23,7 @@ const QuizEscrita = () => {
         const { error } = await supabase.from("sessao_terapia").insert({
             paciente_id: Number(pacienteId),
             emoji,
-            palavra_fixa: palavraFixa,
+            palavra_selecionada: palavraFixa,
             palavra_livre: palavraLivre.trim()
         })
 

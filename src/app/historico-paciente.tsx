@@ -1,71 +1,64 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { useRouter } from "expo-router";
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { useLocalSearchParams, useRoute, useRouter } from "expo-router";
 
 import SessaoCard from "@/components/SessaoCard";
-import { Sessao } from "@/components/SessaoCard/types";
 import PerfilHeader from "@/components/PerfilHeader";
-import { useLocalSearchParams } from "expo-router";
-
-const sessoesMock: Sessao[] = [
-  {
-    id: 1,
-    data: "2026-09-21",
-    emoji: "🥳",
-    palavra_fixa: "Animado",
-    palavra_livre: "Foi um bom dia",
-  },
-  {
-    id: 2,
-    data: "2026-09-19",
-    emoji: "😎",
-    palavra_fixa: "Confiante",
-    palavra_livre: "Consegui resolver o problema",
-  },
-  {
-    id: 3,
-    data: "2026-09-18",
-    emoji: "👽",
-    palavra_fixa: "Estranho",
-    palavra_livre: "Não sei explicar o que senti",
-  },
-  {
-    id: 4,
-    data: "2026-09-15",
-    emoji: "💗",
-    palavra_fixa: "Grato",
-    palavra_livre: "Livre",
-  },
-];
+import { useSessoes } from "@/hooks/useSessoes";
 
 const HistoricoPaciente = () => {
+  
   const { pacienteId, nomePaciente, idadePaciente } = useLocalSearchParams<{
-    pacienteId?: string;
-    nomePaciente?: string;
-    idadePaciente?: string;
-  }>();
-  const router = useRouter();
+    pacienteId?: string,
+    nomePaciente?: string,
+    idadePaciente?: string,
+  }>()
+
+  const router = useRouter()
+
+
+  const pacienteIdNum = pacienteId ? Number(pacienteId) : null
+
+  const { sessoes, carregando, erro, recarregar } = useSessoes(pacienteIdNum)
 
   return (
-    <View style={styles.container}>
-      <PerfilHeader
-        nome={nomePaciente || "Paciente"}
-        idade={idadePaciente ? Number(idadePaciente) : undefined}
-        estiloNome={{ fontSize: 32 }}
-      />
-      <View style={styles.contentContainer}>
-        <Text style={styles.titulo}>Histórico de Sessões</Text>
-
-        <FlatList
-          data={sessoesMock}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <SessaoCard sessao={item} />}
+     <View style={styles.container}>
+        <PerfilHeader
+          nome={nomePaciente || "Paciente"}
+          idade={idadePaciente ? Number(idadePaciente) : undefined}
+          estiloNome={{ fontSize: 32 }}
         />
+        <View style={styles.contentContainer}>
+        <Text style={styles.titulo}>Histórico de Sessões</Text>
+        
+        {carregando ? (
+          <ActivityIndicator style={styles.estado} color="#407FA0" />
+        ) : erro ? (
+          <View style={styles.estado}>
+            <Text style={styles.estadoTexto}>{erro}</Text>
+            <Pressable onPress={recarregar} hitSlop={8}>
+              <Text style={styles.tentarNovamente}>Tentar novamente</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <FlatList
+            data={sessoes}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <SessaoCard sessao={item} />}
+            ListEmptyComponent={
+              <Text style={[styles.estado, styles.estadoTexto]}>
+                Nenhuma sessão registrada ainda.
+              </Text>
+            }
+          />
+        )}
 
         <Pressable
           style={({ pressed }) => [
             styles.pillButton,
+            !pacienteIdNum && styles.pillButtonDisabled,
             pressed && { opacity: 0.8 },
           ]}
+          disabled={!pacienteIdNum}
           onPress={() =>
             router.push({
               pathname: "/quiz-emoji",
@@ -77,8 +70,8 @@ const HistoricoPaciente = () => {
         </Pressable>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -95,6 +88,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 35,
   },
+  estado: {
+    marginTop: 32,
+    alignItems: "center",
+  },
+  estadoTexto: {
+    fontSize: 15,
+    color: "#666666",
+    textAlign: "center",
+  },
+  tentarNovamente: {
+    marginTop: 12,
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#407FA0",
+  },
   pillButton: {
     width: "75%",
     height: 50,
@@ -106,6 +114,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     alignSelf: "center",
   },
+  pillButtonDisabled: { backgroundColor: "#cccccc" },
   pillButtonText: {
     color: "#ffffff",
     fontSize: 16,

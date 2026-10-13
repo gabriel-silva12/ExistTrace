@@ -8,7 +8,7 @@ const SessaoCard = ({ sessao }: Propriedades) => {
       titulo={formatarParaDataBR(sessao.data)}
       campos={[
         { label: "Emoji", value: sessao.emoji },
-        { label: "Palavra", value: sessao.palavra_fixa },
+        { label: "Palavra", value: sessao.palavra_selecionada },
         { label: "Escrita livre", value: sessao.palavra_livre },
       ]}
     />
