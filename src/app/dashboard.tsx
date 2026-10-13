@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TabBar from "@/components/TabBar";
@@ -12,6 +12,7 @@ const Dashboard = () => {
 
   return (
     <View style={styles.container}>
+     <Stack.Screen options={{ gestureEnabled: false }} />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#eaf3f6",
   },
   scrollContent: {
-    paddingBottom: 24,
+    paddingBottom: 129,
   },
   header: {
     backgroundColor: "#3e6e82",

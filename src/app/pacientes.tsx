@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import {
   Alert,
   FlatList,
@@ -39,7 +39,7 @@ const Pacientes = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.meusPacientes}>Meus Pacientes</Text>
+      <Stack.Screen options={{ gestureEnabled: false }} />
       <View style={styles.searchBar}>
         
         <MaterialCommunityIcons name="magnify" size={22} color="#6b7684" />
@@ -131,12 +131,16 @@ const styles = StyleSheet.create({
     marginTop: 75,
     marginLeft: 24
   },
+  listContent: {
+  paddingHorizontal: 20,
+  paddingBottom: 120, // era 16
+  },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#ffffff",
     marginHorizontal: 20,
-    marginTop: 24,
+    marginTop: 80,
     marginBottom: 16,
     borderRadius: 16,
     paddingHorizontal: 16,
@@ -153,10 +157,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: "#1a1a1a",
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 16,
   },
   vazioTexto: {
     textAlign: "center",
@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#1a1a1a",
   },
+  
 });
 
 export default Pacientes;
