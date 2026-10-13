@@ -3,6 +3,7 @@ export type Paciente = {
   codinome: string;
   idade: number;
   fotoUrl?: string;
+  ultimaSessao?: string | null
 
 };
 

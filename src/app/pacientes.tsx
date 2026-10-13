@@ -12,6 +12,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TabBar from "@/components/TabBar";
 import { usePacientes } from "@/hooks/usePacientes";
+import { formatarParaDataBR } from "@/utils/date";
 
 const Pacientes = () => {
   const router = useRouter();
@@ -38,7 +39,9 @@ const Pacientes = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.meusPacientes}>Meus Pacientes</Text>
       <View style={styles.searchBar}>
+        
         <MaterialCommunityIcons name="magnify" size={22} color="#6b7684" />
         <TextInput
           style={styles.searchInput}
@@ -51,7 +54,7 @@ const Pacientes = () => {
           onPress={() => router.push("/cadastro-paciente")}
           hitSlop={8}
         >
-          <MaterialCommunityIcons name="plus" size={24} color="#1a1a1a" />
+          <MaterialCommunityIcons name="plus" size={34} color="#1a1a1a" />
         </Pressable>
       </View>
 
@@ -81,8 +84,9 @@ const Pacientes = () => {
                 <Text style={styles.cardNome}>{item.codinome}</Text>
                 {/* TODO: "Última Sessão" e "Status" dependem de dados de sessao_terapia
                     que ainda não estão ligados ao paciente - placeholder por enquanto */}
-                <Text style={styles.cardLinha}>Última Sessão: —</Text>
-                <Text style={styles.cardLinha}>Status: —</Text>
+                <Text style={styles.cardLinha}>Última Sessão: {" "}
+                  {item.ultimaSessao ? formatarParaDataBR(item.ultimaSessao) : "Nehuma"}
+                </Text>
               </View>
             </Pressable>
 
@@ -118,19 +122,32 @@ const Pacientes = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#c3e0ea",
+    backgroundColor: "#eaf3f6",
+  },
+   meusPacientes: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#1a1a1a",
+    marginTop: 75,
+    marginLeft: 24
   },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f3f7f8",
+    backgroundColor: "#ffffff",
     marginHorizontal: 20,
-    marginTop: 60,
+    marginTop: 24,
     marginBottom: 16,
     borderRadius: 16,
     paddingHorizontal: 16,
     height: 52,
     gap: 10,
+
+    shadowColor: "#185366",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
   },
   searchInput: {
     flex: 1,
@@ -147,10 +164,20 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   card: {
-    backgroundColor: "#eef4f6",
+    backgroundColor: "#ffffff",
     borderRadius: 16,
-    marginBottom: 16,
+    marginBottom: 12,
     overflow: "hidden",
+  
+    //ios
+    shadowColor: "#185366",       // Using your palette's deep blue makes the shadow look natural, not dirty
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,          // Keep it very soft and subtle
+    shadowRadius: 12,
+
+    //android
+    elevation: 3,      
+    
   },
   cardBody: {
     flexDirection: "row",
@@ -170,7 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardNome: {
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: "bold",
     color: "#1a1a1a",
     marginBottom: 4,
@@ -196,26 +223,6 @@ const styles = StyleSheet.create({
   footerActionText: {
     fontSize: 14,
     color: "#1a1a1a",
-  },
-  tabBar: {
-    backgroundColor: "#0b0f2e",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    paddingVertical: 14,
-    paddingBottom: 20,
-  },
-  tabItem: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tabActiveIndicator: {
-    position: "absolute",
-    top: -14,
-    width: 28,
-    height: 3,
-    borderRadius: 2,
-    backgroundColor: "#2fb7c9",
   },
 });
 
