@@ -1,9 +1,11 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Keyboard,
   KeyboardAvoidingView, //pro teclado nao cobri os inputs do login
+  ScrollView,
   Platform,
   Pressable, //android ou ios
   StyleSheet,
@@ -23,6 +25,22 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("") //senha em branco
   const [senhaVisivel, setSenhaVisivel] = useState(false)
   const [lembrarDeMim, setLembrarDeMim] = useState(false)
+  const [tecladoAberto, setTecladoAberto] = useState(false)
+
+  useEffect( () => {
+    
+    const evMostrar = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow"
+    const evEsconder = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide"
+
+    const mostrar = Keyboard.addListener(evMostrar, () => setTecladoAberto(true))
+    const esconder = Keyboard.addListener(evEsconder, () => setTecladoAberto(false))
+
+    return () => {
+      mostrar.remove()
+      esconder.remove()
+    }
+
+  }, [])
 
   const { perfil, loginComSupabase, loading } = useAuth() // funcs do middleware
 
@@ -47,21 +65,29 @@ const LoginScreen = () => {
   return (
     <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior="padding"
         keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
     >
-        <View style={styles.innerContainer}>
-                <View style={styles.logoContainer}>
+        <ScrollView 
+        contentContainerStyle={styles.innerContainer}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        showsVerticalScrollIndicator={false}>
+                {!tecladoAberto && (
+                  <View style={styles.logoContainer}>
 
-                    <Image
-                        source={require("../../assets/images/LetraClaraExistTrace.png")}
-                        style={styles.wordmark}
-                        contentFit="contain"
-                    />
-                </View>
-
+                      <Image
+                          source={require("../../assets/images/LetraClaraExistTrace.png")}
+                          style={styles.wordmark}
+                          contentFit="contain"
+                      />
+                  </View>
+                )}
                 <View style={{ width: "100%" }}>
-                    <Text style={styles.title}>Bem-vindo{"\n"}de volta</Text>
+                    <Text style={styles.title}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    >Bem-vindo de volta</Text>
 
                     <View style={styles.inputWrapper}>
                         <MaterialCommunityIcons name="account-outline" size={20} color="#7c8798" style={styles.inputIcon} />
@@ -151,7 +177,7 @@ const LoginScreen = () => {
                         </Text>
                     </Pressable>
                 </View>
-            </View>
+            </ScrollView>
     </KeyboardAvoidingView>
   )
 }
@@ -162,29 +188,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#0b0f2e"
   },
   innerContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 16,
   },
   logoContainer: {
     alignItems: "center",
-    marginBottom: 36,
+    marginBottom: 0,
   },
   logo: {
     width: 128,
     height: 128,
-    marginBottom: 12,
+    marginBottom: 0,
   },
   wordmark: {
-    width: 180,
-    height: 40,
+    width: 320,
+    height: 71,
   },
   title: {
-    fontSize: 30,
+    fontSize: 36,
     fontWeight: "600",
     color: "#c3c9d6",
-    marginBottom: 28,
+    marginBottom: 32,
+    marginTop: 76,
   },
   inputWrapper: {
     flexDirection: "row",
@@ -192,7 +219,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#3a4157",
     paddingBottom: 10,
-    marginBottom: 24,
+    marginBottom: 28,
   },
   inputIcon: {
     marginRight: 10,
@@ -207,7 +234,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 22,
   },
   rememberRow: {
     flexDirection: "row",
@@ -235,24 +262,26 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   pillButton: {
-    width: "100%",
+    width: "50%",
+    alignSelf: "center",
     height: 48,
     backgroundColor: "#3d4a68",
-    borderRadius: 16,
+    borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 12,
+    marginTop: 12,
   },
   pillButtonText: {
     color: "#ffffff",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
   orText: {
     textAlign: "center",
     color: "#7c8798",
-    fontSize: 13,
-    marginBottom: 16,
+    fontSize: 12,
+    marginBottom: 8,
   },
   socialRow: {
     flexDirection: "row",
@@ -260,9 +289,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   socialButton: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 32,
     backgroundColor: "#1c2140",
     justifyContent: "center",
     alignItems: "center",

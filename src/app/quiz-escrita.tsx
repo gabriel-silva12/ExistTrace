@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const QuizEscrita = () => {
   const router = useRouter();
@@ -27,8 +27,12 @@ const QuizEscrita = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <ScrollView 
+      contentContainerStyle={styles.contentContainer}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      showsHorizontalScrollIndicator={false}>
         <Text style={styles.title}>Agora é sua vez</Text>
         <Text style={styles.subtitle}>Escreva algo que esteja passando pela sua cabeça:</Text>
 
@@ -46,15 +50,15 @@ const QuizEscrita = () => {
         >
           <Text style={styles.pillButtonText}>Continuar</Text>
         </Pressable>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#eaf3f6" },
   contentContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 12,
