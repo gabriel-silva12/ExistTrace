@@ -1,4 +1,4 @@
-export type Traco = {
+export type Trace = {
     d: string //caminho svg
     cor: string
     espessura: number
@@ -7,7 +7,7 @@ export type Traco = {
 export type DesenhoSalvo = {
     largura: number
     altura: number
-    tracos: Traco[]
+    traces: Trace[]
 }
 
 export type DesenhoProps = {
