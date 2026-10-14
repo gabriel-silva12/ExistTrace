@@ -68,19 +68,30 @@ const ConfirmarQuiz = () => {
             <Text style={styles.rotulo}>Escrita livre</Text>
             <Text style={styles.valor}>{palavraLivre}</Text>
           </View>
+
+         <View style={styles.separador} />
+
+          <View style={styles.linha}>
+            <Text style={styles.rotulo}>Desenho Livre</Text>
+            <Text style={styles.valor}>
+                <Desenho
+                  tamanho={120}
+                  desenho={{
+                  largura: 100,
+                  altura: 100,
+                  traces: [
+                    { d: "M10 10 L90 90", cor: "#111111", espessura: 4 },
+                    { d: "M10 90 L90 10", cor: "#407FA0", espessura: 4 },
+                  ],
+                  }}
+                />
+
+            </Text>
+          </View>
+
         </View>
 
-        <Desenho
-          tamanho={120}
-          desenho={{
-            largura: 100,
-            altura: 100,
-            traces: [
-              { d: "M10 10 L90 90", cor: "#111111", espessura: 4 },
-              { d: "M10 90 L90 10", cor: "#407FA0", espessura: 4 },
-            ],
-          }}
-        />
+      
 
 
             <View style={styles.botoes}>
