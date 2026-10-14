@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { supabase } from "@/services/supabase";
+import Desenho from "@/components/Desenho";
 
 const ConfirmarQuiz = () => {
     const router = useRouter()
@@ -68,6 +69,20 @@ const ConfirmarQuiz = () => {
             <Text style={styles.valor}>{palavraLivre}</Text>
           </View>
         </View>
+
+        <Desenho
+          tamanho={120}
+          desenho={{
+            largura: 100,
+            altura: 100,
+            tracos: [
+              { d: "M10 10 L90 90", cor: "#111111", espessura: 4 },
+              { d: "M10 90 L90 10", cor: "#407FA0", espessura: 4 },
+            ],
+          }}
+        />
+
+
             <View style={styles.botoes}>
         
                 <Pressable
