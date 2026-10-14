@@ -75,7 +75,7 @@ const ConfirmarQuiz = () => {
           desenho={{
             largura: 100,
             altura: 100,
-            tracos: [
+            traces: [
               { d: "M10 10 L90 90", cor: "#111111", espessura: 4 },
               { d: "M10 90 L90 10", cor: "#407FA0", espessura: 4 },
             ],

@@ -16,7 +16,7 @@ const QuizEscrita = () => {
 
   const continuar = () => {
     router.push({
-      pathname: "/confirmar-quiz",
+      pathname: "/quiz-desenho",
       params: {
         pacienteId,
         emoji,

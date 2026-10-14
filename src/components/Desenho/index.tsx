@@ -7,12 +7,12 @@ const Desenho = ({ desenho, tamanho }: DesenhoProps) => (
     height={(tamanho * desenho.altura) / desenho.largura}
     viewBox={`0 0 ${desenho.largura} ${desenho.altura}`}
     >
-        {desenho.tracos.map((traco, i) => (
+        {desenho.traces.map((trace, i) => (
             <Path
             key={i}
-            d={traco.d}
-            stroke={traco.cor}
-            strokeWidth={traco.espessura}
+            d={trace.d}
+            stroke={trace.cor}
+            strokeWidth={trace.espessura}
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
