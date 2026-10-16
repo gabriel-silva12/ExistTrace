@@ -22,7 +22,10 @@ type Propiedades = {
 
 const QuadroDesenho = ({onChange}: Propiedades) => {
     
-    const [tamanho, setTamanho] = useState(0)
+    const [medidas, setMedidas] = useState({
+        largura: 0,
+        altura: 0
+    })
     const [traces, setTraces] = useState<Trace[]>([])
     const [atual, setAtual] = useState<string | null>(null)
     const [cor, setCor] = useState(CORES[0])
@@ -31,15 +34,18 @@ const QuadroDesenho = ({onChange}: Propiedades) => {
     // valores para ser lidos pelo panresponder
     const estilo = useRef({cor, espessura})
     estilo.current = { cor, espessura }
-    const tamanhoRef = useRef(0)
+    const medidasRef = useRef({
+        largura: 0,
+        altura: 0
+    })
     const caminho = useRef("")
 
 
     //sim eu usei muita ia, não, não sei te explicar exatamente o que acontece aqui, vamos fingir que um matematico bem bondo escreveu esse a funçaõ de ponto para nos ^-^
     const ponto = (x: number, y: number) => {
-        const limite = tamanhoRef.current
-        const cx = Math.min(Math.max(x, 0), limite)
-        const cy = Math.min(Math.max(y, 0), limite)
+        const { largura, altura } = medidasRef.current
+        const cx = Math.min(Math.max(x, 0), largura)
+        const cy = Math.min(Math.max(y, 0), altura)
         return `${Math.round(cx * 10) / 10} ${Math.round(cy * 10)/10}`
     }
 
@@ -81,18 +87,25 @@ const QuadroDesenho = ({onChange}: Propiedades) => {
 
     //avisa a tela que o desenho muda
     useEffect(() => {
-        if (!tamanho) return
+        if (!medidas.largura || !!medidas.altura) return
         onChange?.({
-            largura: tamanho,
-            altura: tamanho,
+            largura: medidas.largura,
+            altura: medidas.altura,
             traces
         })
-    }, [traces,tamanho])
+    }, [traces, medidas])
 
     const aoMedir = (evento : LayoutChangeEvent) => {
-        const medida = Math.round(evento.nativeEvent.layout.width)
-        tamanhoRef.current = medida
-        setTamanho(medida)
+       const { width, height } = evento.nativeEvent.layout
+
+       const novasMedidas = {
+        largura: Math.round(width),
+        altura: Math.round(height)
+       }
+
+       medidasRef.current = novasMedidas
+       setMedidas(novasMedidas)
+
     }
 
     return (
@@ -100,8 +113,8 @@ const QuadroDesenho = ({onChange}: Propiedades) => {
             <View style={styles.quadro} onLayout={aoMedir} {...panResponder.panHandlers}>
                 {/* toque é lido pelo quadro não pelo SVG */}
                 <View style={StyleSheet.absoluteFill} pointerEvents="none">
-                    {tamanho > 0 && (
-                        <Svg width={tamanho} height={tamanho}>
+                    {medidas.largura > 0 && medidas.altura > 0 && (
+                        <Svg width={medidas.largura} height={medidas.altura}>
                             {traces.map( ( t , i ) => (
                                 <Path
                                     key={i}
@@ -189,7 +202,7 @@ const styles = StyleSheet.create({
   wrapper: { width: "100%" },
   quadro: {
     width: "100%",
-    aspectRatio: 1,
+    aspectRatio: 3 / 4,
     backgroundColor: "#ffffff",
     borderRadius: 16,
     borderWidth: 1,

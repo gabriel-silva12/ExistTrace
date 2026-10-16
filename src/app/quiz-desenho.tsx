@@ -52,9 +52,11 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#eaf3f6" },
   contentContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 12,
+    paddingTop: 68,
+    width: "100%"
   },
   title: {
     fontSize: 32,
@@ -65,18 +67,18 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#666666",
+    color: "#957878",
     alignSelf: "flex-start",
     marginBottom: 24,
   },
   pillButton: {
-    width: "50%",
-    height: 54,
+    width: "48%",
+    height: 48,
     backgroundColor: "#407FA0",
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 24,
+    marginTop: 0,
   },
   pillButtonDisabled: { backgroundColor: "#cccccc" },
   pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
