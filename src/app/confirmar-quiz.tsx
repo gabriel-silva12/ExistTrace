@@ -3,10 +3,12 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { supabase } from "@/services/supabase";
 import Desenho from "@/components/Desenho";
+import { useQuiz } from "@/hooks/context/QuizContext";
 
 const ConfirmarQuiz = () => {
     const router = useRouter()
-    
+    const { desenho, limparQuiz } = useQuiz()
+     
     const { pacienteId, emoji, palavraFixa, palavraLivre } = useLocalSearchParams<{
         pacienteId: string,
         emoji: string,
@@ -34,12 +36,13 @@ const ConfirmarQuiz = () => {
             Alert.alert("Não conseguimos salvar a sessão, tente novamente em alguns instantes")
             return
         }
-
-        router.dismiss(4)
+        limparQuiz()
+        router.dismiss(5)
     }
 
     const recomecar = () => {
-        router.dismiss(4)
+        limparQuiz()
+        router.dismiss(5)
         router.push( {pathname: "/quiz-emoji", params: {pacienteId}})
     }
 
@@ -73,18 +76,15 @@ const ConfirmarQuiz = () => {
 
           <View style={styles.linha}>
             <Text style={styles.rotulo}>Desenho Livre</Text>
-            <Text style={styles.valor}>
-                <Desenho
-                  tamanho={120}
-                  desenho={{
-                  largura: 100,
-                  altura: 100,
-                  traces: [
-                    { d: "M10 10 L90 90", cor: "#111111", espessura: 4 },
-                    { d: "M10 90 L90 10", cor: "#407FA0", espessura: 4 },
-                  ],
-                  }}
-                />
+            <Text style={styles.miniatura}>
+                { desenho ? (
+                  <Desenho
+                    desenho = { desenho }
+                    tamanho= { 120}
+                  />
+                ) : (
+                  <Text>Nenhum desenho disponivel</Text>
+                )}
 
             </Text>
           </View>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
   title: {
     fontSize: 32,
@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     color: "#111111",
     alignSelf: "flex-start",
     marginBottom: 4,
+    paddingTop: 20
   },
   subtitle: {
     fontSize: 18,
@@ -165,6 +166,15 @@ const styles = StyleSheet.create({
 
     //android
     elevation: 3,   
+  },
+  miniatura: {
+  marginTop: 8,
+  alignSelf: "flex-start",
+  backgroundColor: "#ffffff",
+  borderWidth: 1,
+  borderColor: "#d7e2e5",
+  borderRadius: 16,
+  overflow: "hidden",
   },
   linha: {
     paddingVertical: 14,

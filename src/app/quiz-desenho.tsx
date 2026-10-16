@@ -3,7 +3,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import QuadroDesenho from "@/components/QuadroDesenho";
-import type { DesenhoSalvo } from "@/components/Desenho/types";
+import { useQuiz } from "@/hooks/context/QuizContext";
 
 const QuizDesenho = () => {
     const router = useRouter()
@@ -14,7 +14,7 @@ const QuizDesenho = () => {
         palavraLivre:string
     }>()
 
-    const [desenho, setDesenho] = useState<DesenhoSalvo | null>(null)
+    const {desenho, setDesenho} = useQuiz()
     const temDesenho = !!desenho && desenho.traces.length > 0
 
     const continuar = () => {
