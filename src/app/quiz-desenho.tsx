@@ -41,7 +41,7 @@ const QuizDesenho = () => {
                 style={[styles.pillButton, !temDesenho && styles.pillButtonDisabled]}
                 onPress={continuar}
                 disabled={!temDesenho}>
-                    <Text style={styles.pillButtonText} >Continuar</Text>
+                    <Text style={styles.pillButtonText} >Confirmar</Text>
                 </Pressable>
             </View>
         </View>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 12,
-    paddingTop: 68,
+    paddingTop: 0,
     width: "100%"
   },
   title: {
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     color: "#111111",
     alignSelf: "flex-start",
     marginBottom: 4,
+    paddingTop: 80,
   },
   subtitle: {
     fontSize: 16,
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   pillButton: {
-    width: "48%",
+    width: "44%",
     height: 48,
     backgroundColor: "#407FA0",
     borderRadius: 27,

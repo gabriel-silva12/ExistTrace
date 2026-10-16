@@ -87,13 +87,13 @@ const QuadroDesenho = ({onChange}: Propiedades) => {
 
     //avisa a tela que o desenho muda
     useEffect(() => {
-        if (!medidas.largura || !!medidas.altura) return
+        if (medidas.largura <= 0 || medidas.altura <= 0) return
         onChange?.({
             largura: medidas.largura,
             altura: medidas.altura,
             traces
         })
-    }, [traces, medidas])
+    }, [traces, medidas, onChange])
 
     const aoMedir = (evento : LayoutChangeEvent) => {
        const { width, height } = evento.nativeEvent.layout
