@@ -26,7 +26,8 @@ const ConfirmarQuiz = () => {
             paciente_id: Number(pacienteId),
             emoji,
             palavra_selecionada: palavraFixa,
-            palavra_livre: palavraLivre
+            palavra_livre: palavraLivre,
+            desenho,
         })
 
         setSalvando(false)
@@ -76,7 +77,7 @@ const ConfirmarQuiz = () => {
 
           <View style={styles.linha}>
             <Text style={styles.rotulo}>Desenho Livre</Text>
-            <Text style={styles.miniatura}>
+            <View style={styles.miniatura}>
                 { desenho ? (
                   <Desenho
                     desenho = { desenho }
@@ -86,7 +87,7 @@ const ConfirmarQuiz = () => {
                   <Text>Nenhum desenho disponivel</Text>
                 )}
 
-            </Text>
+            </View>
           </View>
 
         </View>

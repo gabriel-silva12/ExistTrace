@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -18,9 +17,7 @@ const QuizDesenho = () => {
     const temDesenho = !!desenho && desenho.traces.length > 0
 
     const continuar = () => {
-        //temporario
-        console.log("Desenho: ", JSON.stringify(desenho))
-
+  
         router.push({
             pathname: "/confirmar-quiz",
             params: { pacienteId, emoji, palavraFixa, palavraLivre }
@@ -41,7 +38,7 @@ const QuizDesenho = () => {
                 style={[styles.pillButton, !temDesenho && styles.pillButtonDisabled]}
                 onPress={continuar}
                 disabled={!temDesenho}>
-                    <Text style={styles.pillButtonText} >Confirmar</Text>
+                    <Text style={styles.pillButtonText}> Continuar </Text>
                 </Pressable>
             </View>
         </View>
