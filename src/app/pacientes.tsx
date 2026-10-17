@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TabBar from "@/components/TabBar";
 import { usePacientes } from "@/hooks/usePacientes";
 import { formatarParaDataBR } from "@/utils/date";
+import ScreenHeader from "@/components/ScreenHeader";
 
 const Pacientes = () => {
   const router = useRouter();
@@ -39,12 +40,8 @@ const Pacientes = () => {
 
   return (
     <View style={styles.container}>
-      
-
-      
-
+      <ScreenHeader titulo="Meus Pacientes"></ScreenHeader>
       <Stack.Screen options={{ gestureEnabled: false }} />
-       <Text style={styles.meusPacientes}>Meus Pacientes</Text>
       <View style={styles.searchBar}>
         
         <MaterialCommunityIcons name="magnify" size={22} color="#6b7684" />
@@ -129,13 +126,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#eaf3f6",
   },
-   meusPacientes: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#1a1a1a",
-    marginTop: 75,
-    marginLeft: 24
-  },
   listContent: {
   paddingHorizontal: 20,
   paddingBottom: 120, // era 16
@@ -145,7 +135,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ffffff",
     marginHorizontal: 20,
-    marginTop: 80,
+    marginTop: 16,
     marginBottom: 16,
     borderRadius: 16,
     paddingHorizontal: 16,

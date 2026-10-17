@@ -2,7 +2,7 @@ import { Stack, useRouter } from "expo-router";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TabBar from "@/components/TabBar";
-
+import ScreenHeader from "@/components/ScreenHeader";
 import { useAuth } from "@/hooks/context/AuthContext";
 
 const Dashboard = () => {
@@ -17,16 +17,8 @@ const Dashboard = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <View style={styles.headerBlob} />
-          <Text style={styles.headerGreeting}>Bem-vindo</Text>
-          <Text style={styles.headerName}>{nomeExibido}</Text>
-
-          <View style={styles.avatarCircle}>
-            <MaterialCommunityIcons name="account" size={30} color="#ffffff" />
-          </View>
-        </View>
-
+       <ScreenHeader saudacao="Bem-vindo" titulo={nomeExibido}>
+       </ScreenHeader>
         <View style={styles.sessionCard}>
           <Text style={styles.sessionTitle}>
             Terapia Cognitivo-{"\n"}Comportamental
@@ -80,46 +72,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 129,
-  },
-  header: {
-    backgroundColor: "#3e6e82",
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 70,
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    overflow: "hidden",
-  },
-  headerBlob: {
-    position: "absolute",
-    right: -40,
-    top: 20,
-    width: 160,
-    height: 160,
-    borderRadius: 75,
-    backgroundColor: "#3e6e82",
-    opacity: 0.0,
-  },
-  headerGreeting: {
-    fontSize: 26,
-    color: "#ffffff",
-    fontWeight: "400",
-  },
-  headerName: {
-    fontSize: 30,
-    color: "#ffffff",
-    fontWeight: "bold",
-  },
-  avatarCircle: {
-    position: "absolute",
-    right: 16,
-    top: 66,
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "#dddddd",
-    justifyContent: "center",
-    alignItems: "center",
   },
   sessionCard: {
     backgroundColor: "#ffffff",
