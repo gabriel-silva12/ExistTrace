@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type CampoInfo = {
   label: string;
   value: string;
@@ -10,4 +12,5 @@ export type Propriedades = {
    avatar?: {
     fotoUrl?: string;
   };
+  children?: ReactNode
 };

@@ -3,7 +3,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Propriedades } from "./types";
 import { styles } from "./styles";
 
-const InfoCard = ({ titulo, campos, onPress, avatar }: Propriedades) => {
+const InfoCard = ({ titulo, campos, onPress, avatar, children }: Propriedades) => {
   const Wrapper = onPress ? Pressable : View;
 
   return (
@@ -24,6 +24,7 @@ const InfoCard = ({ titulo, campos, onPress, avatar }: Propriedades) => {
             {campo.label}: {campo.value}
           </Text>
         ))}
+        {children}
       </View>
     </Wrapper>
   );
