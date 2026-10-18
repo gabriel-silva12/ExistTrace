@@ -46,7 +46,7 @@ const HistoricoPaciente = () => {
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <View>
-              <Text style={styles.titulo}>Histórico de sessões</Text>
+  
               {sessoes.length > 0 && (
                 <Text style={styles.contagem}>
                   {sessoes.length === 1 ? "1 sessão" : `${sessoes.length} sessões`}
@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listaConteudo: {
-    paddingHorizontal: 16, // dentro da lista: a sombra dos cards não é mais cortada
-    paddingTop: 24,
+    paddingHorizontal: 8, // dentro da lista: a sombra dos cards não é mais cortada
+    paddingTop: 16,
     paddingBottom: 120, // espaço para o último card passar por cima do botão flutuante
   },
   titulo: {
@@ -103,9 +103,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   contagem: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#6b7684",
-    marginBottom: 16,
+    marginTop: 2,
+    marginBottom: 8,
+    paddingHorizontal: 8
   },
   estado: {
     marginTop: 32,

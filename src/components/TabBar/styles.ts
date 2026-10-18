@@ -2,21 +2,35 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-     position: "absolute",
+    position: "absolute",
     left: 16,
     right: 16,
     height: 68,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(62, 110, 130, 0.92)", // era "#3e6e82"
+    backgroundColor: "rgba(62, 110, 130, 0.92)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",    // borda sutil que dá efeito de vidro
+    borderColor: "rgba(255, 255, 255, 0.18)",
     borderRadius: 34,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.18,
     shadowRadius: 16,
     elevation: 8,
+  },
+
+  // área interna sem borda nem padding: aqui a posição da pílula é exata
+  trilho: {
+    flex: 1,
+    flexDirection: "row",
+  },
+
+  // sem sombra nem elevation: no Android a elevation a colocaria acima dos ícones
+  pilula: {
+    position: "absolute",
+    top: 7,
+    left: 0,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "#ffffff",
   },
 
   // cada aba ocupa um terço da barra (área de toque)
@@ -27,25 +41,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  aba: {
-    height: 52,
-    minWidth: 48,
-    borderRadius: 24,
-    flexDirection: "row",
+  // segunda camada (ícone ativo) empilhada sobre a primeira
+  camadaTopo: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 12,
-    gap: 8,
   },
 
-  abaAtiva: {
-    backgroundColor: "#ffffff",
-    paddingHorizontal: 14,
+  conteudoAba: {
+    alignItems: "center",
+    gap: 2,
   },
 
   rotulo: {
-    color: "#3e6e82",
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "700",
   },
 });

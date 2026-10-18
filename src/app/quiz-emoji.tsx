@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { sortearItens } from "@/utils/random";
-
+import QuizScreen from "@/components/QuizScreen";
 import QuizSelector from "@/components/QuizSelector";
 import type { QuizOption } from "@/components/QuizSelector/types";
 
@@ -45,69 +45,28 @@ const QuizEmoji = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ gestureEnabled: false }} />
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Como você está?</Text>
-        <Text style={styles.subtitle}>Selecione um emoji:</Text>
+    <QuizScreen pronto={!!emojiEscolhido} onContinuar={handleConfirmar} confirmarSaida>
+    <Text style={styles.title}>Um emoji para o seu dia</Text>
 
-        <QuizSelector
-          options={emojisSorteados}
-          selectionMode="single"
-          selectedId={selectedId}
-          onSelect={setSelectedId}
-          columns={2}
-          fontSize={60}
-        />
-
-        <Pressable
-          style={({ pressed }) => [
-            styles.pillButton,
-            !emojiEscolhido && styles.pillButtonDisabled,
-            pressed && { opacity: 0.5 },
-          ]}
-          onPress={handleConfirmar}
-          disabled={!emojiEscolhido}
-        >
-          <Text style={styles.pillButtonText}>Confirmar</Text>
-        </Pressable>
-      </View>
-    </View>
+    <QuizSelector
+      options={emojisSorteados}
+      selectionMode="single"
+      selectedId={selectedId}
+      onSelect={setSelectedId}
+      columns={2}
+      fontSize={48}
+    />
+  </QuizScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#eaf3f6" },
-  contentContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 12,
-  },
-  title: {
+    title: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontWeight: "700",
     color: "#111111",
-    alignSelf: "flex-start",
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 24,
-    color: "#666666",
-    alignSelf: "flex-start",
     marginBottom: 32,
   },
-  pillButton: {
-    width: "50%",
-    height: 54,
-    backgroundColor: "#407FA0",
-    borderRadius: 27,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 32,
-  },
-  pillButtonDisabled: { backgroundColor: "#bbbbbb" }, // Changed to gray so it looks disabled!
-  pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
 });
 
 export default QuizEmoji;

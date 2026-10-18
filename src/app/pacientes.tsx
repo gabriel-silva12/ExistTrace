@@ -40,7 +40,14 @@ const Pacientes = () => {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader titulo="Meus Pacientes"></ScreenHeader>
+      <ScreenHeader
+        titulo="Meus pacientes"
+        subtitulo={
+          pacientes.length === 1 ? "1 paciente" : `${pacientes.length} pacientes`
+        }
+        compacto
+        mostrarAvatar={false}
+      />
       <Stack.Screen options={{ gestureEnabled: false }} />
       <View style={styles.searchBar}>
         
@@ -127,19 +134,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#eaf3f6",
   },
   listContent: {
-  paddingHorizontal: 20,
+  paddingHorizontal: 10,
   paddingBottom: 120, // era 16
   },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#ffffff",
-    marginHorizontal: 20,
-    marginTop: 16,
+    marginHorizontal: 10,
+    marginTop: -14,
     marginBottom: 16,
     borderRadius: 16,
-    paddingHorizontal: 16,
-    height: 52,
+    paddingHorizontal: 10,
+    height: 54,
     gap: 10,
 
     shadowColor: "#185366",

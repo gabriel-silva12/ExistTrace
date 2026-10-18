@@ -1,55 +1,65 @@
 import { useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/services/supabase";
 import Desenho from "@/components/Desenho";
 import { useQuiz } from "@/hooks/context/QuizContext";
 
 const ConfirmarQuiz = () => {
-    const router = useRouter()
-    const { desenho, limparQuiz } = useQuiz()
-     
-    const { pacienteId, emoji, palavraFixa, palavraLivre } = useLocalSearchParams<{
-        pacienteId: string,
-        emoji: string,
-        palavraFixa: string,
-        palavraLivre: string
-    }>() 
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { desenho, limparQuiz } = useQuiz();
 
-    const [salvando, setSalvando] = useState(false)
+  const { pacienteId, emoji, palavraFixa, palavraLivre } = useLocalSearchParams<{
+    pacienteId: string;
+    emoji: string;
+    palavraFixa: string;
+    palavraLivre: string;
+  }>();
 
-    const confirmar = async () => {
-        if (salvando) return
-        setSalvando(true)
+  const [salvando, setSalvando] = useState(false);
 
-        const { error } = await supabase.from("sessao_terapia").insert({
-            paciente_id: Number(pacienteId),
-            emoji,
-            palavra_selecionada: palavraFixa,
-            palavra_livre: palavraLivre,
-            desenho,
-        })
+  const confirmar = async () => {
+    if (salvando) return;
+    setSalvando(true);
 
-        setSalvando(false)
+    const { error } = await supabase.from("sessao_terapia").insert({
+      paciente_id: Number(pacienteId),
+      emoji,
+      palavra_selecionada: palavraFixa,
+      palavra_livre: palavraLivre,
+      desenho,
+    });
 
-        if (error) {
-            console.error(error.message)
-            Alert.alert("Não conseguimos salvar a sessão, tente novamente em alguns instantes")
-            return
-        }
-        limparQuiz()
-        router.dismiss(5)
+    setSalvando(false);
+
+    if (error) {
+      console.error(error.message);
+      Alert.alert("Não conseguimos salvar a sessão, tente novamente em alguns instantes");
+      return;
     }
+    limparQuiz();
+    router.dismiss(5);
+  };
 
-    const recomecar = () => {
-        limparQuiz()
-        router.dismiss(5)
-        router.push( {pathname: "/quiz-emoji", params: {pacienteId}})
-    }
+  const recomecar = () => {
+    limparQuiz();
+    router.dismiss(5);
+    router.push({ pathname: "/quiz-emoji", params: { pacienteId } });
+  };
 
-    return (
+  return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
+      <Stack.Screen options={{ gestureEnabled: false }} />
+      <StatusBar style="dark" hidden={false} />
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 24 }]}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.title}>Confirme as respostas</Text>
         <Text style={styles.subtitle}>Está tudo certo?</Text>
 
@@ -73,109 +83,85 @@ const ConfirmarQuiz = () => {
             <Text style={styles.valor}>{palavraLivre}</Text>
           </View>
 
-         <View style={styles.separador} />
+          <View style={styles.separador} />
 
           <View style={styles.linha}>
-            <Text style={styles.rotulo}>Desenho Livre</Text>
-            <View style={styles.miniatura}>
-                { desenho ? (
-                  <Desenho
-                    desenho = { desenho }
-                    tamanho= { 120}
-                  />
-                ) : (
-                  <Text>Nenhum desenho disponivel</Text>
-                )}
-
-            </View>
+            <Text style={styles.rotulo}>Desenho livre</Text>
+            {desenho && desenho.traces.length > 0 ? (
+              <View style={styles.miniatura}>
+                <Desenho desenho={desenho} tamanho={160} />
+              </View>
+            ) : (
+              <Text style={styles.semDados}>Nenhum desenho disponível</Text>
+            )}
           </View>
-
         </View>
+      </ScrollView>
 
-      
+      {/* botões fixos fora da rolagem: sempre ao alcance do polegar */}
+      <View style={[styles.botoes, { paddingBottom: insets.bottom + 16 }]}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.pillButtonOutline,
+            pressed && { opacity: 0.6 },
+          ]}
+          onPress={recomecar}
+          disabled={salvando}
+        >
+          <Text style={styles.pillButtonOutlineText}>Recomeçar</Text>
+        </Pressable>
 
-
-            <View style={styles.botoes}>
-        
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.pillButton,
-                        salvando && styles.pillButtonDisabled,
-                        pressed && { opacity: 0.8 },
-                    ]}
-                    onPress={confirmar}
-                    disabled={salvando}
-                >
-                    <Text style={styles.pillButtonText}>
-                        {salvando ? "Salvando..." : "Confirmar"}
-                    </Text>
-                </Pressable>
-
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.pillButtonOutline,
-                        pressed && { opacity: 0.6 },
-                    ]}
-                    onPress={recomecar}
-                    disabled={salvando}
-                >
-                    <Text style={styles.pillButtonOutlineText}>Recomeçar</Text>
-                </Pressable>
-            </View>
+        <Pressable
+          style={({ pressed }) => [
+            styles.pillButton,
+            salvando && styles.pillButtonDisabled,
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={confirmar}
+          disabled={salvando}
+        >
+          <Text style={styles.pillButtonText}>
+            {salvando ? "Salvando..." : "Confirmar"}
+          </Text>
+        </Pressable>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#eaf3f6" },
-  contentContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 12,
+  scroll: { flex: 1 },
+  scrollContent: {
+    paddingHorizontal: 16, // dá espaço para a sombra do card não ser cortada
+    paddingBottom: 24,
   },
   title: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#111111",
-    alignSelf: "flex-start",
     marginBottom: 4,
-    paddingTop: 20
+    paddingTop: 8,
   },
   subtitle: {
     fontSize: 18,
     color: "#666666",
-    alignSelf: "flex-start",
     marginBottom: 24,
   },
   card: {
-    width: "100%",
     backgroundColor: "#ffffff",
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 16,
-    marginBottom: 32,
 
-    overflow: "hidden",
-  
-    //ios
-    shadowColor: "#185366",       // Using your palette's deep blue makes the shadow look natural, not dirty
+    // ios
+    shadowColor: "#185366",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,          // Keep it very soft and subtle
+    shadowOpacity: 0.06,
     shadowRadius: 12,
 
-    //android
-    elevation: 3,   
-  },
-  miniatura: {
-  marginTop: 8,
-  alignSelf: "flex-start",
-  backgroundColor: "#ffffff",
-  borderWidth: 1,
-  borderColor: "#d7e2e5",
-  borderRadius: 16,
-  overflow: "hidden",
+    // android
+    elevation: 3,
   },
   linha: {
     paddingVertical: 14,
@@ -191,14 +177,27 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#111111",
   },
+  semDados: {
+    fontSize: 16,
+    color: "#6b7684",
+  },
+  miniatura: {
+    alignSelf: "flex-start",
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#d7e2e5",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
   separador: {
     height: 1.2,
     backgroundColor: "#d7e2e5",
   },
   botoes: {
-        width: "100%",
-        flexDirection: "row",
-        gap: 4,
+    flexDirection: "row",
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingTop: 12,
   },
   pillButton: {
     flex: 1,
@@ -218,14 +217,12 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
-  
   },
   pillButtonOutlineText: {
     color: "#407FA0",
     fontSize: 16,
     fontWeight: "bold",
   },
-
 });
 
-export default ConfirmarQuiz
+export default ConfirmarQuiz;

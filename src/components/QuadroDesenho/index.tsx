@@ -1,235 +1,320 @@
 import { useEffect, useRef, useState } from "react";
-import { LayoutChangeEvent, PanResponder,  Pressable, StyleSheet, Text, View } from "react-native";
-import Svg, { Path } from "react-native-svg"
-import type { DesenhoSalvo, Trace } from "../Desenho/types";
+import {
+  Animated,
+  LayoutChangeEvent,
+  PanResponder,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Svg, { Path } from "react-native-svg";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import type { DesenhoSalvo, Trace } from "@/components/Desenho/types";
 
-const CORES = [
-    "#111111",
-    "#407FA0",
-    "#D9534F",
-    "#2e9e6b",
-]
+const CORES = ["#111111", "#407FA0", "#d9534f", "#2e9e5b"];
+const ESPESSURAS = [3, 6, 10];
 
-const ESPESSURAS = [
-    3,
-    6,
-    10
-]
+type Medidas = { largura: number; altura: number };
 
-type Propiedades = {
-    onChange?: (desenho: DesenhoSalvo) => void
-}
+type Props = {
+  onChange?: (desenho: DesenhoSalvo) => void;
+  instrucao?: string; // texto fantasma que some no primeiro toque
+};
 
-const QuadroDesenho = ({onChange}: Propiedades) => {
-    
-    const [medidas, setMedidas] = useState({
-        largura: 0,
-        altura: 0
+const QuadroDesenho = ({ onChange, instrucao }: Props) => {
+  const [medidas, setMedidas] = useState<Medidas>({ largura: 0, altura: 0 });
+  const [traces, setTraces] = useState<Trace[]>([]);
+  const [atual, setAtual] = useState<string | null>(null);
+  const [cor, setCor] = useState(CORES[0]);
+  const [espessura, setEspessura] = useState(ESPESSURAS[1]);
+  const [aberto, setAberto] = useState(false); // paleta aberta
+
+  // opacidade da barra: 1 em repouso, 0 enquanto o dedo desenha
+  const barra = useRef(new Animated.Value(1)).current;
+
+  // o PanResponder é criado uma vez só, então lê esses valores por ref
+  const estilo = useRef({ cor, espessura });
+  estilo.current = { cor, espessura };
+  const medidasRef = useRef<Medidas>({ largura: 0, altura: 0 });
+  const caminho = useRef("");
+
+  const mostrarBarra = (visivel: boolean) => {
+    Animated.timing(barra, {
+      toValue: visivel ? 1 : 0,
+      duration: visivel ? 200 : 120,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const ponto = (x: number, y: number) => {
+    const { largura, altura } = medidasRef.current;
+    const cx = Math.min(Math.max(x, 0), largura);
+    const cy = Math.min(Math.max(y, 0), altura);
+    return `${Math.round(cx * 10) / 10} ${Math.round(cy * 10) / 10}`;
+  };
+
+  const finalizar = () => {
+    mostrarBarra(true);
+    if (!caminho.current) return;
+    const novo: Trace = {
+      d: caminho.current,
+      cor: estilo.current.cor,
+      espessura: estilo.current.espessura,
+    };
+    caminho.current = "";
+    setAtual(null);
+    setTraces((anteriores) => [...anteriores, novo]);
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderTerminationRequest: () => false,
+
+      onPanResponderGrant: (evento) => {
+        setAberto(false);
+        mostrarBarra(false);
+        const { locationX, locationY } = evento.nativeEvent;
+        const p = ponto(locationX, locationY);
+        caminho.current = `M${p} L${p}`; // um toque simples vira um ponto
+        setAtual(caminho.current);
+      },
+
+      onPanResponderMove: (evento) => {
+        const { locationX, locationY } = evento.nativeEvent;
+        caminho.current += ` L${ponto(locationX, locationY)}`;
+        setAtual(caminho.current);
+      },
+
+      onPanResponderRelease: finalizar,
+      onPanResponderTerminate: finalizar,
     })
-    const [traces, setTraces] = useState<Trace[]>([])
-    const [atual, setAtual] = useState<string | null>(null)
-    const [cor, setCor] = useState(CORES[0])
-    const [espessura, setEspessura] = useState(ESPESSURAS[1])
+  ).current;
 
-    // valores para ser lidos pelo panresponder
-    const estilo = useRef({cor, espessura})
-    estilo.current = { cor, espessura }
-    const medidasRef = useRef({
-        largura: 0,
-        altura: 0
-    })
-    const caminho = useRef("")
+  // avisa a tela sempre que o desenho muda
+  useEffect(() => {
+    if (!medidas.largura) return;
+    onChange?.({ largura: medidas.largura, altura: medidas.altura, traces });
+  }, [traces, medidas]);
 
+  const aoMedir = (evento: LayoutChangeEvent) => {
+    const { width, height } = evento.nativeEvent.layout;
+    const nova = { largura: Math.round(width), altura: Math.round(height) };
+    medidasRef.current = nova;
+    setMedidas(nova);
+  };
 
-    //sim eu usei muita ia, não, não sei te explicar exatamente o que acontece aqui, vamos fingir que um matematico bem bondo escreveu esse a funçaõ de ponto para nos ^-^
-    const ponto = (x: number, y: number) => {
-        const { largura, altura } = medidasRef.current
-        const cx = Math.min(Math.max(x, 0), largura)
-        const cy = Math.min(Math.max(y, 0), altura)
-        return `${Math.round(cx * 10) / 10} ${Math.round(cy * 10)/10}`
-    }
+  const vazio = traces.length === 0;
 
-    const finalizar = () => {
-        if (!caminho.current) return
-        const novo: Trace = {
-            d: caminho.current,
-            cor: estilo.current.cor,
-            espessura: estilo.current.espessura
-        }
-
-        caminho.current = ""
-        setAtual(null)
-        setTraces((anteriores: Trace[]) => [...anteriores, novo]) //spread operator... iteração de objetos ou algo
-    }
-
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: () => true,
-            onPanResponderTerminationRequest: () => false,
-
-            onPanResponderGrant: (evento) => {
-                const { locationX, locationY } = evento.nativeEvent
-                caminho.current += `M${ponto(locationX, locationY)}`
-                setAtual(caminho.current)
-            },
-
-            onPanResponderMove: (evento) => {
-                const { locationX, locationY } = evento.nativeEvent
-                caminho.current += `L ${ponto(locationX, locationY)}`
-                setAtual(caminho.current)
-            },
-            onPanResponderRelease: finalizar,
-            onPanResponderTerminate: finalizar,
-
-        })
-    ).current //de onde veio isso
-
-    //avisa a tela que o desenho muda
-    useEffect(() => {
-        if (medidas.largura <= 0 || medidas.altura <= 0) return
-        onChange?.({
-            largura: medidas.largura,
-            altura: medidas.altura,
-            traces
-        })
-    }, [traces, medidas, onChange])
-
-    const aoMedir = (evento : LayoutChangeEvent) => {
-       const { width, height } = evento.nativeEvent.layout
-
-       const novasMedidas = {
-        largura: Math.round(width),
-        altura: Math.round(height)
-       }
-
-       medidasRef.current = novasMedidas
-       setMedidas(novasMedidas)
-
-    }
-
-    return (
-        <View style={styles.wrapper}>
-            <View style={styles.quadro} onLayout={aoMedir} {...panResponder.panHandlers}>
-                {/* toque é lido pelo quadro não pelo SVG */}
-                <View style={StyleSheet.absoluteFill} pointerEvents="none">
-                    {medidas.largura > 0 && medidas.altura > 0 && (
-                        <Svg width={medidas.largura} height={medidas.altura}>
-                            {traces.map( ( t , i ) => (
-                                <Path
-                                    key={i}
-                                    d={t.d}
-                                    stroke={t.cor}
-                                    strokeWidth={t.espessura}
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                ></Path>
-                            ))}
-                            {atual && (
-                                <Path
-                                    d={atual}
-                                    stroke={cor}
-                                    strokeWidth={espessura}
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                ></Path>
-                            )}
-                        </Svg>
-                    )}
-                </View>
-            </View>
-
-            <View style={styles.ferramentas}>
-                <View style={styles.grupo}>
-                    {CORES.map(( c ) => (
-                        <Pressable
-                            key={c}
-                            onPress={() => setCor(c)}
-                            style={[
-                                styles.corBolinha,
-                                { backgroundColor: c },
-                                cor === c && styles.selecionado
-
-                            ]}
-                        ></Pressable>   
-                    ))}
-                </View>
-
-                <View style={styles.grupo}>
-                    {ESPESSURAS.map((e) => (
-                        <Pressable
-                            key={e}
-                            onPress={() => setEspessura(e)}
-                            style={[styles.espessuraArea, espessura === e && styles.selecionado]}
-                        >
-                            <View style={{ width: e * 2, height:e * 2, borderRadius: e, backgroundColor: "#111111"}}></View>
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
-
-            <View style={styles.acoes}>
-                <Pressable
-                    disabled={traces.length === 0}
-                    onPress={ () => setTraces( (anteriores: Trace[]) => anteriores.slice(0, -1))}
-                    style={({pressed}) => [styles.acao, traces.length === 0 && {opacity: 0.4}, pressed && {opacity: 0.6}]}
-                >
-                    <Text 
-                    style = {styles.acaoTexto}>
-                        Desfazer
-                    </Text>
-                </Pressable>
-
-                <Pressable
-                    disabled={traces.length === 0}
-                    onPress={() => setTraces([])}
-                    style={({ pressed }) => [styles.acao, traces.length === 0 && { opacity: 0.4}, pressed && { opacity: 0.6}]}
-                >
-                    <Text
-                    style={styles.acaoTexto}>
-                        Limpar
-                    </Text>
-                </Pressable>
-            </View>
+  return (
+    <View style={styles.wrapper}>
+      <View style={styles.quadro} onLayout={aoMedir} {...panResponder.panHandlers}>
+        {/* pointerEvents none: o toque é lido pelo quadro, não pelo SVG */}
+        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+          {medidas.largura > 0 && (
+            <Svg width={medidas.largura} height={medidas.altura}>
+              {traces.map((t, i) => (
+                <Path
+                  key={i}
+                  d={t.d}
+                  stroke={t.cor}
+                  strokeWidth={t.espessura}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ))}
+              {atual && (
+                <Path
+                  d={atual}
+                  stroke={cor}
+                  strokeWidth={espessura}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              )}
+            </Svg>
+          )}
         </View>
-    )
 
-}
+        {/* texto fantasma: some no primeiro toque, sem mexer no tamanho do quadro */}
+        {vazio && !atual && !!instrucao && (
+          <View style={[StyleSheet.absoluteFill, styles.instrucaoArea]} pointerEvents="none">
+            <Text style={styles.instrucao}>{instrucao}</Text>
+          </View>
+        )}
+
+        {/* ferramentas dentro do quadro: somem enquanto o dedo desenha */}
+        <Animated.View
+          style={[styles.ferramentasArea, { opacity: barra }]}
+          pointerEvents="box-none"
+        >
+          {aberto && (
+            <View style={styles.painel}>
+              <View style={styles.linhaPainel}>
+                {CORES.map((c) => (
+                  <Pressable
+                    key={c}
+                    onPress={() => setCor(c)}
+                    hitSlop={4}
+                    style={[styles.corAnel, cor === c && { borderColor: c }]}
+                    accessibilityLabel="Escolher cor"
+                  >
+                    <View style={[styles.corPonto, { backgroundColor: c }]} />
+                  </Pressable>
+                ))}
+              </View>
+
+              <View style={styles.linhaPainel}>
+                {ESPESSURAS.map((e) => (
+                  <Pressable
+                    key={e}
+                    onPress={() => setEspessura(e)}
+                    hitSlop={4}
+                    style={[styles.espessuraAnel, espessura === e && styles.anelAtivo]}
+                    accessibilityLabel="Escolher espessura"
+                  >
+                    <View
+                      style={{
+                        width: e * 2,
+                        height: e * 2,
+                        borderRadius: e,
+                        backgroundColor: cor,
+                      }}
+                    />
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          )}
+
+          <View style={styles.barra}>
+            <Pressable
+              onPress={() => setAberto((a) => !a)}
+              hitSlop={4}
+              style={styles.icone}
+              accessibilityLabel="Cores e espessura"
+            >
+              <View style={[styles.corAtual, { backgroundColor: cor }]} />
+            </Pressable>
+
+            <Pressable
+              disabled={vazio}
+              onPress={() => setTraces((anteriores) => anteriores.slice(0, -1))}
+              hitSlop={4}
+              style={[styles.icone, vazio && styles.desabilitado]}
+              accessibilityLabel="Desfazer"
+            >
+              <MaterialCommunityIcons name="undo-variant" size={24} color="#407FA0" />
+            </Pressable>
+
+            <Pressable
+              disabled={vazio}
+              onPress={() => setTraces([])}
+              hitSlop={4}
+              style={[styles.icone, vazio && styles.desabilitado]}
+              accessibilityLabel="Limpar"
+            >
+              <MaterialCommunityIcons name="delete-outline" size={24} color="#407FA0" />
+            </Pressable>
+          </View>
+        </Animated.View>
+      </View>
+    </View>
+  );
+};
+
+const VIDRO = "rgba(255, 255, 255, 0.94)";
 
 const styles = StyleSheet.create({
-  wrapper: { width: "100%" },
+  wrapper: { flex: 1, width: "100%" },
   quadro: {
-    width: "100%",
-    aspectRatio: 3 / 4,
+    flex: 1,
     backgroundColor: "#ffffff",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#d7e2e5",
+    borderRadius: 24,
     overflow: "hidden",
   },
-  ferramentas: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  instrucaoArea: {
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 16,
+    padding: 32,
   },
-  grupo: { flexDirection: "row", alignItems: "center", gap: 12 },
-  corBolinha: { width: 32, height: 32, borderRadius: 16, borderWidth: 2, borderColor: "transparent" },
-  espessuraArea: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  instrucao: {
+    fontSize: 22,
+    textAlign: "center",
+    color: "rgba(17, 17, 17, 0.3)",
+  },
+
+  // fica no canto inferior esquerdo; a seta de prosseguir fica no direito
+  ferramentasArea: {
+    position: "absolute",
+    left: 12,
+    bottom: 18,
+    alignItems: "flex-start",
+  },
+  barra: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 52,
+    paddingHorizontal: 6,
+    borderRadius: 26,
+    backgroundColor: VIDRO,
+    borderWidth: 1,
+    borderColor: "rgba(17, 17, 17, 0.08)",
+    shadowColor: "#185366",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  painel: {
+    marginBottom: 8,
+    padding: 10,
+    gap: 8,
+    borderRadius: 22,
+    backgroundColor: VIDRO,
+    borderWidth: 1,
+    borderColor: "rgba(17, 17, 17, 0.08)",
+    shadowColor: "#185366",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  linhaPainel: { flexDirection: "row", alignItems: "center", gap: 4 },
+
+  icone: {
+    width: 44,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  corAtual: { width: 26, height: 26, borderRadius: 13 },
+  desabilitado: { opacity: 0.3 },
+
+  corAnel: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     borderWidth: 2,
     borderColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
   },
-  selecionado: { borderColor: "#407FA0" },
-  acoes: { flexDirection: "row", justifyContent: "space-between", marginTop: 12 },
-  acao: { paddingVertical: 8, paddingHorizontal: 4 },
-  acaoTexto: { fontSize: 15, fontWeight: "600", color: "#407FA0" },
+  corPonto: { width: 24, height: 24, borderRadius: 12 },
+  espessuraAnel: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 2,
+    borderColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  anelAtivo: { borderColor: "#407FA0" },
 });
 
-export default QuadroDesenho
+export default QuadroDesenho;

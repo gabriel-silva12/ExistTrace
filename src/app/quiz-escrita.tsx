@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { KeyboardAvoidingView, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput } from "react-native";
+
+import QuizScreen from "@/components/QuizScreen";
 
 const QuizEscrita = () => {
   const router = useRouter();
@@ -11,10 +13,11 @@ const QuizEscrita = () => {
   }>();
 
   const [palavraLivre, setPalavraLivre] = useState("");
-
   const podeContinuar = palavraLivre.trim().length > 0;
 
   const continuar = () => {
+    if (!podeContinuar) return;
+
     router.push({
       pathname: "/quiz-desenho",
       params: {
@@ -27,77 +30,41 @@ const QuizEscrita = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <ScrollView 
-      contentContainerStyle={styles.contentContainer}
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-      showsHorizontalScrollIndicator={false}>
-        <Text style={styles.title}>Agora é sua vez</Text>
-        <Text style={styles.subtitle}>Escreva algo que esteja passando pela sua cabeça:</Text>
+    <QuizScreen pronto={podeContinuar} onContinuar={continuar}>
+      <Text style={styles.title}>Agora é sua vez</Text>
 
-        <TextInput
-          style={styles.input}
-          value={palavraLivre}
-          onChangeText={setPalavraLivre}
-          autoCapitalize="none"
-        />
-
-        <Pressable
-          style={[styles.pillButton, !podeContinuar && styles.pillButtonDisabled]}
-          onPress={continuar}
-          disabled={!podeContinuar}
-        >
-          <Text style={styles.pillButtonText}>Continuar</Text>
-        </Pressable>
-      </ScrollView>
-    </KeyboardAvoidingView>
+     <TextInput
+        style={styles.input}
+        value={palavraLivre}
+        onChangeText={setPalavraLivre}
+        placeholder="Escreva uma palavra"
+        placeholderTextColor="rgba(17, 17, 17, 0.25)"
+        selectionColor="#407FA0"
+        autoFocus
+        autoCapitalize="sentences"
+        multiline
+        scrollEnabled
+      />
+    </QuizScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#eaf3f6" },
-  contentContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 12,
-  },
   title: {
     fontSize: 40,
-    fontWeight: "bold",
+    fontWeight: "700",
     color: "#111111",
-    alignSelf: "flex-start",
-    marginBottom: 4,
+    marginBottom: 24,
   },
-  subtitle: {
-    fontSize: 24,
-    color: "#666666",
-    alignSelf: "flex-start",
-    marginBottom: 32,
-  },
-  input: {
-    backgroundColor: "#ffffff",
-    width: "100%",
-    height: 100,
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    fontSize: 16,
+ input: {
+    fontSize: 28,
     color: "#111111",
+    borderBottomWidth: 2,
+    borderBottomColor: "rgba(64, 127, 160, 0.5)",
+    paddingVertical: 8,
+    maxHeight: 200, // cerca de 5 linhas; depois disso o texto rola dentro do campo
+    textAlignVertical: "top", // Android: o texto começa no topo, não no meio
   },
-  pillButton: {
-    width: "50%",
-    height: 54,
-    backgroundColor: "#407FA0",
-    borderRadius: 27,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  pillButtonDisabled: { backgroundColor: "#bbbbbb" },
-  pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
 });
 
 export default QuizEscrita;
