@@ -1,3 +1,4 @@
+import { supabase } from "@/services/supabase";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
