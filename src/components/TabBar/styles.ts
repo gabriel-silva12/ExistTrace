@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 16,
     right: 16,
-    height: 68,
+    height: 64,
     backgroundColor: "rgba(62, 110, 130, 0.92)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.18)",
@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
   // sem sombra nem elevation: no Android a elevation a colocaria acima dos ícones
   pilula: {
     position: "absolute",
-    top: 7,
+    top: 6,
     left: 0,
-    height: 52,
+    height: 50,
     borderRadius: 26,
     backgroundColor: "#ffffff",
   },

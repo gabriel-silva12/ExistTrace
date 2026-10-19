@@ -120,9 +120,9 @@ const QuizScreen = ({
       {/* saída: X discreto no canto superior esquerdo */}
       {confirmarSaida && (
         <Pressable
-          style={[styles.sair, { top: insets.top + 12 }]}
+          style={[styles.sair, { top: 14 }]}
           onPress={pedirConfirmacao}
-          hitSlop={12}
+          hitSlop={12} //aumenta area de interação sem aumentar o elemento em si
           accessibilityRole="button"
           accessibilityLabel="Sair do quiz"
         >
@@ -161,13 +161,13 @@ const styles = StyleSheet.create({
   },
   sair: {
     position: "absolute",
-    left: 20,
+    left: 0,
     width: 44,
     height: 44,
     borderRadius: 22,
     justifyContent: "center",
     alignItems: "center",
-    opacity: 0.35,
+    opacity: 0.15,
   },
 });
 

@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/services/supabase";
 import Desenho from "@/components/Desenho";
 import { useQuiz } from "@/hooks/context/QuizContext";
+import { LinearGradient } from "expo-linear-gradient";
+import ScreenHeader from "@/components/ScreenHeader";
+
 
 const ConfirmarQuiz = () => {
   const router = useRouter();
@@ -54,15 +58,17 @@ const ConfirmarQuiz = () => {
     <View style={styles.container}>
       <Stack.Screen options={{ gestureEnabled: false }} />
       <StatusBar style="dark" hidden={false} />
+      <ScreenHeader
+        titulo="Confirme as respostas"
+        compacto
+        mostrarAvatar={false}
+      />
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 24 }]}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: 12, paddingBottom: insets.bottom + 120 }]}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Confirme as respostas</Text>
-        <Text style={styles.subtitle}>Está tudo certo?</Text>
-
         <View style={styles.card}>
           <View style={styles.linha}>
             <Text style={styles.rotulo}>Emoji</Text>
@@ -98,31 +104,40 @@ const ConfirmarQuiz = () => {
         </View>
       </ScrollView>
 
-      {/* botões fixos fora da rolagem: sempre ao alcance do polegar */}
-      <View style={[styles.botoes, { paddingBottom: insets.bottom + 16 }]}>
+      <LinearGradient
+        pointerEvents="none"
+        colors={["rgba(234, 243, 246, 0)", "#eaf3f6"]}
+        style={[styles.fade, { height: insets.bottom + 110 }]}
+      />
+
+          {/* dock flutuante: mesma superfície do card */}
+      <View style={[styles.dock, { bottom: insets.bottom + 12 }]}>
         <Pressable
-          style={({ pressed }) => [
-            styles.pillButtonOutline,
-            pressed && { opacity: 0.6 },
-          ]}
+          style={({ pressed }) => [styles.botaoSecundario, pressed && { opacity: 0.6 }]}
           onPress={recomecar}
           disabled={salvando}
         >
-          <Text style={styles.pillButtonOutlineText}>Recomeçar</Text>
+          <MaterialCommunityIcons name="restart" size={20} color="#407FA0" />
+          <Text style={styles.botaoSecundarioTexto}>Recomeçar</Text>
         </Pressable>
 
         <Pressable
           style={({ pressed }) => [
-            styles.pillButton,
-            salvando && styles.pillButtonDisabled,
-            pressed && { opacity: 0.8 },
+            styles.botaoPrimario,
+            salvando && styles.botaoDesabilitado,
+            pressed && { opacity: 0.85 },
           ]}
           onPress={confirmar}
           disabled={salvando}
         >
-          <Text style={styles.pillButtonText}>
-            {salvando ? "Salvando..." : "Confirmar"}
-          </Text>
+          {salvando ? (
+            <ActivityIndicator color="#ffffff" />
+          ) : (
+            <>
+              <MaterialCommunityIcons name="check" size={20} color="#ffffff" />
+              <Text style={styles.botaoPrimarioTexto}>Confirmar</Text>
+            </>
+          )}
         </Pressable>
       </View>
     </View>
@@ -133,7 +148,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#eaf3f6" },
   scroll: { flex: 1 },
   scrollContent: {
-    paddingHorizontal: 16, // dá espaço para a sombra do card não ser cortada
+    paddingHorizontal: 10, // dá espaço para a sombra do card não ser cortada
     paddingBottom: 24,
   },
   title: {
@@ -141,7 +156,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#111111",
     marginBottom: 4,
-    paddingTop: 8,
+    paddingTop: 16,
   },
   subtitle: {
     fontSize: 18,
@@ -199,30 +214,61 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
   },
-  pillButton: {
-    flex: 1,
-    height: 54,
-    backgroundColor: "#407FA0",
-    borderRadius: 27,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  pillButtonDisabled: { backgroundColor: "#cccccc" },
-  pillButtonText: { color: "#ffffff", fontSize: 16, fontWeight: "bold" },
-  pillButtonOutline: {
-    flex: 1,
-    height: 54,
+    dock: {
+    position: "absolute",
+    left: 16,
+    right: 16,
+    flexDirection: "row",
+    gap: 8,
+    padding: 8,
+    borderRadius: 34, // raio do botão (26) + padding (8): cantos concêntricos
+    backgroundColor: "rgba(255, 255, 255, 0.92)",
     borderWidth: 1,
-    borderColor: "#407FA0",
-    borderRadius: 27,
-    justifyContent: "center",
-    alignItems: "center",
+    borderColor: "rgba(24, 83, 102, 0.08)",
+    shadowColor: "#185366",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  pillButtonOutlineText: {
+  botaoSecundario: {
+    flex: 1,
+    height: 52,
+    borderRadius: 26,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    backgroundColor: "rgba(64, 127, 160, 0.1)",
+  },
+  botaoSecundarioTexto: {
     color: "#407FA0",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "700",
   },
+  botaoPrimario: {
+    flex: 1.3, // um pouco maior: é a ação principal
+    height: 52,
+    borderRadius: 26,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    backgroundColor: "#407FA0",
+  },
+  botaoPrimarioTexto: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  botaoDesabilitado: { backgroundColor: "#9fb8c4" },
+  fade: {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: 0,
+},
+    
 });
 
 export default ConfirmarQuiz;
