@@ -5,17 +5,9 @@ import { sortearItens } from "@/utils/random";
 import QuizScreen from "@/components/QuizScreen";
 import QuizSelector from "@/components/QuizSelector";
 import type { QuizOption } from "@/components/QuizSelector/types";
+import palavras from './data/palavras.json'
 
-const poolPalavras: QuizOption[] = [
-  { id: "1", title: "Amor" },
-  { id: "2", title: "Paz" },
-  { id: "3", title: "Verdade" },
-  { id: "4", title: "Honestidade" },
-  { id: "5", title: "Medo" },
-  { id: "6", title: "Cansaço" },
-  { id: "7", title: "Esperança" },
-  { id: "8", title: "Raiva" },
-];
+const palavrasPool: QuizOption[] = palavras
 
 const QuizPalavra = () => {
   const router = useRouter();
@@ -24,7 +16,7 @@ const QuizPalavra = () => {
     emoji: string;
   }>();
 
-  const palavrasSorteadas = useMemo(() => sortearItens(poolPalavras, 4), []);
+  const palavrasSorteadas = useMemo(() => sortearItens(palavrasPool, 4), []);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
 

@@ -5,17 +5,9 @@ import { sortearItens } from "@/utils/random";
 import QuizScreen from "@/components/QuizScreen";
 import QuizSelector from "@/components/QuizSelector";
 import type { QuizOption } from "@/components/QuizSelector/types";
+import emojis from './data/emojis.json'
 
-const poolEmojis: QuizOption[] = [
-  { id: "1", title: "🥳" },
-  { id: "2", title: "😎" },
-  { id: "3", title: "👽" },
-  { id: "4", title: "💗" },
-  { id: "5", title: "😢" },
-  { id: "6", title: "😡" },
-  { id: "7", title: "😴" },
-  { id: "8", title: "TESTE" },
-];
+const emojisPool : QuizOption[] = emojis
 
 const QuizEmoji = () => {
   const router = useRouter();
@@ -27,7 +19,7 @@ const QuizEmoji = () => {
    * Se você não usasse o useMemo, 'sortearItens' sortearia NOVOS emojis toda vez que você clicasse em uma carta!
    * O useMemo fixa o resultado na memória para que o sorteio aleatório ocorra apenas UMA VEZ, quando a tela é carregada."" Nãosãominhaspalavras
    */
-  const emojisSorteados = useMemo(() => sortearItens(poolEmojis, 4), []);
+  const emojisSorteados = useMemo(() => sortearItens(emojisPool, 4), []);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
