@@ -35,7 +35,7 @@ const Dashboard = () => {
               styles.startButton,
               pressed && { opacity: 0.85 },
             ]}
-            onPress={() => router.push("/quiz-emoji")}
+            onPress={() => router.push("/selecionar-paciente")}
           >
             <Text style={styles.startButtonText}>Iniciar</Text>
           </Pressable>
