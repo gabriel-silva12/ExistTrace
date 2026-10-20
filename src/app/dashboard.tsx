@@ -4,17 +4,24 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TabBar from "@/components/TabBar";
 import ScreenHeader from "@/components/ScreenHeader";
 import { useAuth } from "@/hooks/context/AuthContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Dashboard = () => {
   const router = useRouter();
   const { perfil } = useAuth();
   const nomeExibido = perfil?.nome || "Psicólogo";
+  const insets = useSafeAreaInsets()
+
 
   return (
     <View style={styles.container}>
      <Stack.Screen options={{ gestureEnabled: false }} />
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent,
+          {
+            paddingBottom: 64 + Math.max(insets.bottom, 8) + 24,
+          }
+        ]}
         showsVerticalScrollIndicator={false}
       >
        <ScreenHeader saudacao="Bem-vindo" titulo={nomeExibido}>
@@ -71,7 +78,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#eaf3f6",
   },
   scrollContent: {
-    paddingBottom: 129,
   },
   sessionCard: {
     backgroundColor: "#ffffff",

@@ -1,63 +1,82 @@
 import { useMemo, useState } from "react";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { StyleSheet, Text } from "react-native";
+
 import { sortearItens } from "@/utils/random";
 import QuizScreen from "@/components/QuizScreen";
-import QuizSelector from "@/components/QuizSelector";
+import EmojiAquarium from "@/components/EmojiAquarium";
 import type { QuizOption } from "@/components/QuizSelector/types";
-import emojis from './data/emojis.json'
 
-const emojisPool : QuizOption[] = emojis
+import emojis from "./data/emojis.json";
+
+const emojisPool: QuizOption[] = emojis;
 
 const QuizEmoji = () => {
   const router = useRouter();
-  const { pacienteId } = useLocalSearchParams<{ pacienteId: string }>();
 
-  /**
-   * ""EXPLICAÇÃO RÁPIDA SOBRE o useMemo:
-   * Normalmente, toda vez que um componente é atualizado (re-renderizado), todo o código é executado novamente.
-   * Se você não usasse o useMemo, 'sortearItens' sortearia NOVOS emojis toda vez que você clicasse em uma carta!
-   * O useMemo fixa o resultado na memória para que o sorteio aleatório ocorra apenas UMA VEZ, quando a tela é carregada."" Nãosãominhaspalavras
-   */
-  const emojisSorteados = useMemo(() => sortearItens(emojisPool, 4), []);
+  const { pacienteId } = useLocalSearchParams<{
+    pacienteId: string;
+  }>();
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const emojisSorteados = useMemo(() => sortearItens(emojisPool, 6), []);
 
-  const emojiEscolhido = emojisSorteados.find(
-    (emoji) => emoji.id === selectedId,
-  )?.title;
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const handleSelectEmoji = (id: string) => {
+    setSelectedIds((previous) => {
+      if (previous.includes(id)) {
+        return previous.filter((selectedId) => selectedId !== id);
+      }
+
+      if (previous.length >= 2) {
+        return previous;
+      }
+
+      return [...previous, id];
+    });
+  };
+
+  const emojisEscolhidos = emojisSorteados
+    .filter((emoji) => selectedIds.includes(emoji.id))
+    .map((emoji) => emoji.title)
+    .filter((title): title is string => title !== undefined);
+
+  const pronto = emojisEscolhidos.length === 2;
 
   const handleConfirmar = () => {
-    if (!emojiEscolhido) return;
+    if (!pronto) return;
 
     router.push({
       pathname: "/quiz-palavra",
-      params: { pacienteId, emoji: emojiEscolhido },
+      params: {
+        pacienteId,
+        emoji: emojisEscolhidos.join(" "),
+      },
     });
   };
 
   return (
-    <QuizScreen pronto={!!emojiEscolhido} onContinuar={handleConfirmar} confirmarSaida>
-    <Text style={styles.title}>Um emoji para o seu dia</Text>
+    <QuizScreen pronto={pronto} onContinuar={handleConfirmar} confirmarSaida>
+      <Text style={styles.title}>Vamos lá, selecione dois emojis:</Text>
 
-    <QuizSelector
-      options={emojisSorteados}
-      selectionMode="single"
-      selectedId={selectedId}
-      onSelect={setSelectedId}
-      columns={2}
-      fontSize={48}
-    />
-  </QuizScreen>
+      <EmojiAquarium
+        options={emojisSorteados}
+        selectedIds={selectedIds}
+        onSelect={handleSelectEmoji}
+        disabled={pronto}
+      />
+    </QuizScreen>
   );
 };
 
 const styles = StyleSheet.create({
-    title: {
-    fontSize: 32,
+  title: {
+    fontSize: 28,
     fontWeight: "700",
-    color: "#111111",
-    marginBottom: 32,
+    color: "#173B4D",
+    marginBottom: 24,
+    marginTop: 40,
+    paddingHorizontal: 0,
   },
 });
 

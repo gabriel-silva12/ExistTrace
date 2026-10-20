@@ -1,16 +1,23 @@
-import { AuthProvider } from "@/hooks/context/AuthContext"
-import { QuizProvider } from "@/hooks/context/QuizContext"
-import { Stack } from "expo-router"
+import { Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { AuthProvider } from "@/hooks/context/AuthContext";
+import { QuizProvider } from "@/hooks/context/QuizContext";
+
 const RootLayout = () => {
   return (
-    <AuthProvider>
-      <QuizProvider>
-        <Stack screenOptions={{
-          headerShown: false
-        }}></Stack>
-      </QuizProvider>
-    </AuthProvider>
-  ) 
-}
+    <SafeAreaProvider>
+      <AuthProvider>
+        <QuizProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          />
+        </QuizProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
+  );
+};
 
-export default RootLayout
+export default RootLayout;

@@ -190,14 +190,14 @@ const TabBar = ({ activeTab = "home" }: Propiedades) => {
       onPanResponderTerminate: () => {
         encolher();
         atualizarHover(null);
-      },
+      },  
     })
   ).current;
 
   return (
     <View
       ref={containerRef}
-      style={[styles.container, { bottom: Math.max(insets.bottom - 8, 8) }]}
+      style={[styles.container, { bottom: insets.bottom > 16 ? insets.bottom - 18 : 4 }]} // suport a navegação classica
       {...panResponder.panHandlers}
     >
       <View style={styles.trilho} onLayout={aoMedirTrilho}>
