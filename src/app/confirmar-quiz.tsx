@@ -71,7 +71,7 @@ const ConfirmarQuiz = () => {
       >
         <View style={styles.card}>
           <View style={styles.linha}>
-            <Text style={styles.rotulo}>Emoji</Text>
+            <Text style={styles.rotulo}>Emojis</Text>
             <Text style={styles.emoji}>{emoji}</Text>
           </View>
 

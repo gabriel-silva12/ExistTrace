@@ -1,7 +1,14 @@
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SessaoCard from "@/components/SessaoCard";
 import ScreenHeader from "@/components/ScreenHeader";
 import { useSessoes } from "@/hooks/useSessoes";
@@ -46,10 +53,11 @@ const HistoricoPaciente = () => {
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <View>
-  
               {sessoes.length > 0 && (
                 <Text style={styles.contagem}>
-                  {sessoes.length === 1 ? "1 sessão" : `${sessoes.length} sessões`}
+                  {sessoes.length === 1
+                    ? "1 sessão"
+                    : `${sessoes.length} sessões`}
                 </Text>
               )}
             </View>
@@ -62,23 +70,37 @@ const HistoricoPaciente = () => {
         />
       )}
 
-      <Pressable
-        style={({ pressed }) => [
-          styles.pillButton,
-          { bottom: insets.bottom + 16 },
-          !pacienteIdNum && styles.pillButtonDisabled,
-          pressed && { opacity: 0.8 },
-        ]}
-        disabled={!pacienteIdNum}
-        onPress={() =>
-          router.push({
-            pathname: "/quiz-emoji",
-            params: { pacienteId },
-          })
-        }
-      >
-        <Text style={styles.pillButtonText}>Aplicar quiz</Text>
-      </Pressable>
+      <View style={[styles.dock, { bottom: insets.bottom + 12 }]}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+          style={({ pressed }) => [
+            styles.botaoVoltar,
+            pressed ? styles.botaoPressionado : undefined,
+          ]}
+          onPress={() => router.back()}
+        >
+          <MaterialCommunityIcons name="arrow-left" size={22} color="#407FA0" />
+        </Pressable>
+
+        <Pressable
+          accessibilityRole="button"
+          style={({ pressed }) => [
+            styles.botaoPrimario,
+            !pacienteIdNum ? styles.botaoDesabilitado : undefined,
+            pressed && pacienteIdNum ? styles.botaoPressionado : undefined,
+          ]}
+          disabled={!pacienteIdNum}
+          onPress={() =>
+            router.push({
+              pathname: "/quiz-emoji",
+              params: { pacienteId },
+            })
+          }
+        >
+          <Text style={styles.botaoPrimarioTexto}>Aplicar novo quiz</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -94,7 +116,7 @@ const styles = StyleSheet.create({
   listaConteudo: {
     paddingHorizontal: 8, // dentro da lista: a sombra dos cards não é mais cortada
     paddingTop: 16,
-    paddingBottom: 120, // espaço para o último card passar por cima do botão flutuante
+    paddingBottom: 110, // espaço para o último card passar por cima do botão flutuante
   },
   titulo: {
     fontSize: 28,
@@ -107,7 +129,7 @@ const styles = StyleSheet.create({
     color: "#6b7684",
     marginTop: 2,
     marginBottom: 8,
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
   },
   estado: {
     marginTop: 32,
@@ -125,28 +147,67 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#407FA0",
   },
-  pillButton: {
+  dock: {
     position: "absolute",
-    left: "12.5%",
-    width: "75%",
-    height: 56,
-    backgroundColor: "#407FA0",
-    borderRadius: 28,
-    justifyContent: "center",
-    alignItems: "center",
+    left: 60,
+    right: 60,
 
-    // sombra para o botão "flutuar" sobre a lista
-    shadowColor: "#185366",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 4,
+
+    backgroundColor: "#FFFFFF",
+    borderRadius: 34,
+    borderWidth: 1,
+    borderColor: "rgba(24, 83, 102, 0.08)",
+
+    shadowColor: "#203B46",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.14,
+    shadowRadius: 10,
     elevation: 6,
   },
-  pillButtonDisabled: { backgroundColor: "#cccccc" },
-  pillButtonText: {
-    color: "#ffffff",
+
+  botaoVoltar: {
+    width: 52,
+    height: 52,
+    alignItems: "center",
+    justifyContent: "center",
+
+    backgroundColor: "#F0F6F8",
+    borderRadius: 26,
+    borderWidth: 1,
+    borderColor: "#E2EDF1",
+  },
+
+  botaoPrimario: {
+    flex: 1,
+    height: 52,
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+
+    backgroundColor: "#407FA0",
+    borderRadius: 26,
+  },
+
+  botaoPrimarioTexto: {
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+
+  botaoDesabilitado: {
+    backgroundColor: "#AABBC2",
+  },
+
+  botaoPressionado: {
+    opacity: 0.82,
+    transform: [{ scale: 0.98 }],
   },
 });
 

@@ -9,7 +9,7 @@ const SessaoCard = ({ sessao }: Propriedades) => {
     <InfoCard
       titulo={formatarParaDataBR(sessao.data)}
       campos={[
-        { label: "Emoji", value: sessao.emoji },
+        { label: "Emojis", value: sessao.emoji },
         { label: "Palavra", value: sessao.palavra_selecionada },
         { label: "Escrita livre", value: sessao.palavra_livre },
       ]}

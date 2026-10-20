@@ -5,9 +5,9 @@ import { sortearItens } from "@/utils/random";
 import QuizScreen from "@/components/QuizScreen";
 import QuizSelector from "@/components/QuizSelector";
 import type { QuizOption } from "@/components/QuizSelector/types";
-import palavras from './data/palavras.json'
+import palavras from "./data/palavras.json";
 
-const palavrasPool: QuizOption[] = palavras
+const palavrasPool: QuizOption[] = palavras;
 
 const QuizPalavra = () => {
   const router = useRouter();
@@ -35,28 +35,43 @@ const QuizPalavra = () => {
 
   return (
     <QuizScreen pronto={!!palavraEscolhida} onContinuar={handleConfirmar}>
-    <Text style={styles.title}>Qual palavra combina com agora?</Text>
+      <View style={styles.conteudoQuiz}>
+        <Text style={styles.title}>Uma palavra, para definir esse dia:</Text>
 
-    <QuizSelector
-      options={palavrasSorteadas}
-      selectionMode="single"
-      selectedId={selectedId}
-      onSelect={setSelectedId}
-      columns={2}
-      fontSize={28}
-    />
-  </QuizScreen>
+        <View style={styles.areaPalavras}>
+          <QuizSelector
+            options={palavrasSorteadas}
+            selectionMode="single"
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            fontSize={24}
+          />
+        </View>
+      </View>
+    </QuizScreen>
   );
+  /* */
 };
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "700",
-    color: "#111111",
-    marginBottom: 32,
+    color: "#173B4D",
+    marginBottom: 24,
+    marginTop: 40,
+    paddingHorizontal: 0,
   },
-
+  conteudoQuiz: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+  },
+  areaPalavras: {
+    flex: 1,
+    minHeight: 300,
+    position: "relative",
+  },
 });
 
 export default QuizPalavra;

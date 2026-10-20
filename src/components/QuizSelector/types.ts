@@ -1,42 +1,27 @@
 
-
 export interface QuizOption {
-    id: string
-    title?: string
-    subtitle?: string
+  id: string;
+  title?: string;
+  subtitle?: string;
 }
 
 export interface QuizSelectorSingleProps {
-   selectionMode: "single"
-   selectedId: string | null
-   onSelect: (ids: string | null) => void
+  selectionMode: "single";
+  selectedId: string | null;
+  onSelect: (id: string | null) => void;
 }
 
 export interface QuizSelectorMultipleProps {
-    selectionMode: "multiple"
-    selectedIds : string[]
-    onSelect: (ids: string[]) => void
+  selectionMode: "multiple";
+  selectedIds: string[];
+  onSelect: (ids: string[]) => void;
 }
 
-
-//Chamam isso de "União Discriminada" Typescritp Discriminated Union
-export type QuizSelectorProps = (QuizSelectorSingleProps | QuizSelectorMultipleProps) & {
-    options: QuizOption[]
-    columns?: number
-    cardHeight?: number
-    gap?: number
-    fontSize?: number // novo
-
-
-}
-
-
-
-export interface QuizCardProps {
-    option: QuizOption
-    selected: boolean
-    onPress: () => void
-    height: number
-    fontSize?: number // novo
-
-}
+export type QuizSelectorProps = (
+  | QuizSelectorSingleProps
+  | QuizSelectorMultipleProps
+) & {
+  options: QuizOption[];
+  fontSize?: number;
+  maxSelections?: number;
+};
