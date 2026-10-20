@@ -70,11 +70,6 @@ const SignupScreen = () => {
       <View style={styles.innerContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../assets/images/LogoClaraExistTrace.png")}
-            style={styles.logo}
-            contentFit="contain"
-          />
-          <Image
             source={require("../../assets/images/LetraClaraExistTrace.png")}
             style={styles.wordmark}
             contentFit="contain"
@@ -204,8 +199,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   wordmark: {
-    width: 150,
-    height: 34,
+    width: 160,
+    height: 36,
+    marginBottom: 10,
+    paddingBottom: 100,
   },
   title: {
     fontSize: 26,
