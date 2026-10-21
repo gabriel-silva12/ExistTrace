@@ -8,8 +8,10 @@ import MenuItem from "@/components/MenuItem";
 import TabBar from "@/components/TabBar";
 import { cores } from "@/components/quiz-ui";
 import { useAuth } from "@/hooks/context/AuthContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CRP_PROVISORIO = "CRP 00/12345";//mudar depois pra nao ficar estatico
+const ALTURA_TABBAR = 96;
 
 function pegarIniciais(nome?: string) {
   if (!nome) return undefined;
@@ -20,7 +22,7 @@ function pegarIniciais(nome?: string) {
 export default function Ajustes() {
   const router = useRouter();
   const { perfil, logout } = useAuth();
-
+  const insets = useSafeAreaInsets();
   const emBreve = () => Alert.alert("Em breve", "Funcionalidade em desenvolvimento.");
 
   const sair = () => {
@@ -46,7 +48,7 @@ export default function Ajustes() {
         subtitulo=""
         mostrarAvatar={false}
       />
-      <ScrollView contentContainerStyle={styles.conteudo}>
+<ScrollView contentContainerStyle={[styles.conteudo, { paddingBottom: ALTURA_TABBAR + insets.bottom }]}>
 
           <View style={styles.cardPerfil}>
             <AvatarPerfil iniciais={pegarIniciais(perfil?.nome)} tamanho={64} />
@@ -67,8 +69,8 @@ export default function Ajustes() {
 
           <Text style={styles.secao}>Preferências do app</Text>
           <View style={styles.grupo}>
-            <MenuItem semBorda icone="settings" titulo="Configurações" onPress={emBreve} />
-            <MenuItem icone="bell" titulo="Notificações" onPress={emBreve} />
+            <MenuItem semBorda icone="settings" titulo="Configurações" onPress={() => router.push("/ajustes/configuracoes")} />
+            <MenuItem icone="bell" titulo="Notificações" onPress={() => router.push("/ajustes/notificacoes")} />
           </View>
 
           <Text style={styles.secao}>Suporte</Text>

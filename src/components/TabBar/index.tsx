@@ -151,7 +151,7 @@ const TabBar = ({ activeTab = "home" }: Propiedades) => {
 
     if (chave === "home") router.replace("/dashboard");
     else if (chave === "pacientes") router.replace("/pacientes");
-    else router.replace("/ajustes");
+    else router.replace("/ajustes/ajustes");
   };
 
   // o PanResponder é criado uma vez, então ele lê a versão mais recente por ref
