@@ -47,6 +47,7 @@ export default function Ajustes() {
         titulo="Ajustes"
         subtitulo=""
         mostrarAvatar={false}
+        compacto
       />
 <ScrollView contentContainerStyle={[styles.conteudo, { paddingBottom: ALTURA_TABBAR + insets.bottom }]}>
 
@@ -99,7 +100,7 @@ export default function Ajustes() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: cores.fundo },
   area: { flex: 1 },
-  conteudo: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20 },
+  conteudo: { paddingHorizontal: 12, paddingTop: 20, paddingBottom: 20 },
   pressionado: { opacity: 0.6 },
 
   titulo: { fontSize: 34, fontWeight: "800", color: "#111" },
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     borderColor: "#DDE3E8",
     borderRadius: 24,
     padding: 16,
-    marginTop: 20,
+    marginTop: 0,
   },
   
   perfilTextos: { flex: 1 },

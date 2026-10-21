@@ -16,7 +16,7 @@ export default function Notificacoes() {
         compacto
       />
       <ScrollView contentContainerStyle={styles.conteudo}>
-        <Text style={styles.secao}>Geral</Text>
+        <Text style={styles.secao}>Geral</Text> 
         <View style={styles.card}>
           <Text style={styles.placeholder}>Conteúdo em breve.</Text>
         </View>
@@ -27,7 +27,7 @@ export default function Notificacoes() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: cores.fundo },
-  conteudo: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 24 },
+  conteudo: { paddingHorizontal: 12, paddingTop: 16, paddingBottom: 24 },
   secao: { fontSize: 17, fontWeight: "700", color: "#111", marginBottom: 8 },
   card: {
     backgroundColor: "#fff",

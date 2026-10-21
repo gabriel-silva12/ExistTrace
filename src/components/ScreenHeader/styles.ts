@@ -10,11 +10,12 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: RAIO,
     borderBottomRightRadius: RAIO,
   },
+
   headerCompacto: {
     paddingBottom: 28,
   },
 
-  // camada decorativa: o overflow hidden fica aqui, não no header
+  // Camada decorativa do cabeçalho
   fundo: {
     position: "absolute",
     top: 0,
@@ -25,6 +26,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: RAIO,
     overflow: "hidden",
   },
+
   circuloGrande: {
     position: "absolute",
     right: -50,
@@ -34,6 +36,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "rgba(255, 255, 255, 0.07)",
   },
+
   anel: {
     position: "absolute",
     left: -20,
@@ -45,25 +48,34 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.12)",
   },
 
+  // Linha principal: título e avatar
+  linha: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  textos: {
+    flex: 1,
+    minWidth: 0,
+  },
+
+  // Linha exclusiva para o botão voltar e o título
+  linhaTitulo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
   botaoVoltar: {
-    alignSelf: "flex-start",
     width: 40,
     height: 40,
-    marginLeft: -8,
-    marginBottom: 8,
+    marginLeft: -12,
     borderRadius: 20,
     backgroundColor: "rgba(255, 255, 255, 0.16)",
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  linha: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  textos: {
-    flex: 1, // ocupa o que sobrar ao lado do avatar
+    flexShrink: 0,
   },
 
   saudacao: {
@@ -74,12 +86,17 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     marginBottom: 2,
   },
+
   titulo: {
+    flex: 1,
+    minWidth: 0,
     fontSize: 32,
+    lineHeight: 38,
     color: "#ffffff",
     fontWeight: "bold",
     letterSpacing: -0.5,
   },
+
   chip: {
     alignSelf: "flex-start",
     marginTop: 8,
@@ -88,11 +105,13 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: "rgba(255, 255, 255, 0.16)",
   },
+
   chipTexto: {
     fontSize: 14,
     color: "#ffffff",
     fontWeight: "600",
   },
+
   descricao: {
     marginTop: 8,
     fontSize: 15,
@@ -110,6 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   iniciais: {
     fontSize: 22,
     fontWeight: "700",
