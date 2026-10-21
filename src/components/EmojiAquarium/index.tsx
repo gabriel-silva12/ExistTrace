@@ -173,7 +173,7 @@ function FloatingEmoji({
         style={styles.emojiPressable}
       >
         <Text style={styles.emojiText}>{option.title}</Text>
-      </Pressable>2
+      </Pressable>
     </Animated.View>
   );
 }
