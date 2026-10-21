@@ -65,6 +65,7 @@ A fundamentação teórica do projeto está ancorada em três conceitos da Terap
 | `psicologo` | Perfil do psicólogo, vinculado ao usuário da autenticação. |
 | `paciente` | Codinome e idade, vinculados a um psicólogo. |
 | `sessao_terapia` | Uma aplicação do quiz: `emoji`, `palavra_selecionada`, `palavra_livre`, `desenho` e `data`. |
+| `keep_alive` | Tabela auxiliar (opcional) para pings que evitam a pausa do projeto no plano gratuito. |
 
 O desenho é armazenado como `jsonb`, em traços vetoriais, e reconstruído no aplicativo. O formato permite adaptar o desenho a diferentes tamanhos de tela.
 
@@ -95,6 +96,7 @@ hooks/           hooks de dados (usePacientes, useSessoes)
 hooks/context/   estado global (AuthContext, QuizContext)
 services/        cliente do Supabase
 utils/           funções auxiliares (datas, sorteio de itens)
+supabase/        migrations do banco e configuração da CLI
 ```
 
 > A estrutura acima é ilustrativa. Os diretórios e nomes podem variar conforme a organização atual do repositório.
@@ -110,6 +112,7 @@ utils/           funções auxiliares (datas, sorteio de itens)
 - [x] Randomização dos estímulos (sorteio de quatro opções por etapa).
 - [x] Persistência das sessões, com RLS.
 - [x] Histórico de sessões por paciente, incluindo o desenho.
+- [x] Schema do banco versionado em migrations (Supabase CLI).
 
 ### Planejado
 
@@ -126,8 +129,10 @@ utils/           funções auxiliares (datas, sorteio de itens)
 
 Antes de começar, instale:
 
-- [Node.js](https://nodejs.org/) na sua maquina local
+- [Node.js](https://nodejs.org/) na sua máquina local
+- [Supabase CLI](https://supabase.com/docs/guides/cli) e uma conta gratuita no [Supabase](https://supabase.com)
 - [Expo Go](https://expo.dev/go) no celular que será usado para testar o aplicativo.
+
 
 O Expo Go permite executar projetos Expo compatíveis diretamente no celular durante o desenvolvimento, sem precisar gerar um APK ou instalar versão publicada do aplicativo.
 
@@ -136,17 +141,48 @@ Links para instalar o Expo Go:
 - **Android:** [Google Play — Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent).
 - **iOS:** [App Store — Expo Go](https://apps.apple.com/app/expo-go/id982107779).
 
-### 1. Configure as variáveis de ambiente
+### 1. Crie o banco de dados no Supabase
 
-Na raiz do projeto, crie um arquivo chamado `.env` com as credenciais do seu projeto Supabase:
+O schema está versionado em `supabase/migrations/`. Para subir uma cópia própria:
+
+1. Crie um projeto em branco no [dashboard do Supabase](https://supabase.com/dashboard) e guarde a **senha do banco** definida na criação.
+2. Copie o **Project ID** em *Project Settings → General → Reference ID*.
+3. Na raiz do repositório, execute:
+
+```bash
+supabase login
+supabase link --project-ref SEU_PROJECT_ID
+supabase db push
+```
+
+4. Confira em **Table Editor** se as tabelas `psicologo`, `paciente`, `sessao_terapia` e `keep_alive` foram criadas.
+
+> A tabela `keep_alive` é opcional: serve apenas para pings periódicos que evitam a pausa de projetos no plano gratuito.
+
+**Problemas comuns**
+
+| Problema | Solução |
+|---|---|
+| `Cannot find project ref` | Rode `supabase link` na raiz do projeto, onde existe a pasta `supabase/` |
+| Erro de autenticação no banco | Redefina a senha em *Project Settings → Database* |
+| Cadastro não cria o perfil do psicólogo | Confirme que a migration do trigger `on_auth_user_created` foi aplicada |
+
+
+### 2. Configure as variáveis de ambiente
+
+Na raiz do projeto, crie um arquivo `.env` com as credenciais do projeto criado no passo anterior (*Project Settings → API*):
 
 ```dotenv
 EXPO_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon
-EXPO_PUBLIC_EAS_PROJECT_ID=seu-build-id //opcional
+
+# Opcional: ID do projeto no EAS
+EXPO_PUBLIC_EAS_PROJECT_ID=seu-eas-project-id
 ```
 
-### 2. Instale as dependências
+> Variáveis `EXPO_PUBLIC_*` são embutidas no app. Use apenas a chave `anon`; nunca coloque a `service_role` aqui nem no repositório.
+
+### 3. Instale as dependências
 
 No terminal, dentro da pasta do projeto, execute:
 
@@ -154,11 +190,11 @@ No terminal, dentro da pasta do projeto, execute:
 npm install
 ```
 
-### 3. Inicie o Expo
+### 4. Inicie o Expo
 
 Escolha o modo adequado à sua conexão.
 
-#### Caso 1 — Celular e computador na mesma rede Wi-Fi
+#### Opção A — Celular e computador na mesma rede Wi-Fi
 
 ```bash
 npx expo start
@@ -172,7 +208,7 @@ npx expo start -c
 
 Mantenha o celular e o computador na mesma rede. Se a conexão local não funcionar, tente o modo de túnel.
 
-#### Caso 2 — Celular e computador em redes diferentes
+#### Opção B — Celular e computador em redes diferentes
 
 Por exemplo, quando o computador está no Wi-Fi e o celular usa dados móveis:
 
@@ -182,7 +218,7 @@ npx expo start --tunnel
 
 O modo de túnel pode ser mais lento e depende da disponibilidade do serviço de túnel do Expo.
 
-### 4. Abra o aplicativo no celular
+### 5. Abra o aplicativo no celular
 
 1. Aguarde o QR Code aparecer no terminal.
 2. Abra o Expo Go no celular e escaneie o QR Code. No iOS, também é possível usar a Câmera para abrir o link.
@@ -193,3 +229,5 @@ O celular precisa ter conexão com a rede ou com a internet, conforme o modo de 
 ## Aviso acadêmico
 
 O ExistTrace é um projeto experimental desenvolvido para fins acadêmicos. Seu uso deve respeitar a avaliação e o critério profissional do psicólogo. Os registros não devem ser interpretados isoladamente como diagnóstico, e o aplicativo não substitui instrumentos psicológicos validados nem o acompanhamento profissional.
+
+Quem hospedar uma cópia própria do banco é responsável pelos dados nela armazenados e deve observar a legislação aplicável de proteção de dados (como a LGPD). O aplicativo foi pensado para uso de codinomes, sem nome civil do paciente.
