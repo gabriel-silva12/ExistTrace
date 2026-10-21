@@ -161,13 +161,13 @@ Escolha o modo adequado à sua conexão.
 #### Caso 1 — Celular e computador na mesma rede Wi-Fi
 
 ```bash
-npx expo start
+npx expo start --offline
 ```
 
 Se necessário, limpe o cache:
 
 ```bash
-npx expo start -c
+npx expo start -c --offline
 ```
 
 Mantenha o celular e o computador na mesma rede. Se a conexão local não funcionar, tente o modo de túnel.
