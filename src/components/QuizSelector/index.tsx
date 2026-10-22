@@ -5,6 +5,11 @@ import type { ReactNode } from "react";
 import type { QuizOption, QuizSelectorProps } from "./types";
 import styles from "./styles";
 
+const FLOAT_AMPLITUDE_Y = 14;
+const FLOAT_AMPLITUDE_X = 7;
+const FLOAT_BASE_DURATION = 2400;
+const FLOAT_DURATION_STEP = 300;
+
 const positions = [
   { left: "8%", top: "18%" },
   { right: "8%", top: "27%" },
@@ -79,15 +84,37 @@ const AnimatedWord = ({
 type FloatingWordProps = {
   children: ReactNode;
   index: number;
+  paused: boolean;
 };
 
-const FloatingWord = ({ children, index }: FloatingWordProps) => {
+const FloatingWord = ({ children, index, paused }: FloatingWordProps) => {
   const offsetY = useRef(new Animated.Value(0)).current;
   const offsetX = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    if (paused) {
+      const settle = Animated.parallel([
+        Animated.timing(offsetY, {
+          toValue: 0,
+          duration: 400,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(offsetX, {
+          toValue: 0,
+          duration: 400,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]);
+
+      settle.start();
+
+      return () => settle.stop();
+    }
+
     const phase = index * 0.8;
-    const duration = 3200 + index * 400;
+    const duration = FLOAT_BASE_DURATION + index * FLOAT_DURATION_STEP;
 
     const createFloat = (
       value: Animated.Value,
@@ -121,8 +148,8 @@ const FloatingWord = ({ children, index }: FloatingWordProps) => {
         ]),
       );
 
-    const animationY = createFloat(offsetY, 5, phase * 100);
-    const animationX = createFloat(offsetX, 2, phase * 150);
+    const animationY = createFloat(offsetY, FLOAT_AMPLITUDE_Y, phase * 100);
+    const animationX = createFloat(offsetX, FLOAT_AMPLITUDE_X, phase * 150);
 
     animationY.start();
     animationX.start();
@@ -131,15 +158,12 @@ const FloatingWord = ({ children, index }: FloatingWordProps) => {
       animationY.stop();
       animationX.stop();
     };
-  }, [index, offsetX, offsetY]);
+  }, [index, paused, offsetX, offsetY]);
 
   return (
     <Animated.View
       style={{
-        transform: [
-          { translateX: offsetX },
-          { translateY: offsetY },
-        ],
+        transform: [{ translateX: offsetX }, { translateY: offsetY }],
       }}
     >
       {children}
@@ -202,7 +226,7 @@ const QuizSelector = (props: QuizSelectorProps) => {
             accessibilityLabel={option.title ?? "Opção"}
             accessibilityState={{ selected }}
           >
-            <FloatingWord index={index}>
+            <FloatingWord index={index} paused={hasSelection}>
               <AnimatedWord
                 title={option.title ?? ""}
                 selected={selected}

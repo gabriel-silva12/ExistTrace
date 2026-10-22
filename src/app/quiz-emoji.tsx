@@ -6,10 +6,23 @@ import { sortearItens } from "@/utils/random";
 import QuizScreen from "@/components/QuizScreen";
 import EmojiAquarium from "@/components/EmojiAquarium";
 import type { QuizOption } from "@/components/QuizSelector/types";
+import emojisPositivosJson from "./data/emojis-positivos.json";
+import emojisNegativosJson from "./data/emojis-negativos.json";
+import { sortearBalanceado } from "@/utils/random";
+import type { CargaEmoji } from "@/components/SessaoCard/types";
 
-import emojis from "./data/emojis.json";
+const emojisPositivos: QuizOption[] = emojisPositivosJson;
+const emojisNegativos: QuizOption[] = emojisNegativosJson;
 
-const emojisPool: QuizOption[] = emojis;
+
+const calcularCarga = (ids: string[]): CargaEmoji => {
+  const positivos = ids.filter((id) => id.startsWith("pos-")).length;
+
+  if (positivos === 2) return "POSITIVA";
+  if (positivos === 0) return "NEGATIVA";
+  return "MISTA";
+};
+
 
 const QuizEmoji = () => {
   const router = useRouter();
@@ -18,7 +31,11 @@ const QuizEmoji = () => {
     pacienteId: string;
   }>();
 
-  const emojisSorteados = useMemo(() => sortearItens(emojisPool, 6), []);
+  const emojisSorteados = useMemo(
+    () => sortearBalanceado(emojisPositivos, emojisNegativos, 3),
+    []
+  );
+
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -51,6 +68,7 @@ const QuizEmoji = () => {
       params: {
         pacienteId,
         emoji: emojisEscolhidos.join(" "),
+        cargaEmoji: calcularCarga(selectedIds),
       },
     });
   };

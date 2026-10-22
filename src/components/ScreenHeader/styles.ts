@@ -5,7 +5,7 @@ const RAIO = 32;
 const styles = StyleSheet.create({
   header: {
     backgroundColor: "#3e6e82",
-    paddingHorizontal: 24,
+    paddingHorizontal: 18,
     paddingBottom: 70,
     borderBottomLeftRadius: RAIO,
     borderBottomRightRadius: RAIO,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   titulo: {
     flex: 1,
     minWidth: 0,
-    fontSize: 32,
+    fontSize: 30,
     lineHeight: 38,
     color: "#ffffff",
     fontWeight: "bold",

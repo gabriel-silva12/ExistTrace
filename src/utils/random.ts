@@ -6,3 +6,16 @@ export function sortearItens<T>(lista: T[], quantidade: number): T[] {
   }
   return copia.slice(0, quantidade);
 }
+
+export function sortearBalanceado<T>(
+  positivos: T[],
+  negativos: T[],
+  quantidadePorGrupo: number
+): T[] {
+  const sorteados = [
+    ...sortearItens(positivos, quantidadePorGrupo),
+    ...sortearItens(negativos, quantidadePorGrupo),
+  ];
+
+  return sortearItens(sorteados, sorteados.length);
+}

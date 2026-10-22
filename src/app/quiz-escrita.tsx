@@ -7,10 +7,11 @@ import QuizScreen from "@/components/QuizScreen";
 const QuizEscrita = () => {
   const router = useRouter();
 
-  const { pacienteId, emoji, palavraFixa } = useLocalSearchParams<{
+  const { pacienteId, emoji, cargaEmoji, palavraFixa } = useLocalSearchParams<{
     pacienteId: string;
     emoji: string;
     palavraFixa: string;
+    cargaEmoji: string;
   }>();
 
   const [palavraLivre, setPalavraLivre] = useState("");
@@ -27,6 +28,7 @@ const QuizEscrita = () => {
       params: {
         pacienteId,
         emoji,
+        cargaEmoji,
         palavraFixa,
         palavraLivre: textoLimpo,
       },
