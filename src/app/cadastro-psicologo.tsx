@@ -70,7 +70,7 @@ const SignupScreen = () => {
       <View style={styles.innerContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../assets/images/LetraClaraExistTrace.png")}
+            source={require("./../../assets/images/LetraClaraExistTrace.png")}
             style={styles.wordmark}
             contentFit="contain"
           />

@@ -155,7 +155,7 @@ const LoginScreen = () => {
                             </View>
                             <Text style={styles.rememberText}>Lembrar de mim</Text>
                         </Pressable>
-                        <Pressable onPress={() => Alert.alert("Em breve", "Recuperação de senha ainda não disponível.")}>
+                        <Pressable onPress={() => router.push({ pathname: "/login/recuperar-senha", params: { email } })}>
                             <Text style={styles.forgotText}>Esqueceu a senha?</Text>
                         </Pressable>
                     </View>

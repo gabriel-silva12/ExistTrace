@@ -64,6 +64,30 @@ export const usePacientes = () => {
     }, [buscar])
   )
 
-  return { pacientes, carregando, recarregar: buscar}
+  const atualizarPaciente = async (
+    id: number,
+    dados: { codinome: string; idade: number }
+  ) => {
+    const { error } = await supabase.from("paciente").update(dados).eq("id", id);
+    if (error) throw error;
+    await buscar();
+  };
+
+  const excluirPaciente = async (id: number) => {
+    const { error } = await supabase.from("paciente").delete().eq("id", id);
+    if (error) throw error;
+    await buscar();
+  };
+
+  return {
+    pacientes,
+    carregando,
+    recarregar: buscar,
+    atualizarPaciente,
+    excluirPaciente,
+  };
+
+  
   
 };
+
