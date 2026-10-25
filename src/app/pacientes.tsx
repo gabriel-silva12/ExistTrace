@@ -3,6 +3,7 @@ import { Stack, useRouter } from "expo-router";
 import {
   Alert,
   FlatList,
+  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -17,8 +18,15 @@ import ScreenHeader from "@/components/ScreenHeader";
 
 const Pacientes = () => {
   const router = useRouter();
-  const { pacientes, carregando } = usePacientes();
+  const { pacientes, carregando, atualizarPaciente, excluirPaciente } =
+    usePacientes();
   const [busca, setBusca] = useState("");
+  const [editando, setEditando] = useState<(typeof pacientes)[number] | null>(
+    null
+  );
+  const [codinomeEdit, setCodinomeEdit] = useState("");
+  const [idadeEdit, setIdadeEdit] = useState("");
+  const [salvando, setSalvando] = useState(false);
 
   const pacientesFiltrados = useMemo(() => {
     if (!busca.trim()) return pacientes;
@@ -38,6 +46,58 @@ const Pacientes = () => {
     });
   };
 
+  const abrirEdicao = (paciente: (typeof pacientes)[number]) => {
+    setEditando(paciente);
+    setCodinomeEdit(paciente.codinome);
+    setIdadeEdit(String(paciente.idade));
+  };
+
+  const salvarEdicao = async () => {
+    if (!editando) return;
+    const idade = Number(idadeEdit);
+    if (!codinomeEdit.trim()) {
+      Alert.alert("Atenção", "Informe o codinome do paciente.");
+      return;
+    }
+    if (!Number.isInteger(idade) || idade < 0 || idade > 120) {
+      Alert.alert("Atenção", "Informe uma idade válida.");
+      return;
+    }
+    try {
+      setSalvando(true);
+      await atualizarPaciente(editando.id, {
+        codinome: codinomeEdit.trim(),
+        idade,
+      });
+      setEditando(null);
+    } catch {
+      Alert.alert("Erro", "Não foi possível atualizar o paciente.");
+    } finally {
+      setSalvando(false);
+    }
+  };
+
+  const confirmarExclusao = (paciente: (typeof pacientes)[number]) => {
+    Alert.alert(
+      "Excluir paciente",
+      `Deseja excluir "${paciente.codinome}"? Essa ação não pode ser desfeita.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await excluirPaciente(paciente.id);
+            } catch {
+              Alert.alert("Erro", "Não foi possível excluir o paciente.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScreenHeader
@@ -50,7 +110,6 @@ const Pacientes = () => {
       />
       <Stack.Screen options={{ gestureEnabled: false }} />
       <View style={styles.searchBar}>
-        
         <MaterialCommunityIcons name="magnify" size={22} color="#6b7684" />
         <TextInput
           style={styles.searchInput}
@@ -91,10 +150,11 @@ const Pacientes = () => {
               </View>
               <View style={styles.cardInfo}>
                 <Text style={styles.cardNome}>{item.codinome}</Text>
-                {/* TODO: "Última Sessão" e "Status" dependem de dados de sessao_terapia
-                    que ainda não estão ligados ao paciente - placeholder por enquanto */}
-                <Text style={styles.cardLinha}>Última Sessão: {" "}
-                  {item.ultimaSessao ? formatarParaDataBR(item.ultimaSessao) : "Nehuma"}
+                <Text style={styles.cardLinha}>
+                  Última Sessão:{" "}
+                  {item.ultimaSessao
+                    ? formatarParaDataBR(item.ultimaSessao)
+                    : "Nenhuma"}
                 </Text>
               </View>
             </Pressable>
@@ -103,25 +163,92 @@ const Pacientes = () => {
               <Pressable
                 style={styles.footerAction}
                 onPress={() =>
-                  Alert.alert("Em breve", "Observações do paciente ainda não disponíveis.")
+                  Alert.alert(
+                    "Em breve",
+                    "Observações do paciente ainda não disponíveis."
+                  )
                 }
               >
-                <MaterialCommunityIcons name="comment-outline" size={18} color="#1a1a1a" />
+                <MaterialCommunityIcons
+                  name="comment-outline"
+                  size={18}
+                  color="#1a1a1a"
+                />
                 <Text style={styles.footerActionText}>Observações</Text>
               </Pressable>
 
-              <Pressable
-                onPress={() =>
-                  Alert.alert("Em breve", "Edição de paciente ainda não disponível.")
-                }
-                hitSlop={8}
-              >
-                <MaterialCommunityIcons name="square-edit-outline" size={20} color="#1a1a1a" />
-              </Pressable>
+              <View style={styles.footerIcons}>
+                <Pressable onPress={() => abrirEdicao(item)} hitSlop={8}>
+                  <MaterialCommunityIcons
+                    name="square-edit-outline"
+                    size={20}
+                    color="#1a1a1a"
+                  />
+                </Pressable>
+                <Pressable onPress={() => confirmarExclusao(item)} hitSlop={8}>
+                  <MaterialCommunityIcons
+                    name="trash-can-outline"
+                    size={20}
+                    color="#c0392b"
+                  />
+                </Pressable>
+              </View>
             </View>
           </View>
         )}
       />
+
+      <Modal
+        visible={!!editando}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setEditando(null)}
+      >
+        <View style={styles.modalFundo}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitulo}>Editar paciente</Text>
+
+            <Text style={styles.modalLabel}>Codinome</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={codinomeEdit}
+              onChangeText={setCodinomeEdit}
+              placeholder="Codinome"
+              placeholderTextColor="#6b7684"
+            />
+
+            <Text style={styles.modalLabel}>Idade</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={idadeEdit}
+              onChangeText={setIdadeEdit}
+              placeholder="Idade"
+              placeholderTextColor="#6b7684"
+              keyboardType="number-pad"
+              maxLength={3}
+            />
+
+            <View style={styles.modalBotoes}>
+              <Pressable
+                style={[styles.modalBotao, styles.modalBotaoCancelar]}
+                onPress={() => setEditando(null)}
+                disabled={salvando}
+              >
+                <Text style={styles.modalBotaoCancelarTexto}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.modalBotao, styles.modalBotaoSalvar]}
+                onPress={salvarEdicao}
+                disabled={salvando}
+              >
+                <Text style={styles.modalBotaoSalvarTexto}>
+                  {salvando ? "Salvando..." : "Salvar"}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <TabBar activeTab="pacientes" />
     </View>
@@ -134,8 +261,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#eaf3f6",
   },
   listContent: {
-  paddingHorizontal: 10,
-  paddingBottom: 120, // era 16
+    paddingHorizontal: 10,
+    paddingBottom: 120,
   },
   searchBar: {
     flexDirection: "row",
@@ -170,16 +297,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 12,
     overflow: "hidden",
-  
-    //ios
-    shadowColor: "#185366",       // Using your palette's deep blue makes the shadow look natural, not dirty
+
+    // iOS
+    shadowColor: "#185366",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,          // Keep it very soft and subtle
+    shadowOpacity: 0.06,
     shadowRadius: 12,
 
-    //android
-    elevation: 3,      
-    
+    // Android
+    elevation: 3,
   },
   cardBody: {
     flexDirection: "row",
@@ -226,7 +352,68 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#1a1a1a",
   },
-  
+  footerIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  modalFundo: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    padding: 24,
+  },
+  modalCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 20,
+  },
+  modalTitulo: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1a1a1a",
+    marginBottom: 16,
+  },
+  modalLabel: {
+    fontSize: 14,
+    color: "#3a4450",
+    marginBottom: 6,
+  },
+  modalInput: {
+    backgroundColor: "#eaf3f6",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    height: 48,
+    fontSize: 16,
+    color: "#1a1a1a",
+    marginBottom: 14,
+  },
+  modalBotoes: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 6,
+  },
+  modalBotao: {
+    flex: 1,
+    height: 46,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalBotaoCancelar: {
+    backgroundColor: "#eaf3f6",
+  },
+  modalBotaoCancelarTexto: {
+    color: "#1a1a1a",
+    fontWeight: "600",
+  },
+  modalBotaoSalvar: {
+    backgroundColor: "#185366",
+  },
+  modalBotaoSalvarTexto: {
+    color: "#ffffff",
+    fontWeight: "600",
+  },
 });
 
 export default Pacientes;
