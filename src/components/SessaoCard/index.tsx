@@ -1,8 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import InfoCard from "@/components/InfoCard";
 import Desenho from "@/components/Desenho";
-import { Propriedades } from "./types";
+import { CargaEmoji, Propriedades } from "./types";
 import { formatarParaDataBR } from "@/utils/date";
+
+const rotulosCarga: Record<CargaEmoji, string> = {
+  POSITIVA: "Positiva",
+  MISTA: "Mista",
+  NEGATIVA: "Negativa",
+};
 
 const SessaoCard = ({ sessao }: Propriedades) => {
   return (
@@ -10,6 +16,9 @@ const SessaoCard = ({ sessao }: Propriedades) => {
       titulo={formatarParaDataBR(sessao.data)}
       campos={[
         { label: "Emojis", value: sessao.emoji },
+        ...(sessao.carga_emoji
+          ? [{ label: "Carga", value: rotulosCarga[sessao.carga_emoji] }]
+          : []),
         { label: "Palavra", value: sessao.palavra_selecionada },
         { label: "Escrita livre", value: sessao.palavra_livre },
       ]}

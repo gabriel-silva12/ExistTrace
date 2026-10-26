@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { sortearItens } from "@/utils/random";
 import QuizScreen from "@/components/QuizScreen";
 import QuizSelector from "@/components/QuizSelector";
@@ -11,9 +11,10 @@ const palavrasPool: QuizOption[] = palavras;
 
 const QuizPalavra = () => {
   const router = useRouter();
-  const { pacienteId, emoji } = useLocalSearchParams<{
+  const { pacienteId, emoji, cargaEmoji } = useLocalSearchParams<{
     pacienteId: string;
     emoji: string;
+    cargaEmoji: string;
   }>();
 
   const palavrasSorteadas = useMemo(() => sortearItens(palavrasPool, 4), []);
@@ -29,7 +30,7 @@ const QuizPalavra = () => {
 
     router.push({
       pathname: "/quiz-escrita",
-      params: { pacienteId, emoji, palavraFixa: palavraEscolhida },
+      params: { pacienteId, emoji, cargaEmoji, palavraFixa: palavraEscolhida },
     });
   };
 

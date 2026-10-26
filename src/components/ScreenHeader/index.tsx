@@ -48,25 +48,36 @@ const ScreenHeader = ({
         </View>
       )}
 
-      {!!onVoltar && (
-        <Pressable
-          onPress={onVoltar}
-          hitSlop={8}
-          style={styles.botaoVoltar}
-          accessibilityRole="button"
-          accessibilityLabel="Voltar"
-        >
-          <MaterialCommunityIcons name="chevron-left" size={28} color="#ffffff" />
-        </Pressable>
-      )}
-
       <View style={styles.linha}>
-        <View style={styles.textos}>
-          {!!saudacao && <Text style={styles.saudacao}>{saudacao}</Text>}
 
-          <Text style={styles.titulo} numberOfLines={2}>
-            {titulo}
-          </Text>
+        <View style={styles.textos}>
+          {!!saudacao && (
+            <Text style={styles.saudacao}>
+              {saudacao}
+            </Text>
+          )}
+
+          <View style={styles.linhaTitulo}>
+            {!!onVoltar && (
+              <Pressable
+                onPress={onVoltar}
+                hitSlop={8}
+                style={styles.botaoVoltar}
+                accessibilityRole="button"
+                accessibilityLabel="Voltar"
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={28}
+                  color="#ffffff"
+                />
+              </Pressable>
+            )}
+
+            <Text style={styles.titulo} numberOfLines={2}>
+              {titulo}
+            </Text>
+          </View>
 
           {!!subtitulo && (
             <View style={styles.chip}>

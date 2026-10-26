@@ -17,6 +17,7 @@ interface AuthContextData {
     loginComSupabase: (email : string, password: string) => Promise<any>,
     cadastrarComSupabase: (nome: string, email: string, password: string) => Promise<any>
     cadastrarPaciente: (nome: string, idade: number) => Promise<any>
+    logout: () => Promise<void>
 }
 
 // balão de contexto?
@@ -112,6 +113,11 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
         return data
     }
 
+        const logout = async () => {
+        const { error } = await supabase.auth.signOut()
+        if (error) throw error
+        setPerfil(null)
+    }
     
 
      //Busca automática se o usuário já abrir o app logado
@@ -126,7 +132,7 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
     }, [])
 
     return (
-        <AuthContext.Provider value={{ perfil, loading, loginComSupabase, cadastrarComSupabase, cadastrarPaciente }}>
+        <AuthContext.Provider value={{ perfil, loading, loginComSupabase, cadastrarComSupabase, cadastrarPaciente, logout }}>
             {children}
         </AuthContext.Provider>
     )

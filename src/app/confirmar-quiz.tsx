@@ -16,9 +16,10 @@ const ConfirmarQuiz = () => {
   const insets = useSafeAreaInsets();
   const { desenho, limparQuiz } = useQuiz();
 
-  const { pacienteId, emoji, palavraFixa, palavraLivre } = useLocalSearchParams<{
+  const { pacienteId, emoji, cargaEmoji, palavraFixa, palavraLivre } = useLocalSearchParams<{
     pacienteId: string;
     emoji: string;
+    cargaEmoji: string;
     palavraFixa: string;
     palavraLivre: string;
   }>();
@@ -32,6 +33,7 @@ const ConfirmarQuiz = () => {
     const { error } = await supabase.from("sessao_terapia").insert({
       paciente_id: Number(pacienteId),
       emoji,
+      carga_emoji: cargaEmoji,
       palavra_selecionada: palavraFixa,
       palavra_livre: palavraLivre,
       desenho,
@@ -78,6 +80,15 @@ const ConfirmarQuiz = () => {
           <View style={styles.separador} />
 
           <View style={styles.linha}>
+            <Text style={styles.rotulo}>Carga emocional</Text>
+            <Text style={styles.valor}>
+              {cargaEmoji === "POSITIVA" ? "Positiva" : cargaEmoji === "NEGATIVA" ? "Negativa" : "Mista"}
+            </Text>
+          </View>
+
+          <View style={styles.separador} />
+
+          <View style={styles.linha}>
             <Text style={styles.rotulo}>Palavra selecionada</Text>
             <Text style={styles.valor}>{palavraFixa}</Text>
           </View>
@@ -110,7 +121,7 @@ const ConfirmarQuiz = () => {
         style={[styles.fade, { height: insets.bottom + 110 }]}
       />
 
-          {/* dock flutuante: mesma superfície do card */}
+      {/* dock flutuante: mesma superfície do card */}
       <View style={[styles.dock, { bottom: insets.bottom + 12 }]}>
         <Pressable
           style={({ pressed }) => [styles.botaoSecundario, pressed && { opacity: 0.6 }]}
@@ -214,7 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
   },
-    dock: {
+  dock: {
     position: "absolute",
     left: 16,
     right: 16,
@@ -263,12 +274,12 @@ const styles = StyleSheet.create({
   },
   botaoDesabilitado: { backgroundColor: "#9fb8c4" },
   fade: {
-  position: "absolute",
-  left: 0,
-  right: 0,
-  bottom: 0,
-},
-    
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
 });
 
 export default ConfirmarQuiz;

@@ -6,9 +6,10 @@ import { useQuiz } from "@/hooks/context/QuizContext";
 
 const QuizDesenho = () => {
   const router = useRouter();
-  const { pacienteId, emoji, palavraFixa, palavraLivre } = useLocalSearchParams<{
+  const { pacienteId, emoji, cargaEmoji, palavraFixa, palavraLivre } = useLocalSearchParams<{
     pacienteId: string;
     emoji: string;
+    cargaEmoji: string;
     palavraFixa: string;
     palavraLivre: string;
   }>();
@@ -19,7 +20,7 @@ const QuizDesenho = () => {
   const continuar = () => {
     router.push({
       pathname: "/confirmar-quiz",
-      params: { pacienteId, emoji, palavraFixa, palavraLivre },
+      params: { pacienteId, emoji, cargaEmoji, palavraFixa, palavraLivre },
     });
   };
 

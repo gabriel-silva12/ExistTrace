@@ -16,14 +16,17 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-//middleware de autenticacao
+const CHAVE_EMAIL_LEMBRADO = "@existtrace:email_lembrado";
+
+
 import { useAuth } from "@/hooks/context/AuthContext";
 
 const LoginScreen = () => {
-  const router = useRouter() //transicao entre paginas
-  const [email, setEmail] = useState("") // email em branco
-  const [password, setPassword] = useState("") //senha em branco
+  const router = useRouter() 
+  const [email, setEmail] = useState("") 
+  const [password, setPassword] = useState("") 
   const [senhaVisivel, setSenhaVisivel] = useState(false)
   const [lembrarDeMim, setLembrarDeMim] = useState(false)
   const [tecladoAberto, setTecladoAberto] = useState(false)
@@ -45,6 +48,16 @@ const LoginScreen = () => {
 
   const { perfil, loginComSupabase, loading } = useAuth() // funcs do middleware
 
+  // ao abrir a tela, verifica se tem e-mail lembrado de uma sessão anterior
+  useEffect(() => {
+    AsyncStorage.getItem(CHAVE_EMAIL_LEMBRADO).then((emailSalvo: string | null) => {
+      if (emailSalvo) {
+        setEmail(emailSalvo)
+        setLembrarDeMim(true)
+      }
+    })
+  }, [])
+
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Aviso, por favor preencha o e-mail e a senha")
@@ -56,6 +69,14 @@ const LoginScreen = () => {
       if (session) {
         console.log("Conectado com sucesso")
         console.log(perfil)
+
+
+        if (lembrarDeMim) {
+          await AsyncStorage.setItem(CHAVE_EMAIL_LEMBRADO, email)
+        } else {
+          await AsyncStorage.removeItem(CHAVE_EMAIL_LEMBRADO)
+        }
+
         router.push("/dashboard")
       }
     } catch (error: any) {
@@ -126,11 +147,15 @@ const LoginScreen = () => {
                     </View>
 
                     <View style={styles.optionsRow}>
-                        <Pressable style={styles.rememberRow} onPress={() => setLembrarDeMim(!lembrarDeMim)}>
-                            <View style={[styles.checkbox, lembrarDeMim && styles.checkboxChecked]} />
+                        <Pressable style={styles.rememberRow} onPress={() => setLembrarDeMim(!lembrarDeMim)} hitSlop={8}>
+                            <View style={[styles.checkbox, lembrarDeMim && styles.checkboxChecked]}>
+                                {lembrarDeMim && (
+                                    <MaterialCommunityIcons name="check" size={13} color="#0b0f2e" />
+                                )}
+                            </View>
                             <Text style={styles.rememberText}>Lembrar de mim</Text>
                         </Pressable>
-                        <Pressable onPress={() => Alert.alert("Em breve", "Recuperação de senha ainda não disponível.")}>
+                        <Pressable onPress={() => router.push({ pathname: "/login/recuperar-senha", params: { email } })}>
                             <Text style={styles.forgotText}>Esqueceu a senha?</Text>
                         </Pressable>
                     </View>
@@ -249,6 +274,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#7c8798",
     marginRight: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
   checkboxChecked: {
     backgroundColor: "#2fb7c9",

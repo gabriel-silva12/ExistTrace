@@ -1,110 +1,233 @@
 # ExistTrace
 
-Aplicativo mobile para **registro emocional idiográfico** em sessões de terapia, desenvolvido como Trabalho de Conclusão de Curso (Redes de Computadores). O psicólogo aplica, a seu critério, um breve fluxo de registro no próprio dispositivo, e as respostas formam um histórico individual por paciente, interpretado caso a caso, sem comparação entre pacientes.
+Aplicativo mobile para **registro emocional idiográfico** em sessões de terapia, desenvolvido como Trabalho de Conclusão de Curso (Redes de Computadores).
 
-> ⚠️ **Projeto em desenvolvimento**, com caráter experimental e acadêmico. Não substitui instrumentos de avaliação psicológica validados nem constitui ferramenta de diagnóstico.
+O psicólogo pode aplicar, a seu critério, um breve fluxo de registro no próprio dispositivo. As respostas formam um histórico individual por paciente, interpretado caso a caso, sem comparação entre pacientes.
+
+> **Projeto em desenvolvimento:** o ExistTrace tem caráter experimental e acadêmico. Não substitui instrumentos de avaliação psicológica validados nem constitui ferramenta de diagnóstico.
 
 ## Sobre o projeto
 
 O aplicativo estrutura o registro do estado emocional em quatro etapas sucessivas, apresentadas ao paciente como telas distintas:
 
-1. Seleção de um emoji entre opções aleatórias
-2. Seleção de uma palavra entre opções aleatórias
-3. Escrita livre de uma palavra ou frase pelo próprio paciente
-4. Desenho livre
+1. Seleção de um emoji entre opções aleatórias.
+2. Seleção de uma palavra entre opções aleatórias.
+3. Escrita livre de uma palavra ou frase pelo próprio paciente.
+4. Desenho livre.
 
 As duas primeiras etapas usam opções sorteadas de conjuntos fixos; as duas últimas são de conteúdo livre, gerado pelo próprio paciente. É na leitura do histórico, feita pelo psicólogo caso a caso, que o registro se torna idiográfico.
 
-Ao final, o psicólogo, responsável por conduzir a aplicação no próprio dispositivo, revisa todas as respostas em uma tela de confirmação e decide entre **confirmar** (a sessão é gravada no histórico do paciente) ou **recomeçar** o quiz. O desenho é apenas armazenado e exibido: o aplicativo não realiza nenhuma interpretação ou análise automática.
+Ao final, o psicólogo, responsável por conduzir a aplicação no próprio dispositivo, revisa todas as respostas em uma tela de confirmação e decide entre **confirmar** — gravando a sessão no histórico do paciente — ou **recomeçar** o quiz.
 
-A fundamentação teórica do projeto está ancorada em três conceitos da TCC: o **automonitoramento** (*self-monitoring*), que inspira o registro estruturado do estado emocional; a **reatividade**, isto é, o efeito que o próprio ato de registrar exerce sobre a experiência registrada; e a **diferenciação emocional**, a capacidade de distinguir emoções com precisão, que motiva a variação dos emojis e das palavras apresentados a cada aplicação.
+O desenho é apenas armazenado e exibido: o aplicativo não realiza interpretação ou análise automática.
+
+A fundamentação teórica do projeto está ancorada em três conceitos da Terapia Cognitivo-Comportamental (TCC):
+
+- **Automonitoramento (*self-monitoring*):** inspira o registro estruturado do estado emocional.
+- **Reatividade:** considera o efeito que o próprio ato de registrar pode exercer sobre a experiência registrada.
+- **Diferenciação emocional:** capacidade de distinguir emoções com precisão, que motiva a variação dos emojis e das palavras apresentados a cada aplicação.
 
 ## Funcionalidades
 
-**Para o psicólogo**
-- Cadastro e login com autenticação real
-- Cadastro de pacientes por **codinome**, sem nome civil
-- Lista de pacientes com busca e data da última sessão
-- Histórico de sessões por paciente (emoji, palavra, escrita livre e miniatura do desenho)
-- Aplicação do quiz e revisão das respostas antes de gravar
+### Para o psicólogo
 
-**Durante a aplicação do quiz (modo imersivo)**
-- Interface reduzida ao conteúdo: sem barra de status, com a tela mantida acesa
-- Botão de prosseguir que só aparece quando há resposta
-- Confirmação ao tentar sair no primeiro passo, para evitar perda de respostas
+- Cadastro e login com autenticação real.
+- Cadastro de pacientes por **codinome**, sem nome civil.
+- Lista de pacientes com busca e data da última sessão.
+- Histórico de sessões por paciente, incluindo emoji, palavra selecionada, escrita livre e miniatura do desenho.
+- Aplicação do quiz e revisão das respostas antes de gravar.
+
+### Durante a aplicação do quiz — modo imersivo
+
+- Interface reduzida ao conteúdo, sem barra de status e com a tela mantida acesa.
+- Botão para prosseguir exibido somente quando há uma resposta.
+- Confirmação ao tentar sair no primeiro passo, para evitar perda de respostas.
 
 ## Stack técnica
 
-**Frontend**
-- React Native (Expo) e TypeScript
-- Expo Router (navegação)
-- react-native-svg (desenho livre)
-- expo-keep-awake, expo-status-bar, react-native-safe-area-context
+### Frontend
 
-**Backend**
-- Supabase: autenticação e banco PostgreSQL
-- Row Level Security (RLS): cada psicólogo acessa apenas os próprios pacientes e sessões
+- React Native com Expo.
+- TypeScript.
+- Expo Router para navegação.
+- `react-native-svg` para desenho livre.
+- `expo-keep-awake`, `expo-status-bar` e `react-native-safe-area-context`.
+
+### Backend
+
+- Supabase para autenticação e banco de dados PostgreSQL.
+- Row Level Security (RLS) para restringir o acesso: cada psicólogo pode acessar apenas os próprios pacientes e sessões, conforme as políticas configuradas no banco.
 
 ## Modelo de dados
 
 | Tabela | Conteúdo |
 |---|---|
-| `psicologo` | Perfil do psicólogo, vinculado ao usuário da autenticação |
-| `paciente` | Codinome e idade, vinculados a um psicólogo |
-| `sessao_terapia` | Uma aplicação do quiz: `emoji`, `palavra_selecionada`, `palavra_livre`, `desenho`, `data` |
+| `psicologo` | Perfil do psicólogo, vinculado ao usuário da autenticação. |
+| `paciente` | Codinome e idade, vinculados a um psicólogo. |
+| `sessao_terapia` | Uma aplicação do quiz: `emoji`, `palavra_selecionada`, `palavra_livre`, `desenho` e `data`. |
+| `keep_alive` | Tabela auxiliar (opcional) para pings que evitam a pausa do projeto no plano gratuito. |
 
-O desenho é guardado como `jsonb`, em traços vetoriais, e remontado no aplicativo. O mesmo formato serve para qualquer tamanho de tela:
+O desenho é armazenado como `jsonb`, em traços vetoriais, e reconstruído no aplicativo. O formato permite adaptar o desenho a diferentes tamanhos de tela.
+
+Exemplo de estrutura:
 
 ```json
 {
   "largura": 366,
   "altura": 488,
   "traces": [
-    { "d": "M145.7 372.7 L140 368.7 L130.3 363", "cor": "#111111", "espessura": 6 }
+    {
+      "d": "M145.7 372.7 L140 368.7 L130.3 363",
+      "cor": "#111111",
+      "espessura": 6
+    }
   ]
 }
 ```
 
 ## Estrutura do projeto
 
+```text
+app/             telas e rotas (Expo Router)
+components/      componentes reutilizáveis (ScreenHeader, TabBar,
+                 QuizScreen, QuizSelector, QuadroDesenho,
+                 Desenho, SessaoCard, InfoCard)
+hooks/           hooks de dados (usePacientes, useSessoes)
+hooks/context/   estado global (AuthContext, QuizContext)
+services/        cliente do Supabase
+utils/           funções auxiliares (datas, sorteio de itens)
+supabase/        migrations do banco e configuração da CLI
 ```
-app/            telas e rotas (Expo Router)
-components/     componentes reutilizáveis (ScreenHeader, TabBar, QuizScreen,
-                QuizSelector, QuadroDesenho, Desenho, SessaoCard, InfoCard)
-hooks/          hooks de dados (usePacientes, useSessoes)
-hooks/context/  estado global (AuthContext, QuizContext)
-services/       cliente do Supabase
-utils/          funções auxiliares (datas, sorteio de itens)
-```
+
+> A estrutura acima é ilustrativa. Os diretórios e nomes podem variar conforme a organização atual do repositório.
 
 ## Estado atual
 
-- [x] Setup inicial do projeto (Expo + TypeScript)
-- [x] Autenticação real e perfil do psicólogo (Supabase)
-- [x] Cadastro e listagem de pacientes, com busca
-- [x] Fluxo do quiz em quatro etapas, com tela de confirmação
-- [x] Randomização dos estímulos (sorteio de quatro opções por etapa)
-- [x] Persistência das sessões, com RLS
-- [x] Histórico de sessões por paciente, com desenho
-- [ ] Conjuntos finais de estímulos (hoje há um conjunto reduzido de teste)
-- [ ] Edição de paciente e observações
-- [ ] Recuperação de senha e login social
-- [ ] Tela de configurações
-- [ ] Visualização consolidada dos resultados (evolução ao longo das sessões)
-- [ ] Avaliação de usabilidade com psicólogos
+### Implementado
+
+- [x] Setup inicial do projeto com Expo e TypeScript.
+- [x] Autenticação real e perfil do psicólogo via Supabase.
+- [x] Cadastro e listagem de pacientes, com busca.
+- [x] Fluxo do quiz em quatro etapas, com tela de confirmação.
+- [x] Randomização dos estímulos (sorteio de quatro opções por etapa).
+- [x] Persistência das sessões, com RLS.
+- [x] Histórico de sessões por paciente, incluindo o desenho.
+- [x] Schema do banco versionado em migrations (Supabase CLI).
+
+### Planejado
+
+- [ ] Finalizar os conjuntos de estímulos (atualmente há um conjunto reduzido para testes).
+- [ ] Edição de paciente e inclusão de observações.
+- [ ] Recuperação de senha e login social.
+- [ ] Tela de configurações.
+- [ ] Visualização consolidada dos resultados ao longo das sessões.
+- [ ] Avaliação de usabilidade com psicólogos.
 
 ## Como rodar o projeto
 
-Crie o arquivo `.env` na raiz com as credenciais do seu projeto Supabase:
+### Pré-requisitos
+
+Antes de começar, instale:
+
+- [Node.js](https://nodejs.org/) na sua máquina local
+- [Supabase CLI](https://supabase.com/docs/guides/cli) e uma conta gratuita no [Supabase](https://supabase.com)
+- [Expo Go](https://expo.dev/go) no celular que será usado para testar o aplicativo.
+
+
+O Expo Go permite executar projetos Expo compatíveis diretamente no celular durante o desenvolvimento, sem precisar gerar um APK ou instalar versão publicada do aplicativo.
+
+Links para instalar o Expo Go:
+
+- **Android:** [Google Play — Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent).
+- **iOS:** [App Store — Expo Go](https://apps.apple.com/app/expo-go/id982107779).
+
+### 1. Crie o banco de dados no Supabase
+
+O schema está versionado em `supabase/migrations/`. Para subir uma cópia própria:
+
+1. Crie um projeto em branco no [dashboard do Supabase](https://supabase.com/dashboard) e guarde a **senha do banco** definida na criação.
+2. Copie o **Project ID** em *Project Settings → General → Reference ID*.
+3. Na raiz do repositório, execute:
 
 ```bash
-EXPO_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
-EXPO_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon
+supabase login
+supabase link --project-ref SEU_PROJECT_ID
+supabase db push
 ```
 
-Instale as dependências e inicie:
+4. Confira em **Table Editor** se as tabelas `psicologo`, `paciente`, `sessao_terapia` e `keep_alive` foram criadas.
+
+> A tabela `keep_alive` é opcional: serve apenas para pings periódicos que evitam a pausa de projetos no plano gratuito.
+
+**Problemas comuns**
+
+| Problema | Solução |
+|---|---|
+| `Cannot find project ref` | Rode `supabase link` na raiz do projeto, onde existe a pasta `supabase/` |
+| Erro de autenticação no banco | Redefina a senha em *Project Settings → Database* |
+| Cadastro não cria o perfil do psicólogo | Confirme que a migration do trigger `on_auth_user_created` foi aplicada |
+
+
+### 2. Configure as variáveis de ambiente
+
+Na raiz do projeto, crie um arquivo `.env` com as credenciais do projeto criado no passo anterior (*Project Settings → API*):
+
+```dotenv
+EXPO_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon
+
+# Opcional: ID do projeto no EAS
+EXPO_PUBLIC_EAS_PROJECT_ID=seu-eas-project-id
+```
+
+> Variáveis `EXPO_PUBLIC_*` são embutidas no app. Use apenas a chave `anon`; nunca coloque a `service_role` aqui nem no repositório.
+
+### 3. Instale as dependências
+
+No terminal, dentro da pasta do projeto, execute:
 
 ```bash
 npm install
-npx expo login
-npx expo start
+```
+
+### 4. Inicie o Expo
+
+Escolha o modo adequado à sua conexão.
+
+#### Opção A — Celular e computador na mesma rede Wi-Fi
+
+```bash
+npx expo start --offline
+```
+
+Se necessário, limpe o cache:
+
+```bash
+npx expo start -c --offline
+```
+
+Mantenha o celular e o computador na mesma rede. Se a conexão local não funcionar, tente o modo de túnel.
+
+#### Opção B — Celular e computador em redes diferentes
+
+Por exemplo, quando o computador está no Wi-Fi e o celular usa dados móveis:
+
+```bash
+npx expo start --tunnel
+```
+
+O modo de túnel pode ser mais lento e depende da disponibilidade do serviço de túnel do Expo.
+
+### 5. Abra o aplicativo no celular
+
+1. Aguarde o QR Code aparecer no terminal.
+2. Abra o Expo Go no celular e escaneie o QR Code. No iOS, também é possível usar a Câmera para abrir o link.
+3. Aguarde o projeto carregar.
+
+O celular precisa ter conexão com a rede ou com a internet, conforme o modo de conexão escolhido. O aplicativo também precisa alcançar o Supabase para autenticação e operações de banco de dados.
+
+## Aviso acadêmico
+
+O ExistTrace é um projeto experimental desenvolvido para fins acadêmicos. Seu uso deve respeitar a avaliação e o critério profissional do psicólogo. Os registros não devem ser interpretados isoladamente como diagnóstico, e o aplicativo não substitui instrumentos psicológicos validados nem o acompanhamento profissional.
+
+Quem hospedar uma cópia própria do banco é responsável pelos dados nela armazenados e deve observar a legislação aplicável de proteção de dados (como a LGPD). O aplicativo foi pensado para uso de codinomes, sem nome civil do paciente.

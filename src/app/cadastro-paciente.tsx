@@ -1,140 +1,157 @@
-import { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, Alert } from "react-native";
+//vou mudar ainda, não tem essa tela no figma
+//tela provisoria
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { supabase } from "@/services/supabase";
 import { useAuth } from "@/hooks/context/AuthContext";
+import { cores, LogoCircle, PrimaryButton } from "@/components/quiz-ui";
 
-const CadastroPaciente = () => {
+export default function CadastroPacienteScreen() {
   const router = useRouter();
-  const { cadastrarPaciente } = useAuth();
+  const { perfil } = useAuth();
 
-  const [nome, setNome] = useState("");
+  const [codinome, setCodinome] = useState("");
   const [idade, setIdade] = useState("");
-  const [salvando, setSalvando] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleCadastrar = async () => {
-    if (!nome.trim() || !idade.trim()) {
-      Alert.alert("Atenção", "Preencha nome e idade do paciente.");
+  const handleSalvar = async () => {
+    const idadeNum = parseInt(idade, 10);
+
+    if (!codinome.trim() || !idade) {
+      Alert.alert("Aviso", "Por favor, preencha todos os campos.");
+      return;
+    }
+    if (isNaN(idadeNum) || idadeNum <= 0 || idadeNum > 120) {
+      Alert.alert("Erro", "Informe uma idade válida.");
+      return;
+    }
+    if (!perfil?.id) {
+      Alert.alert("Erro", "Não foi possível identificar o psicólogo logado.");
       return;
     }
 
-    const idadeNumero = Number(idade);
-    if (isNaN(idadeNumero) || idadeNumero <= 0) {
-      Alert.alert("Atenção", "Digite uma idade válida.");
+    setLoading(true);
+    const { error } = await supabase.from("paciente").insert({
+      codinome: codinome.trim(),
+      idade: idadeNum,
+      psicologo_id: perfil.id,
+    });
+    setLoading(false);
+
+    if (error) {
+      Alert.alert("Erro no cadastro", error.message);
       return;
     }
 
-    setSalvando(true);
-    
-    try {
-      await cadastrarPaciente(nome.trim(), idadeNumero);
-      router.push("/dashboard");
-    } catch (err) {
-      console.error(err);
-      Alert.alert("Erro", "Não foi possível cadastrar o paciente.");
-    } finally {
-      setSalvando(false);
-    }
+    Alert.alert("Sucesso!", "Paciente cadastrado com sucesso.", [
+      { text: "OK", onPress: () => router.back() },
+    ]);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Novo Paciente</Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
+    >
+      <View style={styles.innerContainer}>
+        
 
-        <Text style={styles.label}>Nome</Text>
-        <TextInput
-          style={styles.input}
-          value={nome}
-          onChangeText={setNome}
-          placeholder="Nome do paciente"
-          autoCapitalize="words"
-        />
+        <View style={{ width: "100%" }}>
+          <Text style={styles.title}>Novo paciente</Text>
 
-        <Text style={styles.label}>Idade</Text>
-        <TextInput
-          style={styles.input}
-          value={idade}
-          onChangeText={setIdade}
-          placeholder="Idade"
-          keyboardType="numeric"
-        />
+          <View style={styles.inputWrapper}>
+            <MaterialCommunityIcons name="account-outline" size={20} color={cores.borda} style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Codinome"
+              placeholderTextColor={cores.borda}
+              value={codinome}
+              onChangeText={setCodinome}
+              autoCapitalize="words"
+              editable={!loading}
+            />
+          </View>
 
-        <Pressable
-          style={({ pressed }) => [styles.pillButton, pressed && { opacity: 0.8 }]}
-          onPress={handleCadastrar}
-          disabled={salvando}
-        >
-          <Text style={styles.pillButtonText}>
-            {salvando ? "Salvando..." : "Cadastrar"}
-          </Text>
-        </Pressable>
+          <View style={styles.inputWrapper}>
+            <MaterialCommunityIcons name="cake-variant-outline" size={20} color={cores.borda} style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Idade"
+              placeholderTextColor={cores.borda}
+              value={idade}
+              onChangeText={(t) => setIdade(t.replace(/\D/g, ""))}
+              keyboardType="number-pad"
+              maxLength={3}
+              editable={!loading}
+            />
+          </View>
 
-        <Pressable
-          style={({ pressed }) => [styles.linkButton, pressed && { opacity: 0.6 }]}
-          onPress={() => router.back()}
-          disabled={salvando}
-        >
-          <Text style={styles.linkButtonText}>Cancelar</Text>
-        </Pressable>
+          <PrimaryButton
+            titulo={loading ? "Salvando..." : "Cadastrar"}
+            onPress={handleSalvar}
+            desabilitado={loading}
+            style={styles.botao}
+          />
+
+          <Pressable
+            style={({ pressed }) => [pressed && { opacity: 0.6 }]}
+            onPress={() => router.back()}
+            disabled={loading}
+          >
+            <Text style={styles.voltarTexto}>
+              <Text style={styles.voltarLink}>Cancelar</Text>
+            </Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1, backgroundColor: cores.fundo },
+  innerContainer: {
     flex: 1,
-    backgroundColor: "#ffffff",
-  },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 150,
-  },
-  title: {
-    width: "100%",
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#111111",
-    marginBottom: 40,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#111111",
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-    marginBottom: 24,
-  },
-  pillButton: {
-    width: "75%",
-    height: 50,
-    backgroundColor: "#0066cc",
-    borderRadius: 27,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 15,
-    alignSelf: "center",
+    paddingHorizontal: 28,
   },
-  pillButtonText: {
-    color: "#ffffff",
+  logoContainer: { alignItems: "center", marginBottom: 28 },
+  title: {
+    fontSize: 26,
+    fontWeight: "600",
+    color: cores.header,
+    marginBottom: 20,
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderColor: cores.borda,
+    paddingBottom: 10,
+    marginBottom: 18,
+  },
+  inputIcon: { marginRight: 10 },
+  input: {
+    flex: 1,
     fontSize: 16,
-    fontWeight: "bold",
+    color: "#1F2A33",
+    paddingVertical: 4,
   },
-  linkButton: {
-    marginTop: 20,
-    alignSelf: "center",
-  },
-  linkButtonText: {
-    color: "#0066cc",
-    fontSize: 14,
-  },
+  botao: { marginTop: 8, marginBottom: 20 },
+  voltarTexto: { textAlign: "center", color: cores.borda, fontSize: 13 },
+  voltarLink: { color: cores.botao, fontWeight: "bold" },
 });
-
-export default CadastroPaciente;

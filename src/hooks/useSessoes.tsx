@@ -19,7 +19,7 @@ export const useSessoes = (pacienteId: number | null) => {
 
         const { data, error } = await supabase
         .from("sessao_terapia")
-        .select("id, data, emoji, palavra_selecionada, palavra_livre, desenho")
+        .select("id, data, emoji, carga_emoji, palavra_selecionada, palavra_livre, desenho")
         .eq("paciente_id", pacienteId)
         .order("data", { ascending: false })
 
