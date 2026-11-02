@@ -1,4 +1,4 @@
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import ScreenHeader from "@/components/ScreenHeader";
 import { Feather } from "@expo/vector-icons";
 import Constants from "expo-constants";
@@ -10,6 +10,7 @@ import { cores } from "@/components/quiz-ui";
 import { useAuth } from "@/hooks/context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+const EMAIL_SUPORTE = "existtrace.app@gmail.com"; 
 const CRP_PROVISORIO = "CRP 00/12345";//mudar depois pra nao ficar estatico
 const ALTURA_TABBAR = 96;
 
@@ -24,7 +25,24 @@ export default function Ajustes() {
   const { perfil, logout } = useAuth();
   const insets = useSafeAreaInsets();
   const emBreve = () => Alert.alert("Em breve", "Funcionalidade em desenvolvimento.");
+  const falarComSuporte = async () => {
+    const assunto = encodeURIComponent("Suporte ExistTrace");
+    const corpo = encodeURIComponent(
+      `\n\n---\nProfissional: ${perfil?.nome ?? "-"}\nVersão do app: ${Constants.expoConfig?.version ?? "0.0.0"}`
+    );
+    const url = `mailto:${EMAIL_SUPORTE}?subject=${assunto}&body=${corpo}`;
 
+    try {
+      const podeAbrir = await Linking.canOpenURL(url);
+      if (!podeAbrir) throw new Error("sem app de e-mail");
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert(
+        "Não foi possível abrir o e-mail",
+        `Envie sua mensagem para ${EMAIL_SUPORTE}.`
+      );
+    }
+  };
   const sair = () => {
     Alert.alert("Sair", "Deseja terminar a sessão atual?", [
       { text: "Cancelar", style: "cancel" },
@@ -76,8 +94,8 @@ export default function Ajustes() {
 
           <Text style={styles.secao}>Suporte</Text>
           <View style={styles.grupo}>
-            <MenuItem semBorda icone="message-square" titulo="Falar com o suporte" onPress={emBreve} />
-            <MenuItem icone="help-circle" titulo="Ajuda" onPress={emBreve} />
+            <MenuItem semBorda icone="message-square" titulo="Falar com o suporte" onPress={falarComSuporte} />
+            {/* <MenuItem icone="help-circle" titulo="Ajuda" onPress={emBreve} /> */}
             <MenuItem icone="info" titulo="Sobre o ExistTrace" onPress={emBreve} />
           </View>
 
