@@ -28,7 +28,7 @@ export default function Ajustes() {
   const falarComSuporte = async () => {
     const assunto = encodeURIComponent("Suporte ExistTrace");
     const corpo = encodeURIComponent(
-      `\n\n---\nProfissional: ${perfil?.nome ?? "-"}\nVersão do app: ${Constants.expoConfig?.version ?? "0.0.0"}`
+      `Profissional: ${perfil?.nome ?? "-"}\n}`
     );
     const url = `mailto:${EMAIL_SUPORTE}?subject=${assunto}&body=${corpo}`;
 
