@@ -96,7 +96,7 @@ export default function Ajustes() {
           <View style={styles.grupo}>
             <MenuItem semBorda icone="message-square" titulo="Falar com o suporte" onPress={falarComSuporte} />
             {/* <MenuItem icone="help-circle" titulo="Ajuda" onPress={emBreve} /> */}
-            <MenuItem icone="info" titulo="Sobre o ExistTrace" onPress={emBreve} />
+            <MenuItem icone="info" titulo="Sobre o ExistTrace" onPress={() => router.push("/ajustes/sobre")} />
           </View>
 
           <Pressable
