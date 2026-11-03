@@ -1,5 +1,5 @@
 import { Stack, useRouter } from "expo-router";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TabBar from "@/components/TabBar";
 import ScreenHeader from "@/components/ScreenHeader";
@@ -31,8 +31,11 @@ const Dashboard = () => {
             Terapia Cognitivo-{"\n"}Comportamental
           </Text>
 
-          {/* TODO: placeholder - trocar pela ilustração final */}
-          <View style={styles.illustrationPlaceholder} />
+        <Image
+          source={{ uri: "https://hcxfmusp.org.br/portal/wp-content/uploads/2022/02/terapia-comportamental-cognitiva.jpg" }}
+          style={styles.illustration}
+          resizeMode="cover"
+        />
 
           
 
@@ -50,14 +53,16 @@ const Dashboard = () => {
 
         </View>
             
-        <Pressable style={({ pressed }) => [styles.infoCard, pressed && { opacity: 0.8 }]}>
+        <Pressable style={({ pressed }) => [styles.infoCard, pressed && { opacity: 0.8 }]}
+          onPress={() => router.push("/Dashboard/oqe")}>
           <Text style={styles.infoCardText}>
             O que é a terapia{"\n"}cognitivo-comportamental?
           </Text>
           <MaterialCommunityIcons name="chevron-right" size={24} color="#2f8f9e" />
         </Pressable>
 
-        <Pressable style={({ pressed }) => [styles.infoCard, pressed && { opacity: 0.8 }]}>
+        <Pressable style={({ pressed }) => [styles.infoCard, pressed && { opacity: 0.8 }]}
+          onPress={() => router.push("/Dashboard/informacoes")}>
           <Text style={styles.infoCardText}>
             Informações sobre{"\n"}etapas do teste
           </Text>
@@ -147,6 +152,12 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
+  illustration: {
+  width: "100%",
+  aspectRatio: 500 / 321,
+  borderRadius: 16,
+  marginBottom: 20,
+},
 });
 
 export default Dashboard;

@@ -139,63 +139,52 @@ const Pacientes = () => {
             </Text>
           ) : null
         }
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Pressable
-              style={styles.cardBody}
-              onPress={() => abrirHistorico(item)}
-            >
-              <View style={styles.avatarCirculo}>
-                <MaterialCommunityIcons name="account" size={28} color="#6b7684" />
-              </View>
-              <View style={styles.cardInfo}>
-                <Text style={styles.cardNome}>{item.codinome}</Text>
-                <Text style={styles.cardLinha}>
-                  Última Sessão:{" "}
-                  {item.ultimaSessao
-                    ? formatarParaDataBR(item.ultimaSessao)
-                    : "Nenhuma"}
-                </Text>
-              </View>
-            </Pressable>
+renderItem={({ item }) => (
+  <View style={styles.card}>
+    <Pressable
+      style={styles.cardBody}
+      onPress={() => abrirHistorico(item)}
+    >
+      <View style={styles.avatarCirculo}>
+        <MaterialCommunityIcons name="account" size={28} color="#6b7684" />
+      </View>
+      <View style={styles.cardInfo}>
+        <Text style={styles.cardNome}>{item.codinome}</Text>
+        <Text style={styles.cardLinha}>
+          Última Sessão:{" "}
+          {item.ultimaSessao
+            ? formatarParaDataBR(item.ultimaSessao)
+            : "Nenhuma"}
+        </Text>
+      </View>
+    </Pressable>
 
-            <View style={styles.cardFooter}>
-              <Pressable
-                style={styles.footerAction}
-                onPress={() =>
-                  Alert.alert(
-                    "Em breve",
-                    "Observações do paciente ainda não disponíveis."
-                  )
-                }
-              >
-                <MaterialCommunityIcons
-                  name="comment-outline"
-                  size={18}
-                  color="#1a1a1a"
-                />
-                <Text style={styles.footerActionText}>Observações</Text>
-              </Pressable>
-
-              <View style={styles.footerIcons}>
-                <Pressable onPress={() => abrirEdicao(item)} hitSlop={8}>
-                  <MaterialCommunityIcons
-                    name="square-edit-outline"
-                    size={20}
-                    color="#1a1a1a"
-                  />
-                </Pressable>
-                <Pressable onPress={() => confirmarExclusao(item)} hitSlop={8}>
-                  <MaterialCommunityIcons
-                    name="trash-can-outline"
-                    size={20}
-                    color="#c0392b"
-                  />
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        )}
+    <View style={styles.cardAcoes}>
+      <Pressable
+        style={styles.acaoBotao}
+        onPress={() => abrirEdicao(item)}
+        hitSlop={8}
+      >
+        <MaterialCommunityIcons
+          name="square-edit-outline"
+          size={20}
+          color="#1a1a1a"
+        />
+      </Pressable>
+      <Pressable
+        style={styles.acaoBotao}
+        onPress={() => confirmarExclusao(item)}
+        hitSlop={8}
+      >
+        <MaterialCommunityIcons
+          name="trash-can-outline"
+          size={20}
+          color="#c0392b"
+        />
+      </Pressable>
+    </View>
+  </View>
+)}
       />
 
       <Modal
@@ -323,6 +312,7 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     flex: 1,
+    paddingRight: 84,
   },
   cardNome: {
     fontSize: 18,
@@ -334,29 +324,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#3a4450",
   },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderTopColor: "#d7e2e5",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  footerAction: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  footerActionText: {
-    fontSize: 14,
-    color: "#1a1a1a",
-  },
-  footerIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-  },
+ cardAcoes: {
+  position: "absolute",
+  top: 10,
+  right: 10,
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
+},
+acaoBotao: {
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+  backgroundColor: "#eaf3f6",
+  justifyContent: "center",
+  alignItems: "center",
+},
   modalFundo: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
