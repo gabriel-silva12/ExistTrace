@@ -77,19 +77,19 @@ export default function Ajustes() {
               </Text>
               <Text style={styles.crp}>{CRP_PROVISORIO}</Text>
             </View>
-            <Pressable
+            {/* <Pressable
               onPress={emBreve}
               style={({ pressed }) => [styles.botaoEditar, pressed && styles.pressionado]}
             >
               <Feather name="edit-2" size={16} color={cores.botao} />
               <Text style={styles.textoEditar}>Editar perfil</Text>
-            </Pressable>
+            </Pressable> */}
           </View>
 
           <Text style={styles.secao}>Preferências do app</Text>
           <View style={styles.grupo}>
             <MenuItem semBorda icone="settings" titulo="Configurações" onPress={() => router.push("/ajustes/configuracoes")} />
-            <MenuItem icone="bell" titulo="Notificações" onPress={() => router.push("/ajustes/notificacoes")} />
+            {/* <MenuItem icone="bell" titulo="Notificações" onPress={() => router.push("/ajustes/notificacoes")} /> */}
           </View>
 
           <Text style={styles.secao}>Suporte</Text>

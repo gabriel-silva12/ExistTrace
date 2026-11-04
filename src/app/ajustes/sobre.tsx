@@ -61,7 +61,7 @@ export default function SobreExistTrace() {
             acompanhar os estados emocionais de pacientes durante o processo terapêutico.
           </Text>
           <Text style={styles.paragrafo}>
-            Ele foi desenvolvido como projeto de conclusão de curso (TCC) no INESP.
+            Ele foi desenvolvido como projeto de conclusão de curso (TCC) no IESPES.
           </Text>
         </View>
 

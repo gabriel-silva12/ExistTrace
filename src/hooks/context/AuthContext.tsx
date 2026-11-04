@@ -8,7 +8,8 @@ import React, {
 
 interface PerfilPsicologo {
     id: string,
-    nome: string
+    nome: string,
+    email?: string
 }
 
 interface AuthContextData {
@@ -17,6 +18,7 @@ interface AuthContextData {
     loginComSupabase: (email : string, password: string) => Promise<any>,
     cadastrarComSupabase: (nome: string, email: string, password: string) => Promise<any>
     cadastrarPaciente: (nome: string, idade: number) => Promise<any>
+    recarregarPerfil: () => Promise<void>
     logout: () => Promise<void>
 }
 
@@ -29,7 +31,7 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
     const [perfil, setPerfil] = useState<PerfilPsicologo | null>(null)
     const [loading, setLoading] = useState(false)
     
-    const buscarPerfilDoBanco = async (userId : string) => {
+    const buscarPerfilDoBanco = async (userId : string, email?: string) => {
         try {
             const {data, error} = await supabase
             .from("psicologo")
@@ -41,10 +43,15 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
             console.error("Erro ao buscar perfil do psicólog:", error.message)
             return
         }
-        if (data) setPerfil(data)
+        if (data) setPerfil({ ...data, email })
         } catch (err) {
             console.error(err)
         }
+    }
+
+    const recarregarPerfil = async () => {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) await buscarPerfilDoBanco(user.id, user.email ?? undefined)
     }
 
      const loginComSupabase = async (email: string, password: string) => {
@@ -65,7 +72,7 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
         }
 
         if (data?.user) {
-            await buscarPerfilDoBanco(data.user.id)
+            await buscarPerfilDoBanco(data.user.id, data.user.email ?? undefined)
         }
 
         setLoading(false)
@@ -125,14 +132,14 @@ export const AuthProvider: React.FC< { children: React.ReactNode}> = ({ children
         const checarSessaoAtiva = async () => {
             const { data: {user} } = await supabase.auth.getUser(         )
             if (user && !perfil) {
-                await buscarPerfilDoBanco(user.id)
+                await buscarPerfilDoBanco(user.id, user.email ?? undefined)
             }
         }
         checarSessaoAtiva()
     }, [])
 
     return (
-        <AuthContext.Provider value={{ perfil, loading, loginComSupabase, cadastrarComSupabase, cadastrarPaciente, logout }}>
+        <AuthContext.Provider value={{ perfil, loading, loginComSupabase, cadastrarComSupabase, cadastrarPaciente, recarregarPerfil, logout }}>
             {children}
         </AuthContext.Provider>
     )
