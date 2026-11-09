@@ -17,6 +17,10 @@ import {
 import { Image } from "expo-image";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as WebBrowser from "expo-web-browser"
+import * as Linking from "expo-linking"
+
+WebBrowser.maybeCompleteAuthSession()
 
 const CHAVE_EMAIL_LEMBRADO = "@existtrace:email_lembrado";
 
@@ -58,31 +62,68 @@ const LoginScreen = () => {
     })
   }, [])
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert("Aviso, por favor preencha o e-mail e a senha")
-      return
-    }
-    //validacao de email/senha e troca de tela
-    try {
-      const session = await loginComSupabase(email, password)
-      if (session) {
-        console.log("Conectado com sucesso")
-        console.log(perfil)
-
-
-        if (lembrarDeMim) {
-          await AsyncStorage.setItem(CHAVE_EMAIL_LEMBRADO, email)
-        } else {
-          await AsyncStorage.removeItem(CHAVE_EMAIL_LEMBRADO)
-        }
-
-        router.push("/dashboard")
-      }
-    } catch (error: any) {
-      Alert.alert("Erro no login", error.message)
-    }
+const handleLogin = async () => {
+  if (!email || !password) {
+    Alert.alert("Aviso, por favor preencha o e-mail e a senha")
+    return
   }
+  try {
+    const session = await loginComSupabase(email, password)
+    if (session) {
+      console.log("Conectado com sucesso")
+      console.log(perfil)
+
+      if (lembrarDeMim) {
+        await AsyncStorage.setItem(CHAVE_EMAIL_LEMBRADO, email)
+      } else {
+        await AsyncStorage.removeItem(CHAVE_EMAIL_LEMBRADO)
+      }
+
+      router.push("/dashboard")
+    }
+  } catch (error: any) {
+    Alert.alert("Erro no login", error.message)
+  }
+}
+
+const handleLoginGoogle = async () => {
+  try {
+    const redirectTo = Linking.createURL("/")
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo, skipBrowserRedirect: true },
+    })
+    if (error) throw error
+
+    const res = await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
+    if (res.type !== "success") return
+
+    const [semHash, hash] = res.url.split("#")
+    const query = new URLSearchParams(semHash.split("?")[1] ?? "")
+    const fragmento = new URLSearchParams(hash ?? "")
+
+    const code = query.get("code")
+    if (code) {
+      // fluxo PKCE
+      const { error: errCode } = await supabase.auth.exchangeCodeForSession(code)
+      if (errCode) throw errCode
+    } else {
+      // fluxo implícito
+      const access_token = fragmento.get("access_token")
+      const refresh_token = fragmento.get("refresh_token")
+      if (!access_token || !refresh_token) throw new Error("Não foi possível obter a sessão.")
+      const { error: errSessao } = await supabase.auth.setSession({ access_token, refresh_token })
+      if (errSessao) throw errSessao
+    }
+
+    const { data: { user } } = await supabase.auth.getUser()
+    console.log(user?.email, user?.user_metadata?.full_name, user?.user_metadata?.avatar_url)
+
+    router.push("/dashboard")
+  } catch (error: any) {
+    Alert.alert("Erro no login", error.message)
+  }
+}
 
   return (
     <KeyboardAvoidingView
@@ -181,16 +222,16 @@ const LoginScreen = () => {
                     <View style={styles.socialRow}>
                         <Pressable
                             style={({ pressed }) => [styles.socialButton, pressed && { opacity: 0.7 }]}
-                            onPress={() => Alert.alert("Em breve", "Login com Google ainda não disponível.")}
+                            onPress={handleLoginGoogle}
                         >
                             <FontAwesome name="google" size={20} color="#ffffff" />
                         </Pressable>
-                        <Pressable
+                        {/* <Pressable
                             style={({ pressed }) => [styles.socialButton, pressed && { opacity: 0.7 }]}
                             onPress={() => Alert.alert("Em breve", "Login com Apple ainda não disponível.")}
                         >
                             <FontAwesome name="apple" size={22} color="#ffffff" />
-                        </Pressable>
+                        </Pressable> */}
                     </View>
 
                     <Pressable

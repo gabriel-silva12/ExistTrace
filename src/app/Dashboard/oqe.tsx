@@ -27,7 +27,10 @@ const OQueE = () => {
         <View style={styles.card}>
           <Text style={styles.heading}>Ideia central</Text>
           <Text style={styles.body}>
-            lorem ipsum de coisas que vou escrever depois
+            A terapia cognitivo-comportamental (TCC) é uma abordagem estruturada
+            que busca identificar e modificar padrões de pensamentos e estados
+            emocionais. Nomear esses estados faz parte da condução das sessões e
+            do acompanhamento da evolução do paciente.
           </Text>
         </View>
 
@@ -36,21 +39,60 @@ const OQueE = () => {
           <Text style={styles.body}>
             É uma terapia estruturada e focada no presente, em que paciente e
             terapeuta identificam padrões de pensamento e testam alternativas.
+            Saber como o paciente se sente em cada sessão permite ajustar as
+            intervenções e avaliar a resposta ao tratamento.
+          </Text>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.heading}>Automonitoramento</Text>
+          <Text style={styles.body}>
+            É o procedimento em que o próprio paciente observa e registra aspectos
+            da sua experiência, o que favorece a consciência sobre seus estados
+            internos. No ExistTrace, isso acontece em quatro etapas: emojis,
+            palavra, escrita livre e desenho livre.
           </Text>
         </View>
 
         <View style={styles.card}>
           <Text style={styles.heading}>O que é reatividade</Text>
           <Text style={styles.body}>
-            Reatividade é a intensidade e a rapidez com que uma pessoa responde
-            emocionalmente a um estímulo ou situação.
+            Reatividade é o efeito pelo qual o próprio ato de registrar uma
+            experiência pode modificá-la. Por isso o automonitoramento também
+            serve como recurso terapêutico, e não só como coleta de dados. Pelo
+            mesmo motivo, o registro não deve ser lido como uma medida neutra do
+            estado emocional.
           </Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.heading}>nao sei</Text>
+          <Text style={styles.heading}>Diferenciação emocional</Text>
           <Text style={styles.body}>
-           lorem ipsum de coisas que vou escrever depois
+            Também chamada de granularidade emocional, é a capacidade de nomear
+            emoções com precisão e está associada à melhor regulação emocional e
+            ao bem-estar. Por isso os emojis e as palavras são sorteados a cada
+            aplicação: isso convida o paciente a se expressar fora do repertório
+            habitual.
+          </Text>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.heading}>Registro idiográfico</Text>
+          <Text style={styles.body}>
+            Como os estímulos variam a cada aplicação, o histórico não serve para
+            comparar números entre sessões. Ele deve ser interpretado pelo
+            psicólogo, junto com o relato do paciente e o contexto clínico do caso
+            individual.
+          </Text>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.heading}>Papel do aplicativo</Text>
+          <Text style={styles.body}>
+            O ExistTrace é uma ferramenta de apoio e de uso mediado pelo
+            psicólogo, aplicada quando ele julgar pertinente. Ele não faz
+            diagnósticos, não gera interpretações clínicas automáticas e não
+            substitui a atuação profissional.
           </Text>
         </View>
       </ScrollView>
